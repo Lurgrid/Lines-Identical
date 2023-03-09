@@ -42,27 +42,30 @@ extern void da_dispose(da **dptr);
 
 //  da_add : Renvoie NULL si ref est égal à NULL. Sinon essaye de recopier en
 //    bout de tableau la valeur pointé par ref, de taille supposer égal au
-//    champs size de a.
+//    champs size de d.
 //    Renvoie ref si l'ajout à bien été éffectuer. Sinon renvoie NULL en cas de
 //    dépassement de capacité.
-extern void *da_add(da *a, const void *ref);
+extern void *da_add(da *d, const void *ref);
 
-//  da_cond_left_search : recherche la première occurrence dans le tableau a,
+//  da_cond_left_search : recherche la première occurrence dans le tableau d,
 //    d'un composant  qui satisfait une fonction de test. Renvoie l'adresse du
 //    composant trouvé en cas de succès, NULL en cas d'échec.
-extern void *da_cond_left_search(da *a, bool (*cond)(const void *));
+extern void *da_cond_left_search(da *d, bool (*cond)(const void *));
 
-//  da_nth : recherche la nième valeur dans le tableau pointé par a.
+//  da_nth : recherche la nième valeur dans le tableau pointé par d.
 //    Retourne la référence trouver à l'indice n dans le tableau sinon renvoie
 //    NULL.
-extern void *da_nth(da *a, size_t n);
+extern void *da_nth(da *d, size_t n);
 
 //  da_length : Renvoie le nombre d'élément présent dans le tableau pointé par
-//    a.
-extern size_t da_length(da *a);
+//    d.
+extern size_t da_length(da *d);
 
-//  da_add_input_fct : à faire.
-extern int da_add_input_fct(da *d, int(get) (FILE *stream, size_t size),
-    FILE *stream);
+//  da_fill: remplie le tableau dynamique, celon les références des éléments
+//    renvoyer par get, une fonction qui prendre en parametre un pointeur d'un
+//    context et qui renvois soit NULL si elle n'a pas reussie a recuppérer un
+//    element sinon le pointeur vers cette element. da_fill renvois un entier
+//    non null en cas d'échec, sinon renvois une valeur nulle.
+extern int da_fill(da *d, const void *(*get)(void *cntxt), void *cntxt);
 
 #endif
