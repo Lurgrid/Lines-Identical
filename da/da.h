@@ -1,8 +1,7 @@
 //  Partie interface du module da (dynamique array).
 //
 //  Un tableau dynamique permet la mémorisation d'une suite de valeur de même
-// type
-//    mais pour un nombre quelconque d'éléments. La seul limitation dans le
+//    type mais pour un nombre quelconque d'éléments. La seul limitation dans le
 //    nombre d'élément présent dans le tableau, correspond à la limite mémoire
 //    disponible par le module.
 
