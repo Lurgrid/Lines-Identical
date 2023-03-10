@@ -22,7 +22,6 @@ extern optparam *opt_gen(const char *optshort, const char *optlong,
     const char *desc, bool arg, int (*fun)(void *cntxt, const char *value));
 
 extern optreturn opt_init(char **argv, int argc, optparam **aopt,
-    size_t nmemb, void (*help)(void),
-    void (*other)(void *cntxt, const char *value), void *cntxt);
+    size_t nmemb, void (*other)(void *cntxt, const char *value), void *cntxt);
 
 #endif

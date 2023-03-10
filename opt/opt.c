@@ -38,44 +38,53 @@ static const char *prefix(const char *s1, const char *s2) {
   return prefix(s1 + 1, s2 + 1);
 }
 
-static const char *opt_parse(const char *optlong, const char *optshort, bool arg, int *k,
-    char **argv, int argc) {
+static int opt_parse(const char *optlong, const char *optshort, bool arg, int *k,
+    char **argv, int argc, const char **option) {
   if (strcmp(optshort, argv[*k]) == 0) {
     if (arg) {
       if (*k + 1 >= argc) {
-        return NULL;
+        *option = argv[*k];
+        return -1;
       }
-      const char *v = argv[*k + 1];
+      *option = argv[*k + 1];
       ++(*k);
-      return v;
+      return 0;
     }
-    return argv[*k];
+    *option = argv[*k];
+    return 0;
   }
   const char *p = prefix(optlong, argv[*k]);
   if (p == NULL) {
-    return NULL;
+    *option = NULL;
+    return -1;
   }
   if (*p != '=') {
-    return argv[*k];
+    *option = argv[*k];
+    return -1;
   }
-  return p + 1;
+  *option = p + 1;
+  return 0;
 }
 
-optreturn opt_init(char **argv, int argc, optparam **aopt, size_t nmemb,
-    void (*help)(void), void (*other)(void *cntxt, const char *value),
-    void *cntxt) {
+optreturn opt_init(char **argv, int argc, optparam **aopt,
+    size_t nmemb, void (*other)(void *cntxt, const char *value), void *cntxt) {
   for (int k = 0; k < argc; ++k) {
     if (strcmp(SHORT_HELP, argv[k]) == 0 || strcmp(LONG_HELP, argv[k]) == 0) {
-      help();
+      for (size_t i = 0; i < nmemb; ++i) {
+        printf("\t%s%s | %s%s : %s\n", aopt[i]->optshort,
+            (aopt[i]->arg ? " [option]" : ""), aopt[i]->optlong,
+            (aopt[i]->arg ? "=[option]" : ""), aopt[i]->desc);
+      }
       return STOP_PROCESS;
     }
     size_t i = 0;
-    char *a = argv[k];
     while (i < nmemb) {
-      const char *v = opt_parse(aopt[i]->optlong, aopt[i]->optshort,
-          aopt[i]->arg, &k, argv, argc);
-      if (v == a) {
-        return ERROR_PARAM;
+      const char *v;
+      if (opt_parse(aopt[i]->optlong, aopt[i]->optshort, aopt[i]->arg, &k, argv,
+          argc, &v) != 0) {
+        if (v != NULL) {
+          return ERROR_PARAM;
+        }
       }
       if (v != NULL) {
         if (aopt[i]->fun(cntxt, v) != 0) {
@@ -86,7 +95,7 @@ optreturn opt_init(char **argv, int argc, optparam **aopt, size_t nmemb,
       ++i;
     }
     if (i == nmemb) {
-      other(cntxt, a);
+      other(cntxt, argv[k]);
     }
   }
   return DONE;

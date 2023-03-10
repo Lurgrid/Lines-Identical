@@ -3,16 +3,21 @@
 #include <stdbool.h>
 #include "opt.h"
 
-void help();
+int insulte(void *cntxt, const char *value);
 int tmp(void *cntxt, const char *value);
-void  other(void *cntxt, const char *value);
+void other(void *cntxt, const char *value);
+int rdm(void *cntxt, const char *value);
 
 int main(int argc, char **argv) {
   optparam *tab[] = {
-    opt_gen("-t", "--tmp", "Voila pd", true, tmp)
+    opt_gen("-t", "--tmp", "Écoute même moi je sais pas", true, tmp),
+    opt_gen("-i", "--insulte", "Insulte des personne passer en paramètre", true,
+        insulte),
+    opt_gen("-r", "--random", "Dit une phrase randim.", false,
+        rdm)
   };
   int c;
-  if ((c = opt_init(argv + 1, argc - 1, tab, 1, help, other, NULL)) != DONE) {
+  if ((c = opt_init(argv + 1, argc - 1, tab, 3, other, NULL)) != DONE) {
     fprintf(stderr, "*** Error: ");
     switch (c) {
       case STOP_PROCESS:
@@ -29,13 +34,22 @@ int main(int argc, char **argv) {
   return EXIT_SUCCESS;
 }
 
-void help() {
-  fprintf(stderr, "Nique ta mere\n");
-}
-
 int tmp(void *cntxt, const char *value) {
   cntxt = cntxt;
   printf("%s\n", value);
+  return 0;
+}
+
+int insulte(void *cntxt, const char *value) {
+  cntxt = cntxt;
+  printf("%s la salope\n", value);
+  return 0;
+}
+
+int rdm(void *cntxt, const char *value) {
+  cntxt = cntxt;
+  value = value;
+  printf("pas trop random\n");
   return 0;
 }
 
