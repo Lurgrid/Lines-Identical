@@ -21,7 +21,8 @@ int main(void) {
   //for (size_t i = 0; i < da_length(t); ++i) {
     //printf("%c", *((char *)da_nth(t, i)));
   //}
-  printf("%c", *((char *)da_nth(t, 15)));
+  //printf("%c", *((char *)da_nth(t, 15)));
+  printf("tess");
   goto dispose;
 err_read_line:
   fprintf(stderr, "Erreur de l'ecture de ligne\n");

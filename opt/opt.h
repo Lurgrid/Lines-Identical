@@ -43,12 +43,15 @@ extern optparam *opt_gen(const char *optshort, const char *optlong,
 //    à l'option actuellement executer, alors la fonction retourne ERROR_PARAM.
 //    Si le traitement de l'option echoue alors, la fonction retourne ERROR_FUN.
 //    Sinon en cas de succés du traitement de toutes les options, retourne DONE.
-//    Une options par default existe, celle du "help", si cette options est
-//    appeler la fonction retourne STOP_PROCESS et n'a donc pas effectuer le
-//    traitement des options pas encore traiter. Pour toutes chaine de caractère
-//    présente dans argv qui ne correspont ni à une options ni a l'arguments
-//    d'une options, le traitement de cette chaine est assurer par la fonction
-//    other qui prend en paramettre cntxt (un pointeur sur un context).
+//    Une options par default existe, celle du "help" (-h et --help pour y
+//    accéder) si cette options est appeler la fonction retourne STOP_PROCESS et
+//     n'a donc pas effectuer le traitement des options pas encore traiter
+//    (usage et desc correspondes respectivements une descriptions de la façcon
+//    dont il faut utiliser le programme et ce qu'il produit). Pour toutes
+//    chaine de caractère présente dans argv qui ne correspont ni à une options
+//    ni a l'arguments d'une options, le traitement de cette chaine est assurer
+//    par la fonction other qui prend en paramettre cntxt
+//    (un pointeur sur un context).
 extern optreturn opt_init(char **argv, int argc, optparam **aopt,
     size_t nmemb, void (*other)(void *cntxt, const char *value), void *cntxt);
 

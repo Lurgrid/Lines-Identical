@@ -60,11 +60,4 @@ extern void *da_nth(da *d, size_t n);
 //    d.
 extern size_t da_length(da *d);
 
-//  da_fill: remplie le tableau dynamique, celon les références des éléments
-//    renvoyer par get, une fonction qui prendre en parametre un pointeur d'un
-//    context et qui renvois soit NULL si elle n'a pas reussie a recuppérer un
-//    element sinon le pointeur vers cette element. da_fill renvois un entier
-//    non null en cas d'échec, sinon renvois une valeur nulle.
-extern int da_fill(da *d, const void *(*get)(void *cntxt), void *cntxt);
-
 #endif
