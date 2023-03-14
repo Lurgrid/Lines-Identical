@@ -69,6 +69,9 @@ void *da_cond_left_search(da *d, bool (*cond)(const void *)) {
 }
 
 void *da_nth(da *d, size_t n) {
+  if (n >= d->nmemb) {
+    return NULL;
+  }
   return (void *)((char *)d->ref + n * d->size);
 }
 
