@@ -115,16 +115,16 @@ static int opt_parse(const optparam *opt, int k, char **argv, int argc,
 optreturn opt_init(char **argv, int argc, optparam **aopt,
     size_t nmemb, void (*other)(void *cntxt, const char *value), void *cntxt,
     const char *usage, const char* desc) {
-  for (int k = 0; k < argc; ++k) {
+  for (int k = 1; k < argc; ++k) {
     if (strcmp(SHORT_HELP, argv[k]) == 0 || strcmp(LONG_HELP, argv[k]) == 0) {
       if (usage != NULL) {
-        printf("Usage:%s\n\n", usage);
+        printf("Usage: %s %s\n\n", argv[0], usage);
       }
       for (size_t i = 0; i < nmemb; ++i) {
         PRINT_OPTION(aopt[i]);
       }
       if (desc != NULL) {
-        printf("\n%s", desc);
+        printf("\n%s\n", desc);
       }
       return STOP_PROCESS;
     }

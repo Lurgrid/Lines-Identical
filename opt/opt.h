@@ -34,8 +34,8 @@ typedef enum {
 extern optparam *opt_gen(const char *optshort, const char *optlong,
     const char *desc, bool arg, int (*fun)(void *cntxt, const char *value));
 
-//  opt_init : Pour toutes les options représenté dans le tableau argv de
-//    longueur argc, qui sont présente dans le talbeau d'option aopt, effectue
+//  opt_init : Pour toutes les options représenté dans le tableau argv + 1 de
+//    longueur argc - 1, qui sont présente dans le talbeau d'option aopt,
 //    effectue le traitement adequatement definie a la création de l'option
 //    (avec comme paramettre a ce traitement cntxt et si l'option necessite un
 //    argument alors passe la chaine suivante en argument, sinon la chaine
@@ -44,14 +44,14 @@ extern optparam *opt_gen(const char *optshort, const char *optlong,
 //    Si le traitement de l'option echoue alors, la fonction retourne ERROR_FUN.
 //    Sinon en cas de succés du traitement de toutes les options, retourne DONE.
 //    Une options par default existe, celle du "help" (-h et --help pour y
-//    accéder et qui affiche la façcon dont il faut utiliser le programme usage,
-//    la liste des options du tableau aopt et la description du programme desc)
-//    si cette options est appeler la fonction retourne STOP_PROCESS et donc pas
-//    n'effectuer pas le traitement des options pas encore traiter. Pour toutes
-//    chaine de caractère présente dans argv qui ne correspont ni à une options
-//    ni a l'arguments d'une options, le traitement de cette chaine est assurer
-//    par la fonction other qui prend en paramettre cntxt (un pointeur sur un
-//    context).
+//    accéder et qui affiche la façcon dont il faut utiliser le programme
+//    argv[0] usage, la liste des options du tableau aopt et la description du
+//    programme desc) si cette options est appeler la fonction retourne
+//    STOP_PROCESS et donc pas n'effectuer pas le traitement des options pas
+//    encore traiter. Pour toutes chaine de caractère présente dans argv qui ne
+//    correspont ni à une options ni a l'arguments d'une options, le traitement
+//    de cette chaine est assurer par la fonction other qui prend en paramettre
+//    cntxt (un pointeur sur un context).
 extern optreturn opt_init(char **argv, int argc, optparam **aopt,
     size_t nmemb, void (*other)(void *cntxt, const char *value), void *cntxt,
     const char *usage, const char* desc);
