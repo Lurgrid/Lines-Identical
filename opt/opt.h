@@ -53,6 +53,7 @@ extern optparam *opt_gen(const char *optshort, const char *optlong,
 //    par la fonction other qui prend en paramettre cntxt (un pointeur sur un
 //    context).
 extern optreturn opt_init(char **argv, int argc, optparam **aopt,
-    size_t nmemb, void (*other)(void *cntxt, const char *value), void *cntxt);
+    size_t nmemb, void (*other)(void *cntxt, const char *value), void *cntxt,
+    const char *usage, const char* desc);
 
 #endif
