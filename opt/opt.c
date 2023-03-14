@@ -113,7 +113,7 @@ static int opt_parse(const optparam *opt, int k, char **argv, int argc,
 #define LONG_HELP "--help"
 
 optreturn opt_init(char **argv, int argc, optparam **aopt,
-    size_t nmemb, void (*other)(void *cntxt, const char *value), void *cntxt,
+    size_t nmemb, int (*other)(void *cntxt, const char *value), void *cntxt,
     const char *usage, const char* desc) {
   for (int k = 1; k < argc; ++k) {
     if (strcmp(SHORT_HELP, argv[k]) == 0 || strcmp(LONG_HELP, argv[k]) == 0) {
@@ -145,7 +145,9 @@ optreturn opt_init(char **argv, int argc, optparam **aopt,
       ++i;
     }
     if (i == nmemb) {
-      other(cntxt, argv[k]);
+      if (other(cntxt, argv[k]) != 0) {
+        return ERROR_FUN;
+      }
     }
   }
   return DONE;

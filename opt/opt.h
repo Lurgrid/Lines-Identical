@@ -47,13 +47,15 @@ extern optparam *opt_gen(const char *optshort, const char *optlong,
 //    accéder et qui affiche la façcon dont il faut utiliser le programme
 //    argv[0] usage, la liste des options du tableau aopt et la description du
 //    programme desc) si cette options est appeler la fonction retourne
-//    STOP_PROCESS et donc pas n'effectuer pas le traitement des options pas
+//    STOP_PROCESS, donc n'a pas effectuer les traitement des options pas
 //    encore traiter. Pour toutes chaine de caractère présente dans argv qui ne
 //    correspont ni à une options ni a l'arguments d'une options, le traitement
 //    de cette chaine est assurer par la fonction other qui prend en paramettre
-//    cntxt (un pointeur sur un context).
+//    cette chaine (dans l'argument value) et cntxt (un pointeur sur un context)
+//    et qui retourne une valeur nul en cas de succés, non nul en cas d'echec ce
+//    qui amène au retour ERROR_FUN pour la fonction opt_init.
 extern optreturn opt_init(char **argv, int argc, optparam **aopt,
-    size_t nmemb, void (*other)(void *cntxt, const char *value), void *cntxt,
+    size_t nmemb, int (*other)(void *cntxt, const char *value), void *cntxt,
     const char *usage, const char* desc);
 
 #endif

@@ -1,0 +1,6 @@
+ - refaire le trie du holdall
+ - les options 
+ - les affichage 
+ - la boucle principal
+ - relire les spé
+ - 

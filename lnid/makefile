@@ -1,14 +1,15 @@
 da_dir = ../da/
 holdall_dir = ../holdall/
 opt_dir = ../opt/
+hashtable_dir = ../hashtable/
 CC = gcc
 CFLAGS = -std=c18 \
   -Wall -Wconversion -Werror -Wextra -Wpedantic -Wwrite-strings \
   -O2 \
-  -I$(holdall_dir) -I$(opt_dir) -I$(da_dir) 
-vpath %.c $(da_dir) $(holdall_dir) $(opt_dir)
-vpath %.h $(da_dir) $(holdall_dir) $(opt_dir)
-objects = opt.o da.o holdall.o lnid.o
+  -I$(holdall_dir) -I$(opt_dir) -I$(da_dir) -I$(hashtable_dir)
+vpath %.c $(da_dir) $(holdall_dir) $(opt_dir) $(hashtable_dir)
+vpath %.h $(da_dir) $(holdall_dir) $(opt_dir) $(hashtable_dir)
+objects = opt.o da.o holdall.o lnid.o hashtable.o
 executable = lnid
 makefile_indicator = .\#makefile\#
 
@@ -26,6 +27,7 @@ $(executable): $(objects)
 opt.o: opt.c opt.h
 da.o: da.c da.h
 holdall.o: holdall.c holdall.h
+hashtable.o: hashtable.c hashtable.h
 lnid.o: lnid.c opt.h holdall.h da.h
 
 include $(makefile_indicator)
