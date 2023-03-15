@@ -54,7 +54,13 @@ static int rfree(void *ptr);
 //    strictement négatif en cas d'erreur d'allocation.
 static int fnlines(FILE *f, da *t, cntxt *context);
 
-static int scptr_display(cntxt *context, const char *s, da *cptr);
+static int compar_ptrint(int *a, int *b);
+
+static int scptr_display(cntxt *context, const da *s, da *cptr);
+
+static int da_equve(da *d, da *b);
+
+static int putechar(int *c);
 
 //  is_zero: retourne vrai si c est egale a 0
 static bool is_zero(int *c);
@@ -78,7 +84,7 @@ int main(int argc, char **argv) {
   context.filter = rzero;
   context.class = nothing;
   context.use_color = true;
-  hashtable *ht = hashtable_empty((int (*)(const void *, const void *))da_equiv,
+  hashtable *ht = hashtable_empty((int (*)(const void *, const void *))da_equve,
       (size_t (*)(const void *))str_hashfun);
   holdall *has = holdall_empty();
   holdall *hada = holdall_empty();
@@ -114,7 +120,7 @@ int main(int argc, char **argv) {
   }
   /*boucle principal*/
   for (size_t i = 0; i < da_length(context.filesptr); ++i) {
-    char *filename = *(char **) (da_nth(context.filesptr, i));
+    char *filename = (char *) da_to_tab(context.filesptr);
     if (*filename == '-') {
       f = stdin;
     } else {
@@ -128,7 +134,7 @@ int main(int argc, char **argv) {
     while ((c = fnlines(f, line, &context)) == 0) {
       if (da_length(line) > 1) {
         /*peut être a retravailler*/
-        da *cptr = hashtable_search(ht, da_nth(line, 0));
+        da *cptr = hashtable_search(ht, line);
         if (i == 0) {
           if (cptr != NULL) {
             if (da_length(context.filesptr) > 1) {
@@ -151,12 +157,11 @@ int main(int argc, char **argv) {
                 z = 0;
                 ++k;
               }
-              char *w = malloc(da_length(line));
+              da *w = da_dupli(line);
               if (w == NULL) {
                 da_dispose(&dcptr);
                 goto err_allocation;
               }
-              strcpy(w, da_nth(line, 0));
               if (k != da_length(context.filesptr)
                   || holdall_put(has, w) != 0
                   || holdall_put(hada, dcptr) != 0
@@ -165,12 +170,11 @@ int main(int argc, char **argv) {
                 goto err_allocation;
               }
             } else {
-              char *w = malloc(strlen(da_nth(line, 0)) + 1);
+              da *w = da_dupli(line);
               if (w == NULL) {
                 da_dispose(&dcptr);
                 goto err_allocation;
               }
-              strcpy(w, da_nth(line, 0));
               if (da_add(dcptr, &n) == NULL
                   || holdall_put(hada, dcptr) != 0
                   || holdall_put(has, w) != 0
@@ -191,7 +195,6 @@ int main(int argc, char **argv) {
       da_reset(line);
     }
     if (f != stdin && fclose(f) != 0) {
-      fprintf(stderr, "Nique ta mere\n");
       goto err_file;
     }
     if (c < 0) {
@@ -293,7 +296,7 @@ int fnlines(FILE *f, da *t, cntxt *context) {
   return 0;
 }
 
-int scptr_display(cntxt *context, const char *s, da *cptr) {
+int scptr_display(cntxt *context, const da *s, da *cptr) {
   if (da_length(context->filesptr) == 1) {
     if (da_length(cptr) == 1) {
       return 0;
@@ -301,16 +304,30 @@ int scptr_display(cntxt *context, const char *s, da *cptr) {
     for (size_t k = 0; k < da_length(cptr) - 1; ++k) {
       printf("%d,", *(int *)da_nth(cptr, k));
     }
-    printf("%d\t%s\n", *(int *)da_nth(cptr, da_length(cptr) - 1), s);
+    printf("%d\t", *(int *)da_nth(cptr, da_length(cptr) - 1));
+    da_apply((da *) s, (int (*)(const void *))putechar);
   } else {
     if (da_cond_left_search(cptr, (bool (*)(const void *))is_zero) == NULL) {
       for (size_t k = 0; k < da_length(cptr) - 1; ++k) {
         printf("%d\t", *(int *)da_nth(cptr, k));
       }
-      printf("%d\t%s\n", *(int *)da_nth(cptr, da_length(cptr) - 1), s);
+      printf("%d\t", *(int *)da_nth(cptr, da_length(cptr) - 1));
+      da_apply((da *) s, (int (*)(const void *))putechar);
     }
   }
   return 0;
+}
+
+int compar_ptrint(int *a, int *b) {
+  return *a == *b ? 0 : *a > *b ? 1 : - 1;
+}
+
+int da_equve(da *d, da *b) {
+  return da_equiv(d, b, (int (*) (const void *, const void *))compar_ptrint);
+}
+
+int putechar(int *c) {
+  return putchar(*c);
 }
 
 int nothing(int c) {
