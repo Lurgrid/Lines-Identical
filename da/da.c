@@ -90,6 +90,10 @@ int da_apply(da *d, int (*fun)(const void *)) {
   return r;
 }
 
+const void *da_to_tab(da *d) {
+  return (const void *) d->ref;
+}
+
 void da_reset(da *d) {
   d->nmemb = 0;
 }
