@@ -8,10 +8,6 @@ int tmp(void *cntxt, const char *value);
 void other(void *cntxt, const char *value);
 int rdm(void *cntxt, const char *value);
 
-int fget_line(FILE *stream) {
-  int c;
-  while ((c = fgetc(stream)) != EOF
-}
 
 int main(int argc, char **argv) {
   optparam *tab[] = {

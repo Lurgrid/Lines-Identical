@@ -18,7 +18,7 @@ struct optparam {
   const char *optlong;
   const char *desc;
   bool arg;
-  int (*fun)(void *cntxt, const char *value);
+  int (*fun)(void *cntxt, const char *value, const char **err);
 };
 
 //--- Racourcis ----------------------------------------------------------------
@@ -43,7 +43,7 @@ static const char *prefix(const char *s1, const char *s2) {
 }
 
 optparam *opt_gen(const char *optshort, const char *optlong, const char *desc,
-    bool arg, int (*fun)(void *cntxt, const char *value)) {
+    bool arg, int (*fun)(void *cntxt, const char *value, const char **err)) {
   optparam *op = malloc(sizeof *op);
   if (op == NULL) {
     return NULL;
@@ -71,7 +71,7 @@ enum parse_return {
 //    pas l'option pointer par opt et option vaut NULL. Enfin FAILURE_PARAM est
 //    renvoyer quand l'utilisateur a rentrée la bonne option mais a oublier le
 //    paramètre.
-static int opt_parse(const optparam *opt, int k, char **argv, int argc,
+static enum parse_return opt_parse(const optparam *opt, int k, char **argv, int argc,
     const char **option) {
   if (strcmp(SHORT(opt), argv[k]) == 0) {
     if (ARG(opt)) {
@@ -113,8 +113,9 @@ static int opt_parse(const optparam *opt, int k, char **argv, int argc,
 #define LONG_HELP "--help"
 
 optreturn opt_init(char **argv, int argc, optparam **aopt,
-    size_t nmemb, int (*other)(void *cntxt, const char *value), void *cntxt,
-    const char *usage, const char* desc) {
+    size_t nmemb, int (*other)(void *cntxt, const char *value,
+    const char **err), void *cntxt, const char **err, const char *usage,
+    const char *desc) {
   for (int k = 1; k < argc; ++k) {
     if (strcmp(SHORT_HELP, argv[k]) == 0 || strcmp(LONG_HELP, argv[k]) == 0) {
       if (usage != NULL) {
@@ -131,12 +132,13 @@ optreturn opt_init(char **argv, int argc, optparam **aopt,
     size_t i = 0;
     while (i < nmemb) {
       const char *v;
-      int r = opt_parse(aopt[i], k, argv, argc, &v);
+      enum parse_return r = opt_parse(aopt[i], k, argv, argc, &v);
       if (v != NULL) {
-        if (r != 0) {
+        if (r != SUCCESS_PARAM) {
+          *err = aopt[i]->optlong;
           return ERROR_PARAM;
         }
-        if (aopt[i]->fun(cntxt, v) != 0) {
+        if (aopt[i]->fun(cntxt, v, err) != 0) {
           return ERROR_FUN;
         }
         ++k;
@@ -145,10 +147,11 @@ optreturn opt_init(char **argv, int argc, optparam **aopt,
       ++i;
     }
     if (i == nmemb) {
-      if (other(cntxt, argv[k]) != 0) {
+      if (other(cntxt, argv[k], err) != 0) {
         return ERROR_FUN;
       }
     }
   }
+  *err = NULL;
   return DONE;
 }

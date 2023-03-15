@@ -89,3 +89,7 @@ int da_apply(da *d, int (*fun)(void *)) {
   }
   return r;
 }
+
+void da_reset(da *d) {
+  d->nmemb = 0;
+}

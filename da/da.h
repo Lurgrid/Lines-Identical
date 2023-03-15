@@ -60,11 +60,7 @@ extern void *da_nth(da *d, size_t n);
 //    d.
 extern size_t da_length(da *d);
 
-//  da_apply : Applique à l'addresse de tous les éléments présent dans le d, la
-//    function pointé par fun.
-//    Retourne 0 en cas de succés, une valeur non nul en cas d'échecs sur au
-//    moins l'un des éléments de d (le parcours ne se termine que quand la
-//    fonction fun a été appliquer a tous les éléments).
-extern int da_apply(da *d, int (*fun)(void *));
+//  da_reset : vide le tableau pointé par d.
+extern void da_reset(da *d);
 
 #endif
