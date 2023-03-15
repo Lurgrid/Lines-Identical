@@ -53,7 +53,7 @@ static int rda_dispose(da *d);
 //    strictement négatif en cas d'erreur d'allocation.
 static int fnlines(FILE *f, da *t, cntxt *context);
 
-static int compar_ptrint(int *a, int *b);
+static int compar_ptrint(char *a, char *b);
 
 static int scptr_display(cntxt *context, const da *s, da *cptr);
 
@@ -235,7 +235,7 @@ err_allocation:
 error:
   r = EXIT_FAILURE;
 dispose:
-  if (f != NULL) {
+  if (f != NULL && f != stdin) {
     fclose(f);
   }
   da_dispose(&context.filesptr);
@@ -314,7 +314,7 @@ int scptr_display(cntxt *context, const da *s, da *cptr) {
   return 0;
 }
 
-int compar_ptrint(int *a, int *b) {
+int compar_ptrint(char *a, char *b) {
   return *a == *b ? 0 : *a > *b ? 1 : - 1;
 }
 
