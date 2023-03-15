@@ -79,7 +79,7 @@ size_t da_length(da *d) {
   return d->nmemb;
 }
 
-int da_apply(da *d, int (*fun)(void *)) {
+int da_apply(da *d, int (*fun)(const void *)) {
   int r = 0;
   for (char *p = (char *) d->ref;
     p < (char *) d->ref + d->size * d->nmemb; p += d->size) {
@@ -92,4 +92,31 @@ int da_apply(da *d, int (*fun)(void *)) {
 
 void da_reset(da *d) {
   d->nmemb = 0;
+}
+
+int da_equiv(da *d, da *b, int (*compar)(const void *, const void *)) {
+  char *p = (char *) d->ref;
+  char *q = (char *) b->ref;
+  while (p < (char *) d->ref + d->size * d->nmemb &&
+    q < (char *) b->ref + b->size * b->nmemb && compar(p, q) == 0) {
+    p += d->size;
+    q += b->size;
+  }
+  return p >= (char *) d->ref + d->size * d->nmemb &&
+    q >= (char *) b->ref + b->size * b->nmemb && compar(p, q) == 0;
+}
+
+da *da_dupli(da *d) {
+  da *c = da_empty(d->size);
+  if (c == NULL) {
+    return NULL;
+  }
+  for (char *p = (char *) d->ref;
+    p < (char *) d->ref + d->size * d->nmemb; p += d->size) {
+    if (da_add(c, p) == NULL) {
+      da_dispose(&c);
+      return NULL;
+    }
+  }
+  return c;
 }
