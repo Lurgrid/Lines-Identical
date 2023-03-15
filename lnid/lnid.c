@@ -78,7 +78,7 @@ int main(int argc, char **argv) {
   context.filter = rzero;
   context.class = nothing;
   context.use_color = true;
-  hashtable *ht = hashtable_empty((int (*)(const void *, const void *))strcmp,
+  hashtable *ht = hashtable_empty((int (*)(const void *, const void *))da_equiv,
       (size_t (*)(const void *))str_hashfun);
   holdall *has = holdall_empty();
   holdall *hada = holdall_empty();

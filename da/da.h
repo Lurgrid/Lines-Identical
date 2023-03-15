@@ -77,4 +77,8 @@ extern da *da_dupli(da *d);
 //    et la fonction renvoie cette valeur. Sinon, la fonction renvoie zéro.
 extern int da_apply(da *d, int (*fun)(const void *));
 
+//  da_to_tab : Convertie d en tableau dont l'utilisateur n'a pas le droit de
+//    changer.
+extern const void *da_to_tab(da *d);
+
 #endif
