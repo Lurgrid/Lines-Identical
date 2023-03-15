@@ -90,10 +90,6 @@ int da_apply(da *d, int (*fun)(const void *)) {
   return r;
 }
 
-const void *da_to_tab(da *d) {
-  return (const void *) d->ref;
-}
-
 void da_reset(da *d) {
   d->nmemb = 0;
 }
@@ -106,8 +102,8 @@ int da_equiv(da *d, da *b, int (*compar)(const void *, const void *)) {
     p += d->size;
     q += b->size;
   }
-  return p >= (char *) d->ref + d->size * d->nmemb &&
-    q >= (char *) b->ref + b->size * b->nmemb && compar(p, q) == 0;
+  return p != (char *) d->ref + d->size * d->nmemb
+      || q !=  (char *) b->ref + b->size * b->nmemb ? 1 : 0;
 }
 
 da *da_dupli(da *d) {

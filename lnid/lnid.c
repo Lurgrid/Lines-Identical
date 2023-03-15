@@ -19,6 +19,8 @@
 
 #define ERROR(context, err) MESSAGE_GEN(RED, "Error", err, (context).use_color)
 
+#define STRACK fprintf(stderr, "*** %d %s\n", __LINE__, __fun__);
+
 typedef struct {
   int (*filter)(int c);
   int (*class)(int c);
@@ -40,9 +42,6 @@ static int file_handler(cntxt * restrict context,
 
 //  rda_dispose : libère les ressources alloué à l'utilisation de d et renvoie 0
 static int rda_dispose(da *d);
-
-//  rfree : libère la zone mémoire pointée par ptr et renvoie zéro.
-static int rfree(void *ptr);
 
 //  fnlines : lis tous les charactères d'une ligne sur le flot associé à f. Pour
 //    tous les charactres lu transformer par la fonction context->class, si
@@ -120,7 +119,7 @@ int main(int argc, char **argv) {
   }
   /*boucle principal*/
   for (size_t i = 0; i < da_length(context.filesptr); ++i) {
-    char *filename = (char *) da_to_tab(context.filesptr);
+    char *filename = *(char **) da_nth(context.filesptr, i);
     if (*filename == '-') {
       f = stdin;
     } else {
@@ -166,6 +165,7 @@ int main(int argc, char **argv) {
                   || holdall_put(has, w) != 0
                   || holdall_put(hada, dcptr) != 0
                   || hashtable_add(ht, w, dcptr) == NULL) {
+                da_dispose(&w);
                 da_dispose(&dcptr);
                 goto err_allocation;
               }
@@ -179,6 +179,7 @@ int main(int argc, char **argv) {
                   || holdall_put(hada, dcptr) != 0
                   || holdall_put(has, w) != 0
                   || hashtable_add(ht, w, dcptr) == NULL) {
+                da_dispose(&w);
                 da_dispose(&dcptr);
                 goto err_allocation;
               }
@@ -240,7 +241,7 @@ dispose:
   da_dispose(&context.filesptr);
   hashtable_dispose(&ht);
   if (has != NULL) {
-    holdall_apply(has, rfree);
+    holdall_apply(hada, (int (*)(void *))rda_dispose);
   }
   holdall_dispose(&has);
   if (hada != NULL) {
@@ -270,11 +271,6 @@ int file_handler(cntxt *context,
 
 int rda_dispose(da *d) {
   da_dispose(&d);
-  return 0;
-}
-
-int rfree(void *ptr) {
-  free(ptr);
   return 0;
 }
 
