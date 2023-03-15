@@ -30,7 +30,7 @@ typedef struct {
 
 //  str_hashfun : l'une des fonctions de pré-hachage conseillées par Kernighan
 //    et Pike pour les chaines de caractères.
-static size_t str_hashfun(const char *s);
+static size_t str_hashfun(da *d) ;
 
 //  file_handler : Ajoute le nom du fichier pointer par filename, au champs
 //    filesptr du context.
@@ -59,7 +59,7 @@ static int scptr_display(cntxt *context, const da *s, da *cptr);
 
 static int da_equve(da *d, da *b);
 
-static int putechar(int *c);
+static int putechar(char *c);
 
 //  is_zero: retourne vrai si c est egale a 0
 static bool is_zero(int *c);
@@ -241,7 +241,7 @@ dispose:
   da_dispose(&context.filesptr);
   hashtable_dispose(&ht);
   if (has != NULL) {
-    holdall_apply(hada, (int (*)(void *))rda_dispose);
+    holdall_apply(has, (int (*)(void *))rda_dispose);
   }
   holdall_dispose(&has);
   if (hada != NULL) {
@@ -252,12 +252,15 @@ dispose:
   return r;
 }
 
-size_t str_hashfun(const char *s) {
-  size_t h = 0;
-  for (const unsigned char *p = (const unsigned char *) s; *p != '\0'; ++p) {
-    h = 37 * h + *p;
-  }
-  return h;
+int add_to_ptr(char *c, size_t *h) {
+  *h = 37 * *h + (size_t) *c;
+  return 0;
+}
+
+size_t str_hashfun(da *d) {
+  size_t k = 0;
+  da_apply_context(d, &k, (int (*)(void *, void *))add_to_ptr);
+  return k;
 }
 
 int file_handler(cntxt *context,
@@ -301,14 +304,16 @@ int scptr_display(cntxt *context, const da *s, da *cptr) {
       printf("%d,", *(int *)da_nth(cptr, k));
     }
     printf("%d\t", *(int *)da_nth(cptr, da_length(cptr) - 1));
-    da_apply((da *) s, (int (*)(const void *))putechar);
+    da_apply((da *) s, (int (*)(void *))putechar);
+    putchar('\n');
   } else {
     if (da_cond_left_search(cptr, (bool (*)(const void *))is_zero) == NULL) {
       for (size_t k = 0; k < da_length(cptr) - 1; ++k) {
         printf("%d\t", *(int *)da_nth(cptr, k));
       }
       printf("%d\t", *(int *)da_nth(cptr, da_length(cptr) - 1));
-      da_apply((da *) s, (int (*)(const void *))putechar);
+      da_apply((da *) s, (int (*)(void *))putechar);
+      putchar('\n');
     }
   }
   return 0;
@@ -322,7 +327,7 @@ int da_equve(da *d, da *b) {
   return da_equiv(d, b, (int (*) (const void *, const void *))compar_ptrint);
 }
 
-int putechar(int *c) {
+int putechar(char *c) {
   return putchar(*c);
 }
 

@@ -79,7 +79,18 @@ size_t da_length(da *d) {
   return d->nmemb;
 }
 
-int da_apply(da *d, int (*fun)(const void *)) {
+int da_apply_context(da *d, void *cntxt, int (*fun)(void *, void *)) {
+  int r = 0;
+  for (char *p = (char *) d->ref;
+    p < (char *) d->ref + d->size * d->nmemb; p += d->size) {
+    if (fun(p, cntxt) != 0) {
+      r = -1;
+    }
+  }
+  return r;
+}
+
+int da_apply(da *d, int (*fun)(void *)) {
   int r = 0;
   for (char *p = (char *) d->ref;
     p < (char *) d->ref + d->size * d->nmemb; p += d->size) {

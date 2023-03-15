@@ -72,9 +72,15 @@ extern int da_equiv(da *d, da *b, int (*compar)(const void *, const void *));
 //    Sinon renvois null, en cas de dépassement de capacité.
 extern da *da_dupli(da *d);
 
+//  da_display_context : Applique a tout les éléments de da fun avec comme
+//    parametre le context cntxt. Si, lors du parcours, la valeur de l'appel
+//    n'est pas nulle, l'exécution de la fonction prend fin et la fonction
+//    renvoie cette valeur. Sinon, la fonction renvoie zéro.
+extern int da_apply_context(da *d, void *cntxt, int (*fun)(void *, void *));
+
 //  da_display : Applique a tout les éléments de da fun. Si, lors du parcours,
 //    la valeur de l'appel n'est pas nulle, l'exécution de la fonction prend fin
 //    et la fonction renvoie cette valeur. Sinon, la fonction renvoie zéro.
-extern int da_apply(da *d, int (*fun)(const void *));
+extern int da_apply(da *d, int (*fun)(void *));
 
 #endif
