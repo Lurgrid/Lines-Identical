@@ -24,7 +24,6 @@ typedef struct {
   int (*class)(int c);
   bool use_color;
   da *filesptr;
-  int nb_file;
 } cntxt;
 
 //  str_hashfun : l'une des fonctions de pré-hachage conseillées par Kernighan
@@ -53,7 +52,18 @@ static int rfree(void *ptr);
 //    Retourne une valeur nul en cas de succé, sinon une valeur strictement
 //    positif en cas d'erreur sur la lecture du ficiher. Enfin une valeur
 //    strictement négatif en cas d'erreur d'allocation.
-static int fnlines(FILE *f, da *t, cntxt* context);
+static int fnlines(FILE *f, da *t, cntxt *context);
+
+static int scptr_display(cntxt *context, const char *s, da *cptr);
+
+//  is_zero: retourne vrai si c est egale a 0
+static bool is_zero(int *c);
+
+//  nothing : retourne l'entier c.
+static int nothing(int c);
+
+//  rzero : retourne c - c.
+static int rzero(int c);
 
 int main(int argc, char **argv) {
   if (argc < 2) {
@@ -63,15 +73,18 @@ int main(int argc, char **argv) {
   }
   int r = EXIT_SUCCESS;
   cntxt context;
-  context.use_color = true;
   FILE *f = NULL;
   context.filesptr = da_empty(sizeof(char *));
+  context.filter = rzero;
+  context.class = nothing;
+  context.use_color = true;
   hashtable *ht = hashtable_empty((int (*)(const void *, const void *))strcmp,
       (size_t (*)(const void *))str_hashfun);
   holdall *has = holdall_empty();
   holdall *hada = holdall_empty();
-  da * line = da_empty(sizeof (char));
-  if (context.filesptr == NULL || ht == NULL || has == NULL || hada == NULL || line == NULL) {
+  da *line = da_empty(sizeof(char));
+  if (context.filesptr == NULL || ht == NULL || has == NULL || hada == NULL
+      || line == NULL) {
     goto err_allocation;
   }
   optreturn ot;
@@ -96,22 +109,117 @@ int main(int argc, char **argv) {
     ERROR(context, err);
     goto error;
   }
+  if (da_length(context.filesptr) == 0) {
+    goto error_no_file;
+  }
   /*boucle principal*/
   for (size_t i = 0; i < da_length(context.filesptr); ++i) {
-    char *filename = *(char **)(da_nth(context.filesptr, i));
-    f = fopen(filename,  "r");
+    char *filename = *(char **) (da_nth(context.filesptr, i));
+    if (*filename == '-') {
+      f = stdin;
+    } else {
+      f = fopen(filename, "r");
+    }
     if (f == NULL) {
-      fprintf(stderr, "%s\n", filename);
       goto err_open_file;
     }
-    long int n = 0;
-    while (
-    if (fclose(f) != 0) {
+    long int n = 1;
+    int c;
+    while ((c = fnlines(f, line, &context)) == 0) {
+      if (da_length(line) > 1) {
+        /*peut être a retravailler*/
+        da *cptr = hashtable_search(ht, da_nth(line, 0));
+        if (i == 0) {
+          if (cptr != NULL) {
+            if (da_length(context.filesptr) > 1) {
+              *(long int *) da_nth(cptr, i) += 1;
+            } else {
+              if (da_add(cptr, &n) == NULL) {
+                goto err_allocation;
+              }
+            }
+          } else {
+            da *dcptr = da_empty(sizeof(size_t));
+            if (dcptr == NULL) {
+              goto err_allocation;
+            }
+            if (da_length(context.filesptr) > 1) {
+              size_t k = 0;
+              long int z = 1;
+              while (k < da_length(context.filesptr)
+                  && da_add(dcptr, &z) != NULL) {
+                z = 0;
+                ++k;
+              }
+              char *w = malloc(da_length(line));
+              if (w == NULL) {
+                da_dispose(&dcptr);
+                goto err_allocation;
+              }
+              strcpy(w, da_nth(line, 0));
+              if (k != da_length(context.filesptr)
+                  || holdall_put(has, w) != 0
+                  || holdall_put(hada, dcptr) != 0
+                  || hashtable_add(ht, w, dcptr) == NULL) {
+                da_dispose(&dcptr);
+                goto err_allocation;
+              }
+            } else {
+              char *w = malloc(strlen(da_nth(line, 0)) + 1);
+              if (w == NULL) {
+                da_dispose(&dcptr);
+                goto err_allocation;
+              }
+              strcpy(w, da_nth(line, 0));
+              if (da_add(dcptr, &n) == NULL
+                  || holdall_put(hada, dcptr) != 0
+                  || holdall_put(has, w) != 0
+                  || hashtable_add(ht, w, dcptr) == NULL) {
+                da_dispose(&dcptr);
+                goto err_allocation;
+              }
+            }
+          }
+        } else if (cptr != NULL) {
+          *(long int *) da_nth(cptr, i) += 1;
+        }
+      } else if (feof(f)) {
+        da_reset(line);
+        break;
+      }
+      ++n;
+      da_reset(line);
+    }
+    if (f != stdin && fclose(f) != 0) {
+      fprintf(stderr, "Nique ta mere\n");
+      goto err_file;
+    }
+    if (c < 0) {
+      goto err_allocation;
+    } else if (c > 0) {
       goto err_file;
     }
     f = NULL;
   }
+  for (size_t k = 0; k < da_length(context.filesptr); ++k) {
+    printf("%s", * (char**) da_nth(context.filesptr, k));
+    if (k != da_length(context.filesptr) - 1) {
+      putchar('\t');
+    }
+  }
+  putchar('\n');
+  if (holdall_apply_context2(has,
+      ht, (void *(*)(void *, void *))hashtable_search,
+      &context, (int (*)(void *, void *, void *))scptr_display) != 0) {
+    goto error_write;
+  }
   goto dispose;
+error_no_file:
+  ERROR(context, "Does have a file/s");
+  goto error;
+error_write:
+  ERROR(context, "A write error occurs");
+  goto error;
 err_open_file:
   ERROR(context, "file desn't exist");
   goto error;
@@ -132,7 +240,7 @@ dispose:
     holdall_apply(has, rfree);
   }
   holdall_dispose(&has);
-  if (has != NULL) {
+  if (hada != NULL) {
     holdall_apply(hada, (int (*)(void *))rda_dispose);
   }
   holdall_dispose(&hada);
@@ -167,11 +275,11 @@ int rfree(void *ptr) {
   return 0;
 }
 
-int fnlines(FILE *f, da *t, cntxt* context) {
+int fnlines(FILE *f, da *t, cntxt *context) {
   int c;
   while ((c = fgetc(f)) != EOF && c != '\n') {
     c = context->class(c);
-    if (context->filter(c) == 0 && da_add(t, &c) == NULL) {
+    if (context->filter(c) && da_add(t, &c) == NULL) {
       return -1;
     }
   }
@@ -183,4 +291,36 @@ int fnlines(FILE *f, da *t, cntxt* context) {
     return -1;
   }
   return 0;
+}
+
+int scptr_display(cntxt *context, const char *s, da *cptr) {
+  if (da_length(context->filesptr) == 1) {
+    if (da_length(cptr) == 1) {
+      return 0;
+    }
+    for (size_t k = 0; k < da_length(cptr) - 1; ++k) {
+      printf("%d,", *(int *)da_nth(cptr, k));
+    }
+    printf("%d\t%s\n", *(int *)da_nth(cptr, da_length(cptr) - 1), s);
+  } else {
+    if (da_cond_left_search(cptr, (bool (*)(const void *))is_zero) == NULL) {
+      for (size_t k = 0; k < da_length(cptr) - 1; ++k) {
+        printf("%d\t", *(int *)da_nth(cptr, k));
+      }
+      printf("%d\t%s\n", *(int *)da_nth(cptr, da_length(cptr) - 1), s);
+    }
+  }
+  return 0;
+}
+
+int nothing(int c) {
+  return c;
+}
+
+int rzero(int c) {
+  return c;
+}
+
+bool is_zero(int *c) {
+  return *c == 0;
 }

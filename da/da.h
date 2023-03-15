@@ -63,4 +63,18 @@ extern size_t da_length(da *d);
 //  da_reset : vide le tableau pointé par d.
 extern void da_reset(da *d);
 
+//  da_compar : Renvois une valeur nulle si les elements présent dans d et b
+//    sont 2 a 2 identique celon la fonction de compaison pointé par compar.
+//    Sinon renvoit une valeur non nulle.
+extern int da_equiv(da *d, da *b, int (*compar)(const void *, const void *));
+
+//  da_dupli : Renvois un tableau dynamique équivalant a d en cas de réussite.
+//    Sinon renvois null, en cas de dépassement de capacité.
+extern da *da_dupli(da *d);
+
+//  da_display : Applique a tout les éléments de da fun. Si, lors du parcours,
+//    la valeur de l'appel n'est pas nulle, l'exécution de la fonction prend fin
+//    et la fonction renvoie cette valeur. Sinon, la fonction renvoie zéro.
+extern int da_apply(da *d, int (*fun)(const void *));
+
 #endif
