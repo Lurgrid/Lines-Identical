@@ -118,7 +118,7 @@ int da_equiv(da *d, da *b, int (*compar)(const void *, const void *)) {
 }
 
 da *da_dupli(da *d) {
-  da *c = malloc(d->size);
+  da *c = malloc(sizeof(*d));
   if (c == NULL) {
     return NULL;
   }

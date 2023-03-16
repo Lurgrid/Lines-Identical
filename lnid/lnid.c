@@ -30,7 +30,7 @@ typedef struct {
 
 //  str_hashfun : l'une des fonctions de pré-hachage conseillées par Kernighan
 //    et Pike pour les chaines de caractères.
-static size_t str_hashfun(da *d) ;
+static size_t str_hashfun(da *d);
 
 //  file_handler : Ajoute le nom du fichier pointer par filename, au champs
 //    filesptr du context.
@@ -206,7 +206,7 @@ int main(int argc, char **argv) {
     f = NULL;
   }
   for (size_t k = 0; k < da_length(context.filesptr); ++k) {
-    printf("%s", * (char**) da_nth(context.filesptr, k));
+    printf("%s", *(char **) da_nth(context.filesptr, k));
     if (k != da_length(context.filesptr) - 1) {
       putchar('\t');
     }
@@ -296,39 +296,40 @@ int fnlines(FILE *f, da *t, cntxt *context) {
 }
 
 int scptr_display(cntxt *context, const da *s, da *cptr) {
+  int r = 0;
   if (da_length(context->filesptr) == 1) {
     if (da_length(cptr) == 1) {
       return 0;
     }
-    for (size_t k = 0; k < da_length(cptr) - 1; ++k) {
-      printf("%d,", *(int *)da_nth(cptr, k));
+    for (size_t k = 0; k < da_length(cptr); ++k) {
+      r = printf("%d,", *(int *) da_nth(cptr, k)) < 0 ? -1 : r;
     }
-    printf("%d\t", *(int *)da_nth(cptr, da_length(cptr) - 1));
-    da_apply((da *) s, (int (*)(void *))putechar);
-    putchar('\n');
+    r = printf("%d\t", *(int *) da_nth(cptr, da_length(cptr) - 1)) < 0 ? -1 : r;
+    r = da_apply((da *) s, (int (*)(void *))putechar) == -1 ? -1 : r;
+    r = putchar('\n') == EOF ? -1 : r;
   } else {
     if (da_cond_left_search(cptr, (bool (*)(const void *))is_zero) == NULL) {
       for (size_t k = 0; k < da_length(cptr) - 1; ++k) {
-        printf("%d\t", *(int *)da_nth(cptr, k));
+        r = printf("%d\t", *(int *) da_nth(cptr, k)) < 0 ? -1 : r;
       }
-      printf("%d\t", *(int *)da_nth(cptr, da_length(cptr) - 1));
-      da_apply((da *) s, (int (*)(void *))putechar);
-      putchar('\n');
+      r = printf("%d\t", *(int *) da_nth(cptr, da_length(cptr) - 1)) < 0 ? -1 : r;
+      r = da_apply((da *) s, (int (*)(void *))putechar) == -1 ? -1 : r;
+      r = putchar('\n') == EOF ? -1 : r;
     }
   }
-  return 0;
+  return r;
 }
 
 int compar_ptrint(char *a, char *b) {
-  return *a == *b ? 0 : *a > *b ? 1 : - 1;
+  return *a == *b ? 0 : *a > *b ? 1 : -1;
 }
 
 int da_equve(da *d, da *b) {
-  return da_equiv(d, b, (int (*) (const void *, const void *))compar_ptrint);
+  return da_equiv(d, b, (int (*)(const void *, const void *))compar_ptrint);
 }
 
 int putechar(char *c) {
-  return putchar(*c);
+  return putchar(*c) == EOF ? -1 : 0;
 }
 
 int nothing(int c) {
