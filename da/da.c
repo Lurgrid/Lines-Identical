@@ -118,16 +118,18 @@ int da_equiv(da *d, da *b, int (*compar)(const void *, const void *)) {
 }
 
 da *da_dupli(da *d) {
-  da *c = da_empty(d->size);
+  da *c = malloc(d->size);
   if (c == NULL) {
     return NULL;
   }
-  for (char *p = (char *) d->ref;
-    p < (char *) d->ref + d->size * d->nmemb; p += d->size) {
-    if (da_add(c, p) == NULL) {
-      da_dispose(&c);
-      return NULL;
-    }
+  c->ref = malloc(d->size * d->nmemb);
+  if (c->ref == NULL) {
+    free(c);
+    return NULL;
   }
+  c->size = d->size;
+  c->nmemb = d->nmemb;
+  c->capacity = c->nmemb;
+  memcpy(c->ref, d->ref, d->size * d->nmemb);
   return c;
 }
