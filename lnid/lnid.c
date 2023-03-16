@@ -329,6 +329,9 @@ int da_equve(da *d, da *b) {
 }
 
 int putechar(char *c) {
+  if (*c == '\0') {
+    return 0;
+  }
   return putchar(*c) == EOF ? -1 : 0;
 }
 
