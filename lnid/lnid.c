@@ -301,7 +301,7 @@ int scptr_display(cntxt *context, const da *s, da *cptr) {
     if (da_length(cptr) == 1) {
       return 0;
     }
-    for (size_t k = 0; k < da_length(cptr); ++k) {
+    for (size_t k = 0; k < da_length(cptr) - 1; ++k) {
       r = printf("%d,", *(int *) da_nth(cptr, k)) < 0 ? -1 : r;
     }
     r = printf("%d\t", *(int *) da_nth(cptr, da_length(cptr) - 1)) < 0 ? -1 : r;
