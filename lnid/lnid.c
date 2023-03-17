@@ -77,6 +77,7 @@ int main(int argc, char **argv) {
     return EXIT_FAILURE;
   }
   int r = EXIT_SUCCESS;
+  optparam aop = {opt_gen("-f ", "--filter= "};
   cntxt context;
   FILE *f = NULL;
   context.filesptr = da_empty(sizeof(char *));
