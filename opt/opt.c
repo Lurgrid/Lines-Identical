@@ -120,8 +120,7 @@ optreturn opt_init(char **argv, int argc, optparam **aopt,
     size_t nmemb, int (*other)(void *cntxt, const char *value,
     const char **err), void *cntxt, const char **err, const char *usage,
     const char *desc) {
-  int k = 1;
-  while (k < argc) {
+  for (int k = 1; k < argc; ++k) {
     /*traitement du help*/
     if (strcmp(SHORT_HELP, argv[k]) == 0 || strcmp(LONG_HELP, argv[k]) == 0) {
       if (usage != NULL) {
@@ -157,7 +156,6 @@ optreturn opt_init(char **argv, int argc, optparam **aopt,
         return ERROR_FUN;
       }
     }
-    ++k;
   }
   *err = NULL;
   return DONE;
