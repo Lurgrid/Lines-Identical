@@ -36,6 +36,11 @@ typedef enum {
 extern optparam *opt_gen(const char *optshort, const char *optlong,
     const char *desc, bool arg, int (*fun)(void *cntxt, const char *value, const char **err));
 
+//  opt_dispose : Sans effet si *optptr vaut NULL, sinon libère les ressources
+//    allouées à la gestion du paramèttre pointé par optptr et met *optptr à
+//    NULL.
+extern void opt_dispose(optparam **optptr);
+
 //  opt_init : Pour toutes les options représenté dans le tableau argv de
 //    longueur argc (valeur argv[0] exclu, car devant représenté le nom de
 //    l'executable), qui sont présente dans le tableau d'option aopt, effectue

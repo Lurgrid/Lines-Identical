@@ -8,18 +8,20 @@
 #include "hashtable.h"
 #include "opt.h"
 
-#define RED "\033[0;31m"
-#define GREEN "\033[0;32m"
-#define YELLOW "\033[0;33m"
-#define DEFAULT "\033[0;0m"
+//--- Macro définitan les couleurs ---------------------------------------------
+
+#define ANSI_RED    "\033[0;31m"
+#define ANSI_GREEN  "\033[0;32m"
+#define ANSI_YELLOW "\033[0;33m"
+#define ANSI_NORM   "\033[0;0m"
+
+//---
 
 #define MESSAGE_GEN(color, type_msg, msg, useColor) \
   fprintf(stderr, "%s" "*** "type_msg ": %s" "%s" "\n", useColor ? color : "", \
-    msg, useColor ? DEFAULT : "")
+    msg, useColor ? ANSI_NORM : "")
 
-#define ERROR(context, err) MESSAGE_GEN(RED, "Error", err, (context).use_color)
-
-#define STRACK fprintf(stderr, "*** %d %s\n", __LINE__, __fun__);
+#define ERROR(context, err) MESSAGE_GEN(ANSI_RED, "Error", err, (context).use_color)
 
 typedef struct {
   int (*filter)(int c);
@@ -70,14 +72,19 @@ static int nothing(int c);
 //  rzero : retourne c - c.
 static int rzero(int c);
 
+static int filter(cntxt *context, const char *value, const char **err);
+
+static int uppercasing(cntxt *context, const char *value, const char **err);
+
 int main(int argc, char **argv) {
   if (argc < 2) {
-    fprintf(stderr, YELLOW "*** Syntax: %s [OPTION]... <file>"DEFAULT "\n",
+    fprintf(stderr, ANSI_YELLOW "*** Syntax: %s [OPTION]... <file>"ANSI_NORM "\n",
         argv[0]);
     return EXIT_FAILURE;
   }
   int r = EXIT_SUCCESS;
-  optparam aop = {opt_gen("-f ", "--filter= "};
+  optparam *aop[] = {opt_gen("-f", "--filter", "la fonction de filtre", true, (int (*) (void *, const char *, const char **))filter),
+    opt_gen("-u", "--uppercasing", "met en majuscule", false, (int (*) (void *, const char *, const char **))uppercasing)};
   cntxt context;
   FILE *f = NULL;
   context.filesptr = da_empty(sizeof(char *));
@@ -96,7 +103,7 @@ int main(int argc, char **argv) {
   optreturn ot;
   const char *err;
   if ((ot
-        = opt_init(argv, argc, NULL, 0,
+        = opt_init(argv, argc, aop, 1,
           (int (*)(void *, const char *, const char **))file_handler, &context,
           &err, "[OPTION]... <file>",
           "Le projet consiste à écrire un programme en C dont le but est :\n"
@@ -346,4 +353,41 @@ int rzero(int c) {
 
 bool is_zero(int *c) {
   return *c == 0;
+}
+
+int filter(cntxt *context, const char *value, const char **err) {
+  if (strcmp(value, "alnum") == 0) {
+    context->filter = isalnum;
+  } else if (strcmp(value, "alpha") == 0) {
+    context->filter = isalpha;
+  } else if (strcmp(value, "blank") == 0) {
+    context->filter = isblank;
+  } else if (strcmp(value, "cntrl") == 0) {
+    context->filter = iscntrl;
+  } else if (strcmp(value, "graph") == 0) {
+    context->filter = isgraph;
+  } else if (strcmp(value, "lower") == 0) {
+    context->filter = islower;
+  } else if (strcmp(value, "print") == 0) {
+    context->filter = isprint;
+  } else if (strcmp(value, "punct") == 0) {
+    context->filter = ispunct;
+  } else if (strcmp(value, "space") == 0) {
+    context->filter = isspace;
+  } else if (strcmp(value, "upper") == 0) {
+    context->filter = isupper;
+  } else if (strcmp(value, "xdigit") == 0) {
+    context->filter = isxdigit;
+  } else {
+    *err = "Pas le bon paramettre\n";
+    return -1;
+  }
+  *err = NULL;
+  return 0;
+}
+
+static int uppercasing(cntxt *context, __attribute__((unused)) const char *value, const char **err) {
+  *err = NULL;
+  context->class = toupper;
+  return 0;
 }

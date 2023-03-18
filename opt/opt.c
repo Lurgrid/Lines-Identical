@@ -42,6 +42,8 @@ static const char *prefix(const char *s1, const char *s2) {
   return prefix(s1 + 1, s2 + 1);
 }
 
+//--- OPT function -------------------------------------------------------------
+
 optparam *opt_gen(const char *optshort, const char *optlong, const char *desc,
     bool arg, int (*fun)(void *cntxt, const char *value, const char **err)) {
   optparam *op = malloc(sizeof *op);
@@ -56,7 +58,14 @@ optparam *opt_gen(const char *optshort, const char *optlong, const char *desc,
   return op;
 }
 
-//  parse_return : Spécifie les valeurs de retour de la fonction opt_check
+void opt_dispose(optparam **optptr) {
+  if (*optptr != NULL) {
+    free(*optptr);
+    *optptr = NULL;
+  }
+}
+
+//  parse_return : Spécifie les valeurs de retour de la fonction opt_parse.
 enum parse_return {
   SUCCESS_PARAM,
   FAILURE_PARAM,
@@ -69,40 +78,36 @@ enum parse_return {
 //    argv[k + 1] si le l'option a besoin d'un paramètre sinon pointe sur
 //    argv[k]. Si la valuer retourner est egale a NOT_EQUAL alors l'entrée n'est
 //    pas l'option pointer par opt et option vaut NULL. Enfin FAILURE_PARAM est
-//    renvoyer quand l'utilisateur a rentrée la bonne option mais a oublier le
-//    paramètre.
-static enum parse_return opt_parse(const optparam *opt, int k, char **argv, int argc,
+//    renvoyer quand l'utilisateur a rentrée l'option pointé par opt mais ne lui
+//    à pas donner d'argument alors qu'elle en demander un, dans se cas option
+//    pointe sur argv[k].
+static enum parse_return opt_parse(const optparam *opt, int *k, char **argv, int argc,
     const char **option) {
-  if (strcmp(SHORT(opt), argv[k]) == 0) {
+  /*Est ce que option courte*/
+  if (strcmp(SHORT(opt), argv[*k]) == 0) {
     if (ARG(opt)) {
-      if (k + 1 >= argc) {
-        *option = argv[k];
+      if (*k + 1 >= argc) {
+        *option = argv[*k];
         return FAILURE_PARAM;
       }
-      ++k;
+      *k += 1;
     }
-    *option = argv[k];
+    /*si bonne option et param possible alors on augmente k et option pointe sur le param*/
+    *option = argv[*k];
     return SUCCESS_PARAM;
   }
-  if (ARG(opt)) {
-    const char *p = prefix(LONG(opt), argv[k]);
-    if (p == NULL) {
-      *option = NULL;
-      return NOT_EQUAL;
-    }
-    if (*p != '=') {
-      *option = argv[k];
-      return FAILURE_PARAM;
-    }
-    *option = p + 1;
-    return SUCCESS_PARAM;
+  const char *p = prefix(LONG(opt), argv[*k]);
+  if (p == NULL || (!ARG(opt) && strcmp(LONG(opt), argv[*k]) == 0)) {
+    *option = NULL;
+    return NOT_EQUAL;
   }
-  if (strcmp(LONG(opt), argv[k]) == 0) {
-    *option = argv[k];
-    return 0;
+  if (*p != '=') {
+          fprintf(stderr, "%s\n", filename);
+    *option = argv[*k];
+    return FAILURE_PARAM;
   }
-  *option = NULL;
-  return NOT_EQUAL;
+  *option = p + 1;
+  return SUCCESS_PARAM;
 }
 
 #define PRINT_OPTION(opt) printf("\t%s%s | %s%s : %s\n", opt->optshort,        \
@@ -116,7 +121,9 @@ optreturn opt_init(char **argv, int argc, optparam **aopt,
     size_t nmemb, int (*other)(void *cntxt, const char *value,
     const char **err), void *cntxt, const char **err, const char *usage,
     const char *desc) {
-  for (int k = 1; k < argc; ++k) {
+  int k = 1;
+  while (k < argc) {
+    /*traitement du help*/
     if (strcmp(SHORT_HELP, argv[k]) == 0 || strcmp(LONG_HELP, argv[k]) == 0) {
       if (usage != NULL) {
         printf("Usage: %s %s\n\n", argv[0], usage);
@@ -129,10 +136,11 @@ optreturn opt_init(char **argv, int argc, optparam **aopt,
       }
       return STOP_PROCESS;
     }
+    /*C'est pas le help donc on test si c'est une option de aopt*/
     size_t i = 0;
     while (i < nmemb) {
       const char *v;
-      enum parse_return r = opt_parse(aopt[i], k, argv, argc, &v);
+      enum parse_return r = opt_parse(aopt[i], &k, argv, argc, &v);
       if (v != NULL) {
         if (r != SUCCESS_PARAM) {
           *err = aopt[i]->optlong;
@@ -141,7 +149,6 @@ optreturn opt_init(char **argv, int argc, optparam **aopt,
         if (aopt[i]->fun(cntxt, v, err) != 0) {
           return ERROR_FUN;
         }
-        ++k;
         break;
       }
       ++i;
@@ -151,6 +158,7 @@ optreturn opt_init(char **argv, int argc, optparam **aopt,
         return ERROR_FUN;
       }
     }
+    ++k;
   }
   *err = NULL;
   return DONE;
