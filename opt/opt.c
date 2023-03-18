@@ -102,7 +102,6 @@ static enum parse_return opt_parse(const optparam *opt, int *k, char **argv, int
     return NOT_EQUAL;
   }
   if (*p != '=') {
-          fprintf(stderr, "%s\n", filename);
     *option = argv[*k];
     return FAILURE_PARAM;
   }

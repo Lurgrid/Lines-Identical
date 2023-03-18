@@ -76,6 +76,8 @@ static int filter(cntxt *context, const char *value, const char **err);
 
 static int uppercasing(cntxt *context, const char *value, const char **err);
 
+static int no_color(cntxt *context, const char *value, const char **err);
+
 int main(int argc, char **argv) {
   if (argc < 2) {
     fprintf(stderr, ANSI_YELLOW "*** Syntax: %s [OPTION]... <file>"ANSI_NORM "\n",
@@ -84,7 +86,8 @@ int main(int argc, char **argv) {
   }
   int r = EXIT_SUCCESS;
   optparam *aop[] = {opt_gen("-f", "--filter", "la fonction de filtre", true, (int (*) (void *, const char *, const char **))filter),
-    opt_gen("-u", "--uppercasing", "met en majuscule", false, (int (*) (void *, const char *, const char **))uppercasing)};
+    opt_gen("-u", "--uppercasing", "met en majuscule", false, (int (*) (void *, const char *, const char **))uppercasing),
+    opt_gen("-nc", "--no-color", "enlève les couleurs", false, (int (*) (void *, const char *, const char **))no_color)};
   cntxt context;
   FILE *f = NULL;
   context.filesptr = da_empty(sizeof(char *));
@@ -103,7 +106,7 @@ int main(int argc, char **argv) {
   optreturn ot;
   const char *err;
   if ((ot
-        = opt_init(argv, argc, aop, 1,
+        = opt_init(argv, argc, aop, 3,
           (int (*)(void *, const char *, const char **))file_handler, &context,
           &err, "[OPTION]... <file>",
           "Le projet consiste à écrire un programme en C dont le but est :\n"
@@ -128,7 +131,7 @@ int main(int argc, char **argv) {
   /*boucle principal*/
   for (size_t i = 0; i < da_length(context.filesptr); ++i) {
     char *filename = *(char **) da_nth(context.filesptr, i);
-    if (*filename == '-') {
+    if (*filename == '-' && *(filename + 1) == '\0') {
       f = stdin;
     } else {
       f = fopen(filename, "r");
@@ -391,3 +394,10 @@ static int uppercasing(cntxt *context, __attribute__((unused)) const char *value
   context->class = toupper;
   return 0;
 }
+
+static int no_color(cntxt *context, __attribute__((unused)) const char *value, const char **err) {
+  *err = NULL;
+  context->use_color = false;
+  return 0;
+}
+
