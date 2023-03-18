@@ -27,6 +27,7 @@ typedef struct {
   int (*filter)(int c);
   int (*class)(int c);
   bool use_color;
+  bool is_sorted;
   da *filesptr;
 } cntxt;
 
@@ -94,6 +95,7 @@ int main(int argc, char **argv) {
   context.filter = rzero;
   context.class = nothing;
   context.use_color = true;
+  context.is_sorted = false;
   hashtable *ht = hashtable_empty((int (*)(const void *, const void *))da_equve,
       (size_t (*)(const void *))str_hashfun);
   holdall *has = holdall_empty();

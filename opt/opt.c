@@ -83,7 +83,6 @@ enum parse_return {
 //    pointe sur argv[k].
 static enum parse_return opt_parse(const optparam *opt, int *k, char **argv, int argc,
     const char **option) {
-  /*Est ce que option courte*/
   if (strcmp(SHORT(opt), argv[*k]) == 0) {
     if (ARG(opt)) {
       if (*k + 1 >= argc) {
@@ -92,12 +91,15 @@ static enum parse_return opt_parse(const optparam *opt, int *k, char **argv, int
       }
       *k += 1;
     }
-    /*si bonne option et param possible alors on augmente k et option pointe sur le param*/
     *option = argv[*k];
     return SUCCESS_PARAM;
   }
   const char *p = prefix(LONG(opt), argv[*k]);
-  if (p == NULL || (!ARG(opt) && strcmp(LONG(opt), argv[*k]) == 0)) {
+  if (!ARG(opt) && strcmp(LONG(opt), argv[*k]) == 0) {
+    *option = argv[*k];
+    return SUCCESS_PARAM;
+  }
+  if (p == NULL) {
     *option = NULL;
     return NOT_EQUAL;
   }
@@ -121,7 +123,6 @@ optreturn opt_init(char **argv, int argc, optparam **aopt,
     const char **err), void *cntxt, const char **err, const char *usage,
     const char *desc) {
   for (int k = 1; k < argc; ++k) {
-    /*traitement du help*/
     if (strcmp(SHORT_HELP, argv[k]) == 0 || strcmp(LONG_HELP, argv[k]) == 0) {
       if (usage != NULL) {
         printf("Usage: %s %s\n\n", argv[0], usage);
@@ -134,7 +135,6 @@ optreturn opt_init(char **argv, int argc, optparam **aopt,
       }
       return STOP_PROCESS;
     }
-    /*C'est pas le help donc on test si c'est une option de aopt*/
     size_t i = 0;
     while (i < nmemb) {
       const char *v;
