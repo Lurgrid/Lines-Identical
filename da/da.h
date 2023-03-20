@@ -69,7 +69,7 @@ extern void da_reset(da *d);
 extern int da_cmp(da *d, da *b, int (*comp)(const void *, const void *));
 
 //  da_dupli : Renvois un tableau dynamique équivalant a d en cas de réussite.
-//    Sinon renvois null, en cas de dépassement de capacité.
+//    Renvois NULL, en cas de dépassement de capacité.
 extern da *da_dupli(da *d);
 
 //  da_display_context : Applique a tout les éléments de da fun avec comme
