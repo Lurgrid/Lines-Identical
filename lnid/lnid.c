@@ -8,20 +8,26 @@
 #include "hashtable.h"
 #include "opt.h"
 
-//--- Macro définitan les couleurs ---------------------------------------------
+//--- Macro définitan les couleurs dans le terminal ----------------------------
 
 #define ANSI_RED    "\033[0;31m"
 #define ANSI_GREEN  "\033[0;32m"
 #define ANSI_YELLOW "\033[0;33m"
 #define ANSI_NORM   "\033[0;0m"
 
-//---
+//--- Macro d'affichage d'erreur -----------------------------------------------
 
 #define MESSAGE_GEN(color, type_msg, msg, useColor) \
   fprintf(stderr, "%s" "*** "type_msg ": %s" "%s" "\n", useColor ? color : "", \
     msg, useColor ? ANSI_NORM : "")
 
-#define ERROR(context, err) MESSAGE_GEN(ANSI_RED, "Error", err, (context).use_color)
+#define ERROR(context, err) MESSAGE_GEN(ANSI_RED, "Error", err, \
+    (context).use_color)
+
+#define SYNTAX(context, err) MESSAGE_GEN(ANSI_YELLOW, "Syntax", err, \
+    (context).use_color)
+
+//--- Structure de context -----------------------------------------------------
 
 typedef struct {
   int (*filter)(int c);
@@ -31,9 +37,20 @@ typedef struct {
   da *filesptr;
 } cntxt;
 
-//  str_hashfun : l'une des fonctions de pré-hachage conseillées par Kernighan
-//    et Pike pour les chaines de caractères.
-static size_t str_hashfun(da *d);
+//--- Fonction de traitement d'option ------------------------------------------
+
+#define HANDLE_PARAM_NO_ARG(fun, attribut, value)                              \
+  static int handle_ ## fun(cntxt * context, __attribute__((unused))           \
+    const char *res, const char **err) {                                       \
+    *err = NULL;                                                               \
+    context->attribut = value;                                                 \
+    return 0;                                                                  \
+  }
+
+HANDLE_PARAM_NO_ARG(uppercasing, class, toupper)
+HANDLE_PARAM_NO_ARG(no_color, use_color, false)
+
+static int filter(cntxt *context, const char *value, const char **err);
 
 //  file_handler : Ajoute le nom du fichier pointer par filename, au champs
 //    filesptr du context.
@@ -43,8 +60,11 @@ static size_t str_hashfun(da *d);
 static int file_handler(cntxt * restrict context,
     const char * restrict filename, const char **err);
 
-//  rda_dispose : libère les ressources alloué à l'utilisation de d et renvoie 0
-static int rda_dispose(da *d);
+//--- Utilitaire ---------------------------------------------------------------
+
+//  str_hashfun : l'une des fonctions de pré-hachage conseillées par Kernighan
+//    et Pike pour les chaines de caractères.
+static size_t str_hashfun(da *d);
 
 //  fnlines : lis tous les charactères d'une ligne sur le flot associé à f. Pour
 //    tous les charactres lu transformer par la fonction context->class, si
@@ -55,6 +75,9 @@ static int rda_dispose(da *d);
 //    positif en cas d'erreur sur la lecture du ficiher. Enfin une valeur
 //    strictement négatif en cas d'erreur d'allocation.
 static int fnlines(FILE *f, da *t, cntxt *context);
+
+//  rda_dispose : libère les ressources alloué à l'utilisation de d et renvoie 0
+static int rda_dispose(da *d);
 
 static int compar_ptrint(char *a, char *b);
 
@@ -73,29 +96,22 @@ static int nothing(int c);
 //  rzero : retourne c - c.
 static int rzero(int c);
 
-static int filter(cntxt *context, const char *value, const char **err);
-
-static int uppercasing(cntxt *context, const char *value, const char **err);
-
-static int no_color(cntxt *context, const char *value, const char **err);
-
 int main(int argc, char **argv) {
-  if (argc < 2) {
-    fprintf(stderr, ANSI_YELLOW "*** Syntax: %s [OPTION]... <file>"ANSI_NORM "\n",
-        argv[0]);
-    return EXIT_FAILURE;
-  }
+  /*A revoir car pas de demande de couleur pour cette erreur*/
   int r = EXIT_SUCCESS;
-  optparam *aop[] = {opt_gen("-f", "--filter", "la fonction de filtre", true, (int (*) (void *, const char *, const char **))filter),
-    opt_gen("-u", "--uppercasing", "met en majuscule", false, (int (*) (void *, const char *, const char **))uppercasing),
-    opt_gen("-nc", "--no-color", "enlève les couleurs", false, (int (*) (void *, const char *, const char **))no_color)};
-  cntxt context;
+  optparam *aop[] = {
+    opt_gen("-f", "--filter", "la fonction de filtre", true,
+        (int (*)(void *, const char *, const char **))filter),
+    opt_gen("-u", "--uppercasing", "met en majuscule", false,
+        (int (*)(void *, const char *, const char **))handle_uppercasing),
+    opt_gen("-nc", "--no-color", "enlève les couleurs", false,
+        (int (*)(void *, const char *, const char **))handle_no_color)
+  };
+  cntxt context = {
+    .filesptr = da_empty(sizeof(char *)), .filter = rzero, .class = nothing,
+    .use_color = true, .is_sorted = false
+  };
   FILE *f = NULL;
-  context.filesptr = da_empty(sizeof(char *));
-  context.filter = rzero;
-  context.class = nothing;
-  context.use_color = true;
-  context.is_sorted = false;
   hashtable *ht = hashtable_empty((int (*)(const void *, const void *))da_equve,
       (size_t (*)(const void *))str_hashfun);
   holdall *has = holdall_empty();
@@ -124,7 +140,12 @@ int main(int argc, char **argv) {
     if (ot == STOP_PROCESS) {
       goto dispose;
     }
-    ERROR(context, err);
+    if (ot == NO_PARAM) {
+      SYNTAX(context, "No paramettre where given, see the help for more"
+        "information");
+    } else {
+      ERROR(context, err);
+    }
     goto error;
   }
   if (da_length(context.filesptr) == 0) {
@@ -325,7 +346,9 @@ int scptr_display(cntxt *context, const da *s, da *cptr) {
       for (size_t k = 0; k < da_length(cptr) - 1; ++k) {
         r = printf("%d\t", *(int *) da_nth(cptr, k)) < 0 ? -1 : r;
       }
-      r = printf("%d\t", *(int *) da_nth(cptr, da_length(cptr) - 1)) < 0 ? -1 : r;
+      r
+        = printf("%d\t",
+          *(int *) da_nth(cptr, da_length(cptr) - 1)) < 0 ? -1 : r;
       r = da_apply((da *) s, (int (*)(void *))putechar) == -1 ? -1 : r;
       r = putchar('\n') == EOF ? -1 : r;
     }
@@ -390,16 +413,3 @@ int filter(cntxt *context, const char *value, const char **err) {
   *err = NULL;
   return 0;
 }
-
-static int uppercasing(cntxt *context, __attribute__((unused)) const char *value, const char **err) {
-  *err = NULL;
-  context->class = toupper;
-  return 0;
-}
-
-static int no_color(cntxt *context, __attribute__((unused)) const char *value, const char **err) {
-  *err = NULL;
-  context->use_color = false;
-  return 0;
-}
-

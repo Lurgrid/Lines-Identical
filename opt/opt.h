@@ -17,6 +17,7 @@ typedef struct optparam optparam;
 //    opt_init. (chaque utilisation des valeurs des enumes est spécifier dans la
 //    spécification de la fonction opt_init)
 typedef enum {
+  NO_PARAM,
   STOP_PROCESS,
   ERROR_FUN,
   ERROR_PARAM,
