@@ -49,6 +49,7 @@ typedef struct {
 
 HANDLE_PARAM_NO_ARG(uppercasing, class, toupper)
 HANDLE_PARAM_NO_ARG(no_color, use_color, false)
+HANDLE_PARAM_NO_ARG(sort, is_sorted, true)
 
 static int filter(cntxt *context, const char *value, const char **err);
 
@@ -83,7 +84,7 @@ static int compar_ptrint(char *a, char *b);
 
 static int scptr_display(cntxt *context, const da *s, da *cptr);
 
-static int da_equve(da *d, da *b);
+static int da_comp(da *d, da *b);
 
 static int putechar(char *c);
 
@@ -105,14 +106,16 @@ int main(int argc, char **argv) {
     opt_gen("-u", "--uppercasing", "met en majuscule", false,
         (int (*)(void *, const char *, const char **))handle_uppercasing),
     opt_gen("-nc", "--no-color", "enlève les couleurs", false,
-        (int (*)(void *, const char *, const char **))handle_no_color)
+        (int (*)(void *, const char *, const char **))handle_no_color),
+    opt_gen("-s", "--sort", "trie la chienté", false,
+        (int (*)(void *, const char *, const char **))handle_sort)
   };
   cntxt context = {
     .filesptr = da_empty(sizeof(char *)), .filter = rzero, .class = nothing,
     .use_color = true, .is_sorted = false
   };
   FILE *f = NULL;
-  hashtable *ht = hashtable_empty((int (*)(const void *, const void *))da_equve,
+  hashtable *ht = hashtable_empty((int (*)(const void *, const void *))da_comp,
       (size_t (*)(const void *))str_hashfun);
   holdall *has = holdall_empty();
   holdall *hada = holdall_empty();
@@ -124,7 +127,7 @@ int main(int argc, char **argv) {
   optreturn ot;
   const char *err;
   if ((ot
-        = opt_init(argv, argc, aop, 3,
+        = opt_init(argv, argc, aop, 4,
           (int (*)(void *, const char *, const char **))file_handler, &context,
           &err, "[OPTION]... <file>",
           "Le projet consiste à écrire un programme en C dont le but est :\n"
@@ -142,7 +145,7 @@ int main(int argc, char **argv) {
     }
     if (ot == NO_PARAM) {
       SYNTAX(context, "No paramettre where given, see the help for more"
-        "information");
+        " information");
     } else {
       ERROR(context, err);
     }
@@ -239,8 +242,11 @@ int main(int argc, char **argv) {
     }
     f = NULL;
   }
+  if (context.is_sorted) {
+    holdall_sort(has, (int (*) (const void *, const void *))da_comp);
+  }
   for (size_t k = 0; k < da_length(context.filesptr); ++k) {
-    printf("%s", *(char **) da_nth(context.filesptr, k));
+    printf("%s",*(char **) da_nth(context.filesptr, k));
     if (k != da_length(context.filesptr) - 1) {
       putchar('\t');
     }
@@ -360,8 +366,8 @@ int compar_ptrint(char *a, char *b) {
   return *a == *b ? 0 : *a > *b ? 1 : -1;
 }
 
-int da_equve(da *d, da *b) {
-  return da_equiv(d, b, (int (*)(const void *, const void *))compar_ptrint);
+int da_comp(da *d, da *b) {
+  return da_cmp(d, b, (int (*)(const void *, const void *))compar_ptrint);
 }
 
 int putechar(char *c) {
