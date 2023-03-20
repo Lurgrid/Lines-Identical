@@ -4,6 +4,8 @@
 #include <string.h>
 #include <stdint.h>
 
+#include <stdio.h>
+
 #define DA_MIN_LENGTH 1
 #define DA_MUL_LENGTH 2
 
@@ -105,16 +107,25 @@ void da_reset(da *d) {
   d->nmemb = 0;
 }
 
-int da_equiv(da *d, da *b, int (*compar)(const void *, const void *)) {
+int da_cmp(da *d, da *b, int (*comp)(const void *, const void *)) {
   char *p = (char *) d->ref;
   char *q = (char *) b->ref;
-  while (p < (char *) d->ref + d->size * d->nmemb &&
-    q < (char *) b->ref + b->size * b->nmemb && compar(p, q) == 0) {
+  size_t dnmemb = d->nmemb;
+  size_t bnmemb = b->nmemb;
+  while (dnmemb != 0) {
+    if (bnmemb == 0) {
+      return 1;
+    }
+    int c = comp(p, q);
+    if (c != 0) {
+      return c;
+    }
     p += d->size;
     q += b->size;
+    --dnmemb;
+    --bnmemb;
   }
-  return p != (char *) d->ref + d->size * d->nmemb
-      || q !=  (char *) b->ref + b->size * b->nmemb ? 1 : 0;
+  return bnmemb == 0 ? 0 : -1;
 }
 
 da *da_dupli(da *d) {

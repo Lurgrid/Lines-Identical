@@ -139,11 +139,11 @@ void choldall__split(choldall *h, choldall **p, choldall **q, size_t nmemb) {
   }
   *q = ph->next;
   ph->next = NULL;
-  ph = *q;
-  for (size_t i = 1; i < nmemb / 2; ++i) {
-    ph = ph->next;
-  }
-  ph->next = NULL;
+  //ph = *q;
+  //for (size_t i = 1; i < nmemb / 2; ++i) {
+    //ph = ph->next;
+  //}
+  //ph->next = NULL;
 }
 
 void choldall__sort(choldall **h, size_t nmemb, int (*compar)(const void *,

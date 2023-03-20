@@ -95,7 +95,7 @@ static enum parse_return opt_parse(const optparam *opt, int *k, char **argv, int
     return SUCCESS_PARAM;
   }
   const char *p = prefix(LONG(opt), argv[*k]);
-  if (!ARG(opt) && strcmp(LONG(opt), argv[*k]) == 0) {
+  if (p != NULL && !ARG(opt) && *p == '\0') {
     *option = argv[*k];
     return SUCCESS_PARAM;
   }
