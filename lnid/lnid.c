@@ -3,12 +3,14 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <string.h>
+#include <locale.h>
 #include "da.h"
 #include "holdall.h"
 #include "hashtable.h"
 #include "opt.h"
 
-//--- Macro définissant les couleurs dans le terminal ----------------------------
+//--- Macro définissant les couleurs dans le terminal
+// ----------------------------
 
 #define ANSI_RED    "\033[0;31m"
 #define ANSI_GREEN  "\033[0;32m"
@@ -17,19 +19,39 @@
 
 //--- Macro d'affichage d'erreur -----------------------------------------------
 
-#define MESSAGE_GEN(color, type_msg, msg, useColor) \
+#define MESSAGE_GEN(color, type_msg, msg, useColor)                            \
   fprintf(stderr, "%s" "*** "type_msg ": %s" "%s" "\n", useColor ? color : "", \
     msg, useColor ? ANSI_NORM : "")
 
-#define ERROR(context, err) MESSAGE_GEN(ANSI_RED, "Error", err, \
+#define ERROR(context, err) MESSAGE_GEN(ANSI_RED, "Error", err,                \
     (context).use_color)
 
-#define SYNTAX(context, err) MESSAGE_GEN(ANSI_YELLOW, "Syntax", err, \
+#define SYNTAX(context, err) MESSAGE_GEN(ANSI_YELLOW, "Syntax", err,           \
     (context).use_color)
 
 //--- Macro des options --------------------------------------------------------
 
 #define AOPT_LENGTH 4
+#define AOPT opt_gen("-f", "--filter", "la fonction de filtre", true,          \
+    (int (*)(void *, const char *, const char **))filter),                     \
+  opt_gen("-u", "--uppercasing", "met en majuscule", false,                    \
+    (int (*)(void *, const char *, const char **))handle_uppercasing),         \
+  opt_gen("-nc", "--no-color", "enlève les couleurs", false,                   \
+    (int (*)(void *, const char *, const char **))handle_no_color),            \
+  opt_gen("-s", "--sort", "trie la chienté", true,                             \
+    (int (*)(void *, const char *, const char **))sort_handler)                \
+
+#define DESC                                                                   \
+  "Le projet consiste à écrire un programme en C dont le but est :\n"          \
+  "— si le nom d’un seul fichier figure sur la ligne de commande,"             \
+  " d’afficher, pour chaque ligne de texte non vide apparaissant au moins "    \
+  "deux fois dans le fichier, les numéros des lignes où elle apparait et le"   \
+  "contenu de la ligne ;\n — si au moins deux noms de fichiers figurent sur "  \
+  "la ligne de commande, d’afficher, pour chaque ligne de texte non vide "     \
+  "apparaissant au moins une fois dans tous les fichiers, le nombre "          \
+  "d’occurrences de la ligne dans chacun des fichiers et le contenu de la "    \
+  "ligne.\n L’affichage se fait en colonnes sur la sortie standard. Les "      \
+  "colonnes sont (uniquement) séparées"                                        \
 
 //--- Structure de context -----------------------------------------------------
 
@@ -37,7 +59,7 @@ typedef struct {
   int (*filter)(int c);
   int (*class)(int c);
   bool use_color;
-  bool is_sorted;
+  int (*sort)(const void *, const void *);
   da *filesptr;
 } cntxt;
 
@@ -53,7 +75,6 @@ typedef struct {
 
 HANDLE_PARAM_NO_ARG(uppercasing, class, toupper)
 HANDLE_PARAM_NO_ARG(no_color, use_color, false)
-HANDLE_PARAM_NO_ARG(sort, is_sorted, true)
 
 static int filter(cntxt *context, const char *value, const char **err);
 
@@ -65,11 +86,14 @@ static int filter(cntxt *context, const char *value, const char **err);
 static int file_handler(cntxt * restrict context,
     const char * restrict filename, const char **err);
 
+static int sort_handler(cntxt * restrict context,
+    const char * restrict filename, const char **err);
+
 //--- Utilitaire ---------------------------------------------------------------
 
 //  str_hashfun : l'une des fonctions de pré-hachage conseillées par Kernighan
 //    et Pike pour les chaines de caractères.
-static size_t str_hashfun(da *d);
+static size_t str_hashfun(const char *d);
 
 //  fnlines : lis tous les charactères d'une ligne sur le flot associé à f. Pour
 //    tous les charactres lu transformer par la fonction context->class, si
@@ -81,45 +105,27 @@ static size_t str_hashfun(da *d);
 //    strictement négatif en cas d'erreur d'allocation.
 static int fnlines(FILE *f, da *t, cntxt *context);
 
-//  rda_dispose : libère les ressources alloué à l'utilisation de d et renvoie 0
+static int rfree(void *p);
+
 static int rda_dispose(da *d);
 
-static int compar_ptrint(char *a, char *b);
-
-static int scptr_display(cntxt *context, const da *s, da *cptr);
-
-static int da_comp(da *d, da *b);
-
-static int putechar(char *c);
+static int scptr_display(cntxt *context, const char *s, da *cptr);
 
 //  is_zero: retourne vrai si c est egale a 0
 static bool is_zero(int *c);
-
-//  nothing : retourne l'entier c.
-static int nothing(int c);
-
-//  rzero : retourne c - c.
-static int rzero(int c);
 
 int main(int argc, char **argv) {
   /*A revoir car pas de demande de couleur pour cette erreur*/
   int r = EXIT_SUCCESS;
   optparam *aop[] = {
-    opt_gen("-f", "--filter", "la fonction de filtre", true,
-        (int (*)(void *, const char *, const char **))filter),
-    opt_gen("-u", "--uppercasing", "met en majuscule", false,
-        (int (*)(void *, const char *, const char **))handle_uppercasing),
-    opt_gen("-nc", "--no-color", "enlève les couleurs", false,
-        (int (*)(void *, const char *, const char **))handle_no_color),
-    opt_gen("-s", "--sort", "trie la chienté", false,
-        (int (*)(void *, const char *, const char **))handle_sort)
+    AOPT
   };
   cntxt context = {
-    .filesptr = da_empty(sizeof(char *)), .filter = rzero, .class = nothing,
-    .use_color = true, .is_sorted = false
+    .filesptr = da_empty(sizeof(char *)), .filter = NULL, .class = NULL,
+    .use_color = true, .sort = NULL
   };
   FILE *f = NULL;
-  hashtable *ht = hashtable_empty((int (*)(const void *, const void *))da_comp,
+  hashtable *ht = hashtable_empty((int (*)(const void *, const void *))strcmp,
       (size_t (*)(const void *))str_hashfun);
   holdall *has = holdall_empty();
   holdall *hada = holdall_empty();
@@ -130,26 +136,15 @@ int main(int argc, char **argv) {
   }
   optreturn ot;
   const char *err;
-  if ((ot
-        = opt_init(argv, argc, aop, AOPT_LENGTH,
-          (int (*)(void *, const char *, const char **))file_handler, &context,
-          &err, "[OPTION]... <file>",
-          "Le projet consiste à écrire un programme en C dont le but est :\n"
-          "— si le nom d’un seul fichier figure sur la ligne de commande,"
-          " d’afficher, pour chaque ligne de texte non vide apparaissant au moins "
-          "deux fois dans le fichier, les numéros des lignes où elle apparait et le"
-          "contenu de la ligne ;\n — si au moins deux noms de fichiers figurent sur "
-          "la ligne de commande, d’afficher, pour chaque ligne de texte non vide "
-          "apparaissant au moins une fois dans tous les fichiers, le nombre "
-          "d’occurrences de la ligne dans chacun des fichiers et le contenu de la "
-          "ligne.\n L’affichage se fait en colonnes sur la sortie standard. Les "
-          "colonnes sont (uniquement) séparées")) != DONE) {
+  if ((ot = opt_init(argv, argc, aop, AOPT_LENGTH,
+      (int (*)(void *, const char *, const char **))file_handler, &context,
+      &err, "[OPTION]... <file>", DESC)) != DONE) {
     if (ot == STOP_PROCESS) {
       goto dispose;
     }
     if (ot == NO_PARAM) {
       SYNTAX(context, "No paramettre where given, see the help for more"
-        " information");
+          " information");
     } else {
       ERROR(context, err);
     }
@@ -174,7 +169,7 @@ int main(int argc, char **argv) {
     while ((c = fnlines(f, line, &context)) == 0) {
       if (da_length(line) > 1) {
         /*peut être a retravailler*/
-        da *cptr = hashtable_search(ht, line);
+        da *cptr = hashtable_search(ht, da_nth(line, 0));
         if (i == 0) {
           if (cptr != NULL) {
             if (da_length(context.filesptr) > 1) {
@@ -197,30 +192,32 @@ int main(int argc, char **argv) {
                 z = 0;
                 ++k;
               }
-              da *w = da_dupli(line);
+              char *w = malloc(da_length(line));
               if (w == NULL) {
                 da_dispose(&dcptr);
                 goto err_allocation;
               }
+              strcpy(w, (char *) da_nth(line, 0));
               if (k != da_length(context.filesptr)
                   || holdall_put(has, w) != 0
                   || holdall_put(hada, dcptr) != 0
                   || hashtable_add(ht, w, dcptr) == NULL) {
-                da_dispose(&w);
+                free(w);
                 da_dispose(&dcptr);
                 goto err_allocation;
               }
             } else {
-              da *w = da_dupli(line);
+              char *w = malloc(da_length(line));
               if (w == NULL) {
                 da_dispose(&dcptr);
                 goto err_allocation;
               }
+              strcpy(w, (char *) da_nth(line, 0));
               if (da_add(dcptr, &n) == NULL
                   || holdall_put(hada, dcptr) != 0
                   || holdall_put(has, w) != 0
                   || hashtable_add(ht, w, dcptr) == NULL) {
-                da_dispose(&w);
+                free(w);
                 da_dispose(&dcptr);
                 goto err_allocation;
               }
@@ -230,7 +227,6 @@ int main(int argc, char **argv) {
           *(long int *) da_nth(cptr, i) += 1;
         }
       } else if (feof(f)) {
-        da_reset(line);
         break;
       }
       ++n;
@@ -246,11 +242,11 @@ int main(int argc, char **argv) {
     }
     f = NULL;
   }
-  if (context.is_sorted) {
-    holdall_sort(has, (int (*) (const void *, const void *))da_comp);
+  if (context.sort != NULL) {
+    holdall_sort(has, (int (*)(const void *, const void *))context.sort);
   }
   for (size_t k = 0; k < da_length(context.filesptr); ++k) {
-    printf("%s",*(char **) da_nth(context.filesptr, k));
+    printf("%s", *(char **) da_nth(context.filesptr, k));
     if (k != da_length(context.filesptr) - 1) {
       putchar('\t');
     }
@@ -285,7 +281,7 @@ dispose:
   da_dispose(&context.filesptr);
   hashtable_dispose(&ht);
   if (has != NULL) {
-    holdall_apply(has, (int (*)(void *))rda_dispose);
+    holdall_apply(has, (int (*)(void *))rfree);
   }
   holdall_dispose(&has);
   if (hada != NULL) {
@@ -301,18 +297,34 @@ int add_to_ptr(char *c, size_t *h) {
   return 0;
 }
 
-size_t str_hashfun(da *d) {
-  size_t k = 0;
-  da_apply_context(d, &k, (int (*)(void *, void *))add_to_ptr);
-  return k;
+size_t str_hashfun(const char *s) {
+  size_t h = 0;
+  for (const unsigned char *p = (const unsigned char *) s; *p != '\0'; ++p) {
+    h = 37 * h + *p;
+  }
+  return h;
 }
 
-int file_handler(cntxt *context,
-    const char *filename, const char **err) {
+int file_handler(cntxt *context, const char *filename, const char **err) {
   if (da_add(context->filesptr, &filename) == NULL) {
     *err = "Not enough memory";
     return -1;
   }
+  return 0;
+}
+
+static int sort_handler(cntxt * restrict context, const char * restrict value,
+    const char **err) {
+  if (strcmp(value, "standard") == 0) {
+    context->sort = (int (*)(const void *, const void *))strcmp;
+  } else if (strcmp(value, "local") == 0) {
+    setlocale(LC_COLLATE, "");
+    context->sort = (int (*)(const void *, const void *))strcoll;
+  } else {
+    *err = "Pas le bon paramettre\n";
+    return -1;
+  }
+  *err = NULL;
   return 0;
 }
 
@@ -324,8 +336,9 @@ int rda_dispose(da *d) {
 int fnlines(FILE *f, da *t, cntxt *context) {
   int c;
   while ((c = fgetc(f)) != EOF && c != '\n') {
-    c = context->class(c);
-    if (context->filter(c) && da_add(t, &c) == NULL) {
+    c = context->class == NULL ? c : context->class(c);
+    if ((context->filter == NULL ? 1 : context->filter(c))
+        && da_add(t, &c) == NULL) {
       return -1;
     }
   }
@@ -339,7 +352,7 @@ int fnlines(FILE *f, da *t, cntxt *context) {
   return 0;
 }
 
-int scptr_display(cntxt *context, const da *s, da *cptr) {
+int scptr_display(cntxt *context, const char *s, da *cptr) {
   int r = 0;
   if (da_length(context->filesptr) == 1) {
     if (da_length(cptr) == 1) {
@@ -348,45 +361,23 @@ int scptr_display(cntxt *context, const da *s, da *cptr) {
     for (size_t k = 0; k < da_length(cptr) - 1; ++k) {
       r = printf("%d,", *(int *) da_nth(cptr, k)) < 0 ? -1 : r;
     }
-    r = printf("%d\t", *(int *) da_nth(cptr, da_length(cptr) - 1)) < 0 ? -1 : r;
-    r = da_apply((da *) s, (int (*)(void *))putechar) == -1 ? -1 : r;
-    r = putchar('\n') == EOF ? -1 : r;
+    r = printf("%d\t%s\n", *(int *) da_nth(cptr, da_length(cptr) - 1),
+        s) < 0 ? -1 : r;
   } else {
     if (da_cond_left_search(cptr, (bool (*)(const void *))is_zero) == NULL) {
       for (size_t k = 0; k < da_length(cptr) - 1; ++k) {
         r = printf("%d\t", *(int *) da_nth(cptr, k)) < 0 ? -1 : r;
       }
-      r
-        = printf("%d\t",
-          *(int *) da_nth(cptr, da_length(cptr) - 1)) < 0 ? -1 : r;
-      r = da_apply((da *) s, (int (*)(void *))putechar) == -1 ? -1 : r;
-      r = putchar('\n') == EOF ? -1 : r;
+      r = printf("%d\t%s\n", *(int *) da_nth(cptr, da_length(cptr) - 1),
+          s) < 0 ? -1 : r;
     }
   }
   return r;
 }
 
-int compar_ptrint(char *a, char *b) {
-  return *a == *b ? 0 : *a > *b ? 1 : -1;
-}
-
-int da_comp(da *d, da *b) {
-  return da_cmp(d, b, (int (*)(const void *, const void *))compar_ptrint);
-}
-
-int putechar(char *c) {
-  if (*c == '\0') {
-    return 0;
-  }
-  return putchar(*c) == EOF ? -1 : 0;
-}
-
-int nothing(int c) {
-  return c;
-}
-
-int rzero(int c) {
-  return c;
+int rfree(void *p) {
+  free(p);
+  return 0;
 }
 
 bool is_zero(int *c) {

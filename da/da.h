@@ -16,10 +16,12 @@
 //      sa déréférence n'est pas l'adresse d'un contrôleur préalablement
 //      renvoyée avec succès par la fonction da_empty et non révoquée
 //      depuis par la fonction da_dispose ;
-//   - chaque appelle a la fonction da_empty (avec un retours d'un contrôleur
+//  - chaque appelle a la fonction da_empty (avec un retours d'un contrôleur
 //      avec succès) doit donner lieu à un appelle en fin d'utilisation du
 //      tableau à la fonction da_dispose, pour une libération propre et
 //      controler de la mémoire.
+//  - On garantie que les éléments ce suivent dans la mémoire et qu'il n'y a
+//      aucun espace entre les élements
 
 #include <stdlib.h>
 #include <stdbool.h>
@@ -62,25 +64,5 @@ extern size_t da_length(da *d);
 
 //  da_reset : vide le tableau pointé par d.
 extern void da_reset(da *d);
-
-//  da_cmp : Renvois une valeur nulle si les elements présent dans d et b
-//    sont 2 a 2 identique celon la fonction de compaison pointé par compar.
-//    Sinon renvoit une valeur non nulle.
-extern int da_cmp(da *d, da *b, int (*comp)(const void *, const void *));
-
-//  da_dupli : Renvois un tableau dynamique équivalant a d en cas de réussite.
-//    Renvois NULL, en cas de dépassement de capacité.
-extern da *da_dupli(da *d);
-
-//  da_display_context : Applique a tout les éléments de da fun avec comme
-//    parametre le context cntxt. Si, lors du parcours, la valeur de l'appel
-//    n'est pas nulle, l'exécution de la fonction prend fin et la fonction
-//    renvoie cette valeur. Sinon, la fonction renvoie zéro.
-extern int da_apply_context(da *d, void *cntxt, int (*fun)(void *, void *));
-
-//  da_display : Applique a tout les éléments de da fun. Si, lors du parcours,
-//    la valeur de l'appel n'est pas nulle, l'exécution de la fonction prend fin
-//    et la fonction renvoie cette valeur. Sinon, la fonction renvoie zéro.
-extern int da_apply(da *d, int (*fun)(void *));
 
 #endif

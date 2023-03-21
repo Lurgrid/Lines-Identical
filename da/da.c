@@ -81,66 +81,7 @@ size_t da_length(da *d) {
   return d->nmemb;
 }
 
-int da_apply_context(da *d, void *cntxt, int (*fun)(void *, void *)) {
-  int r = 0;
-  for (char *p = (char *) d->ref;
-    p < (char *) d->ref + d->size * d->nmemb; p += d->size) {
-    if (fun(p, cntxt) != 0) {
-      r = -1;
-    }
-  }
-  return r;
-}
-
-int da_apply(da *d, int (*fun)(void *)) {
-  int r = 0;
-  for (char *p = (char *) d->ref;
-    p < (char *) d->ref + d->size * d->nmemb; p += d->size) {
-    if (fun(p) != 0) {
-      r = -1;
-    }
-  }
-  return r;
-}
-
 void da_reset(da *d) {
   d->nmemb = 0;
 }
 
-int da_cmp(da *d, da *b, int (*comp)(const void *, const void *)) {
-  char *p = (char *) d->ref;
-  char *q = (char *) b->ref;
-  size_t dnmemb = d->nmemb;
-  size_t bnmemb = b->nmemb;
-  while (dnmemb != 0) {
-    if (bnmemb == 0) {
-      return 1;
-    }
-    int c = comp(p, q);
-    if (c != 0) {
-      return c;
-    }
-    p += d->size;
-    q += b->size;
-    --dnmemb;
-    --bnmemb;
-  }
-  return bnmemb == 0 ? 0 : -1;
-}
-
-da *da_dupli(da *d) {
-  da *c = malloc(sizeof(*d));
-  if (c == NULL) {
-    return NULL;
-  }
-  c->ref = malloc(d->size * d->nmemb);
-  if (c->ref == NULL) {
-    free(c);
-    return NULL;
-  }
-  c->size = d->size;
-  c->nmemb = d->nmemb;
-  c->capacity = c->nmemb;
-  memcpy(c->ref, d->ref, d->size * d->nmemb);
-  return c;
-}
