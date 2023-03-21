@@ -8,7 +8,7 @@
 #include "hashtable.h"
 #include "opt.h"
 
-//--- Macro définitan les couleurs dans le terminal ----------------------------
+//--- Macro définissant les couleurs dans le terminal ----------------------------
 
 #define ANSI_RED    "\033[0;31m"
 #define ANSI_GREEN  "\033[0;32m"
@@ -26,6 +26,10 @@
 
 #define SYNTAX(context, err) MESSAGE_GEN(ANSI_YELLOW, "Syntax", err, \
     (context).use_color)
+
+//--- Macro des options --------------------------------------------------------
+
+#define AOPT_LENGTH 4
 
 //--- Structure de context -----------------------------------------------------
 
@@ -127,7 +131,7 @@ int main(int argc, char **argv) {
   optreturn ot;
   const char *err;
   if ((ot
-        = opt_init(argv, argc, aop, 4,
+        = opt_init(argv, argc, aop, AOPT_LENGTH,
           (int (*)(void *, const char *, const char **))file_handler, &context,
           &err, "[OPTION]... <file>",
           "Le projet consiste à écrire un programme en C dont le but est :\n"
