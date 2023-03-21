@@ -168,7 +168,6 @@ int main(int argc, char **argv) {
     int c;
     while ((c = fnlines(f, line, &context)) == 0) {
       if (da_length(line) > 1) {
-        /*peut être a retravailler*/
         da *cptr = hashtable_search(ht, da_nth(line, 0));
         if (i == 0) {
           if (cptr != NULL) {
@@ -185,6 +184,7 @@ int main(int argc, char **argv) {
               goto err_allocation;
             }
             if (da_length(context.filesptr) > 1) {
+              /*Peut être à faire autre pars*/
               size_t k = 0;
               long int z = 1;
               while (k < da_length(context.filesptr)
@@ -192,6 +192,8 @@ int main(int argc, char **argv) {
                 z = 0;
                 ++k;
               }
+              /*--------------------------------------------------------------*/
+              /*Même code que en dessous*/
               char *w = malloc(da_length(line));
               if (w == NULL) {
                 da_dispose(&dcptr);
@@ -221,6 +223,7 @@ int main(int argc, char **argv) {
                 da_dispose(&dcptr);
                 goto err_allocation;
               }
+              /*--------------------------------------------------------------*/
             }
           }
         } else if (cptr != NULL) {
@@ -245,12 +248,14 @@ int main(int argc, char **argv) {
   if (context.sort != NULL) {
     holdall_sort(has, (int (*)(const void *, const void *))context.sort);
   }
+  /*Avec un da_apply_context on peut réduire sa a deux ligne a voir si pour ou contre*/
   for (size_t k = 0; k < da_length(context.filesptr); ++k) {
     printf("%s", *(char **) da_nth(context.filesptr, k));
     if (k != da_length(context.filesptr) - 1) {
       putchar('\t');
     }
   }
+  /*--------------------------------------------------------------------------*/
   putchar('\n');
   if (holdall_apply_context2(has,
       ht, (void *(*)(void *, void *))hashtable_search,
@@ -276,6 +281,8 @@ error:
   r = EXIT_FAILURE;
 dispose:
   if (f != NULL && f != stdin) {
+    /*Ce fclose ne s'éxecute que dans le cas où y a déjà eu une erreur donc pas
+     *  besoin de le tester*/
     fclose(f);
   }
   da_dispose(&context.filesptr);
