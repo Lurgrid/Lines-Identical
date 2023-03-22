@@ -236,6 +236,7 @@ int main(int argc, char **argv) {
       da_reset(line);
     }
     if (f != stdin && fclose(f) != 0) {
+      f = NULL;
       goto err_file;
     }
     if (c < 0) {
@@ -248,14 +249,12 @@ int main(int argc, char **argv) {
   if (context.sort != NULL) {
     holdall_sort(has, (int (*)(const void *, const void *))context.sort);
   }
-  /*Avec un da_apply_context on peut réduire sa a deux ligne a voir si pour ou contre*/
   for (size_t k = 0; k < da_length(context.filesptr); ++k) {
     printf("%s", *(char **) da_nth(context.filesptr, k));
     if (k != da_length(context.filesptr) - 1) {
       putchar('\t');
     }
   }
-  /*--------------------------------------------------------------------------*/
   putchar('\n');
   if (holdall_apply_context2(has,
       ht, (void *(*)(void *, void *))hashtable_search,
@@ -356,6 +355,7 @@ int fnlines(FILE *f, da *t, cntxt *context) {
   if (da_add(t, &c) == NULL) {
     return -1;
   }
+
   return 0;
 }
 
