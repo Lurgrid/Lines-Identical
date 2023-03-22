@@ -114,7 +114,6 @@ static int scptr_display(cntxt *context, const char *s, da *cptr);
 static bool is_zero(int *c);
 
 int main(int argc, char **argv) {
-  /*A revoir car pas de demande de couleur pour cette erreur*/
   int r = EXIT_SUCCESS;
   optparam *aop[] = {
     AOPT
@@ -182,8 +181,20 @@ int main(int argc, char **argv) {
             if (dcptr == NULL) {
               goto err_allocation;
             }
+            char *w = malloc(da_length(line));
+            if (w == NULL) {
+              da_dispose(&dcptr);
+              goto err_allocation;
+            }
+            strcpy(w, (char *) da_nth(line, 0));
             if (da_length(context.filesptr) > 1) {
-              /*Peut être à faire autre pars*/
+              /*On est pas obliger de l'initialiser je crois, si au lieu d'initiliser un compteur pour chaque fichier on peut pas plutôt ce dire :
+               *    - pour le premier fichier j'ajoute que 1 au compteur (car y a eu qu'une occurence)
+               *    - pour les autres fichier, on regarde si la taille de dcptr est égal au numéro du fichier, ou si elle est égal au numéro du fichier moins 1
+               *        ✦ si length de dcptr == numéro de fichier alors on incrémente l'indice numéro du fichier
+               *        ✦ sinon on ajoute 1 à dcptr à l'indice du fichier
+               * (en plus d'un gain de place dans le code, on gagne un peut d'espace mémoire, celle des 0 qui pouvait ne pas être utiliser même si sa reste presque rien)
+               * */
               size_t k = 0;
               long int z = 1;
               while (k < da_length(context.filesptr)
@@ -191,14 +202,6 @@ int main(int argc, char **argv) {
                 z = 0;
                 ++k;
               }
-              /* --------------------------------------------------------------
-               * Même code que en dessous*/
-              char *w = malloc(da_length(line));
-              if (w == NULL) {
-                da_dispose(&dcptr);
-                goto err_allocation;
-              }
-              strcpy(w, (char *) da_nth(line, 0));
               if (k != da_length(context.filesptr)
                   || holdall_put(has, w) != 0
                   || holdall_put(hada, dcptr) != 0
@@ -208,12 +211,6 @@ int main(int argc, char **argv) {
                 goto err_allocation;
               }
             } else {
-              char *w = malloc(da_length(line));
-              if (w == NULL) {
-                da_dispose(&dcptr);
-                goto err_allocation;
-              }
-              strcpy(w, (char *) da_nth(line, 0));
               if (da_add(dcptr, &n) == NULL
                   || holdall_put(hada, dcptr) != 0
                   || holdall_put(has, w) != 0
@@ -222,7 +219,6 @@ int main(int argc, char **argv) {
                 da_dispose(&dcptr);
                 goto err_allocation;
               }
-              /*--------------------------------------------------------------*/
             }
           }
         } else if (cptr != NULL) {
@@ -318,26 +314,6 @@ int file_handler(cntxt *context, const char *filename, const char **err) {
   return 0;
 }
 
-static int sort_handler(cntxt * restrict context, const char * restrict value,
-    const char **err) {
-  if (strcmp(value, "standard") == 0) {
-    context->sort = (int (*)(const void *, const void *))strcmp;
-  } else if (strcmp(value, "local") == 0) {
-    setlocale(LC_COLLATE, "");
-    context->sort = (int (*)(const void *, const void *))strcoll;
-  } else {
-    *err = "Pas le bon paramettre\n";
-    return -1;
-  }
-  *err = NULL;
-  return 0;
-}
-
-int rda_dispose(da *d) {
-  da_dispose(&d);
-  return 0;
-}
-
 int fnlines(FILE *f, da *t, cntxt *context) {
   int c;
   while ((c = fgetc(f)) != EOF && c != '\n') {
@@ -377,8 +353,28 @@ int rfree(void *p) {
   return 0;
 }
 
+int rda_dispose(da *d) {
+  da_dispose(&d);
+  return 0;
+}
+
 bool is_zero(int *c) {
   return *c == 0;
+}
+
+int sort_handler(cntxt * restrict context, const char * restrict value,
+    const char **err) {
+  if (strcmp(value, "standard") == 0) {
+    context->sort = (int (*)(const void *, const void *))strcmp;
+  } else if (strcmp(value, "local") == 0) {
+    setlocale(LC_COLLATE, "");
+    context->sort = (int (*)(const void *, const void *))strcoll;
+  } else {
+    *err = "Pas le bon paramettre\n";
+    return -1;
+  }
+  *err = NULL;
+  return 0;
 }
 
 int filter(cntxt *context, const char *value, const char **err) {
