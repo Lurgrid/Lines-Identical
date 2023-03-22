@@ -9,8 +9,7 @@
 #include "hashtable.h"
 #include "opt.h"
 
-//--- Macro définissant les couleurs dans le terminal
-// ----------------------------
+//--- Macro définissant les couleurs dans le terminal -------------------------
 
 #define ANSI_RED    "\033[0;31m"
 #define ANSI_GREEN  "\033[0;32m"
@@ -192,8 +191,8 @@ int main(int argc, char **argv) {
                 z = 0;
                 ++k;
               }
-              /*--------------------------------------------------------------*/
-              /*Même code que en dessous*/
+              /* --------------------------------------------------------------
+               * Même code que en dessous*/
               char *w = malloc(da_length(line));
               if (w == NULL) {
                 da_dispose(&dcptr);
@@ -343,7 +342,7 @@ int fnlines(FILE *f, da *t, cntxt *context) {
   int c;
   while ((c = fgetc(f)) != EOF && c != '\n') {
     c = context->class == NULL ? c : context->class(c);
-    if ((context->filter == NULL ? 1 : context->filter(c))
+    if ((context->filter == NULL || context->filter(c))
         && da_add(t, &c) == NULL) {
       return -1;
     }
@@ -355,30 +354,21 @@ int fnlines(FILE *f, da *t, cntxt *context) {
   if (da_add(t, &c) == NULL) {
     return -1;
   }
-
   return 0;
 }
 
 int scptr_display(cntxt *context, const char *s, da *cptr) {
-  int r = 0;
-  if (da_length(context->filesptr) == 1) {
-    if (da_length(cptr) == 1) {
-      return 0;
-    }
-    for (size_t k = 0; k < da_length(cptr) - 1; ++k) {
-      r = printf("%d,", *(int *) da_nth(cptr, k)) < 0 ? -1 : r;
-    }
-    r = printf("%d\t%s\n", *(int *) da_nth(cptr, da_length(cptr) - 1),
-        s) < 0 ? -1 : r;
-  } else {
-    if (da_cond_left_search(cptr, (bool (*)(const void *))is_zero) == NULL) {
-      for (size_t k = 0; k < da_length(cptr) - 1; ++k) {
-        r = printf("%d\t", *(int *) da_nth(cptr, k)) < 0 ? -1 : r;
-      }
-      r = printf("%d\t%s\n", *(int *) da_nth(cptr, da_length(cptr) - 1),
-          s) < 0 ? -1 : r;
-    }
+  if ((da_length(context->filesptr) == 1 && da_length(cptr) == 1)
+      || (da_cond_left_search(cptr, (bool (*)(const void *))is_zero) != NULL)) {
+    return 0;
   }
+  int r = 0;
+  char separator = da_length(context->filesptr) == 1 ? ',' : '\t';
+  for (size_t k = 0; k < da_length(cptr) - 1; ++k) {
+    r = printf("%d%c", *(int *) da_nth(cptr, k), separator) < 0 ? -1 : r;
+  }
+  r = printf("%d\t%s\n", *(int *) da_nth(cptr, da_length(cptr) - 1),
+      s) < 0 ? -1 : r;
   return r;
 }
 
