@@ -1,13 +1,15 @@
 //  Partie implantation du module da.
 
 #include "da.h"
-#include <string.h>
 #include <stdint.h>
+#include <string.h>
 
-#include <stdio.h>
+//--- Macro DA -----------------------------------------------------------------
 
 #define DA_MIN_LENGTH 1
 #define DA_MUL_LENGTH 2
+
+//--- Définition da ------------------------------------------------------------
 
 struct da {
   void *ref;
@@ -15,6 +17,8 @@ struct da {
   size_t capacity;
   size_t nmemb;
 };
+
+//--- Implémentation da --------------------------------------------------------
 
 da *da_empty(size_t size) {
   da *d = malloc(sizeof(*d));

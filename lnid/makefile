@@ -5,7 +5,7 @@ hashtable_dir = ../hashtable/
 CC = gcc
 CFLAGS = -std=c18 \
   -Wall -Wconversion -Werror -Wextra -Wpedantic -Wwrite-strings \
-  -O2 \
+  -O2 -DHOLDALL_PUT_TAIL\
   -I$(holdall_dir) -I$(opt_dir) -I$(da_dir) -I$(hashtable_dir)
 vpath %.c $(da_dir) $(holdall_dir) $(opt_dir) $(hashtable_dir)
 vpath %.h $(da_dir) $(holdall_dir) $(opt_dir) $(hashtable_dir)

@@ -9,7 +9,7 @@
 #include "hashtable.h"
 #include "opt.h"
 
-//--- Macro définissant les couleurs dans le terminal -------------------------
+//--- Macro définissant les couleurs utilisables dans le terminal --------------
 
 #define ANSI_RED    "\033[0;31m"
 #define ANSI_GREEN  "\033[0;32m"
@@ -18,39 +18,32 @@
 
 //--- Macro d'affichage d'erreur -----------------------------------------------
 
-#define MESSAGE_GEN(color, type_msg, msg, useColor)                            \
-  fprintf(stderr, "%s" "*** "type_msg ": %s" "%s" "\n", useColor ? color : "", \
-    msg, useColor ? ANSI_NORM : "")
-
-#define ERROR(context, err) MESSAGE_GEN(ANSI_RED, "Error", err,                \
-    (context).use_color)
-
-#define SYNTAX(context, err) MESSAGE_GEN(ANSI_YELLOW, "Syntax", err,           \
-    (context).use_color)
+#define ERROR(context, err)                                                    \
+  fprintf(stderr, "%s*** Error: %s%s\n", (context).use_color ? ANSI_RED : "",  \
+    (err), (context).use_color ? ANSI_NORM : "")
 
 //--- Macro des options --------------------------------------------------------
 
 #define AOPT_LENGTH 4
-#define AOPT opt_gen("-f", "--filter", "la fonction de filtre", true,          \
-    (int (*)(void *, const char *, const char **))filter),                     \
+
+#define AOPT                                                                   \
   opt_gen("-u", "--uppercasing", "met en majuscule", false,                    \
-    (int (*)(void *, const char *, const char **))handle_uppercasing),         \
+    (int (*)(void *, const char *, const char **))uppercasing_handler),        \
   opt_gen("-nc", "--no-color", "enlève les couleurs", false,                   \
-    (int (*)(void *, const char *, const char **))handle_no_color),            \
+    (int (*)(void *, const char *, const char **))no_color_handler),           \
+  opt_gen("-f", "--filter", "la fonction de filtre", true,                     \
+    (int (*)(void *, const char *, const char **))filter_handler),             \
   opt_gen("-s", "--sort", "trie la chienté", true,                             \
     (int (*)(void *, const char *, const char **))sort_handler)                \
 
 #define DESC                                                                   \
-  "Le projet consiste à écrire un programme en C dont le but est :\n"          \
-  "— si le nom d’un seul fichier figure sur la ligne de commande,"             \
-  " d’afficher, pour chaque ligne de texte non vide apparaissant au moins "    \
-  "deux fois dans le fichier, les numéros des lignes où elle apparait et le"   \
-  "contenu de la ligne ;\n — si au moins deux noms de fichiers figurent sur "  \
-  "la ligne de commande, d’afficher, pour chaque ligne de texte non vide "     \
-  "apparaissant au moins une fois dans tous les fichiers, le nombre "          \
-  "d’occurrences de la ligne dans chacun des fichiers et le contenu de la "    \
-  "ligne.\n L’affichage se fait en colonnes sur la sortie standard. Les "      \
-  "colonnes sont (uniquement) séparées"                                        \
+  "Si un seul FICHIER, alors renvoie vers la sortie standard les numéros et le" \
+  " contenu des lignes équivalentes.\nSi plusieurs FICHIERs, alors renvoie "   \
+  "vers la sortie standart, le nombre d'occurence des lignes equivalents "     \
+  "toute présentes dans les FICHIERs.\n\nSans FICHIER ou quand FICHIER est -, " \
+  "lire l'entrée standard."
+
+#define USAGE "[OPTION]... [FICHIER]..."
 
 //--- Structure de context -----------------------------------------------------
 
@@ -64,29 +57,42 @@ typedef struct {
 
 //--- Fonction de traitement d'option ------------------------------------------
 
-#define HANDLE_PARAM_NO_ARG(fun, attribut, value)                              \
-  static int handle_ ## fun(cntxt * context, __attribute__((unused))           \
-    const char *res, const char **err) {                                       \
+//  HANDLE_PARAM_NO_ARG : définit la fonction de nom « fun ## _handler »
+//    et de paramètre un pointeur sur un context de type cntxt, une chaine de
+//    charactère value non utiliser et un pointeur vers une chaine de charactère
+//    err. La fonction définie, change le champ attribut du context en lui
+//    attribuant la valeur val, en méttant *err à NULL et en retournant 0.
+#define HANDLE_PARAM_NO_ARG(fun, attribut, val)                                \
+  static int fun ## _handler(cntxt * restrict context, __attribute__((unused)) \
+    const char * restrict value, const char **err) {                           \
     *err = NULL;                                                               \
-    context->attribut = value;                                                 \
+    context->attribut = val;                                                   \
     return 0;                                                                  \
   }
+
+//  uppercasing_handler, no_color_handler : définition.
 
 HANDLE_PARAM_NO_ARG(uppercasing, transform, toupper)
 HANDLE_PARAM_NO_ARG(no_color, use_color, false)
 
-static int filter(cntxt *context, const char *value, const char **err);
-
 //  file_handler : Ajoute le nom du fichier pointer par filename, au champs
 //    filesptr du context.
-//    Retourne une valeur null en cas d'echecs, et met *err à la valeur NULL.
-//    Sinon renvoie une valeur non nul, et le chaine pointer par *err représente
+//    Retourne une valeur nul en cas de réussite, et met *err à la valeur NULL.
+//    Sinon renvoie une valeur non nul, et la chaine pointer par *err représente
 //    l'erreur.
 static int file_handler(cntxt * restrict context,
     const char * restrict filename, const char **err);
 
+//  sort_handler, filter_handler : Si value est un argument valide pour l'option
+//    sort (resp filter) selon cette fonction, alors met context->sort
+//    (resp context->filter) à la fonction adecoite.
+//    Dans ce cas renvoie une valeur nulle et met *err à la valeur NULL. Sinon
+//    renvois un entier non nulle et *err pointe sur le message correspondant à
+//    l'erreur.
 static int sort_handler(cntxt * restrict context,
-    const char * restrict filename, const char **err);
+    const char * restrict value, const char ** restrict err);
+static int filter_handler(cntxt * restrict context, const char * restrict value,
+    const char ** restrict err);
 
 //--- Utilitaire ---------------------------------------------------------------
 
@@ -94,21 +100,33 @@ static int sort_handler(cntxt * restrict context,
 //    et Pike pour les chaines de caractères.
 static size_t str_hashfun(const char *d);
 
-//  fnlines : lis tous les charactères d'une ligne sur le flot associé à f. Pour
-//    tous les charactres lu transformer par la fonction context->transform, si
-//    c'est charactère vérifient la condition context->filter, tentes de les
-//    ajouter à t. A la fin de la lecture, si aucune erreur n'a été détécter,
-//    tente d'ajouté '\0' à t.
-//    Retourne une valeur nul en cas de succé, sinon une valeur strictement
+//  fnlines : lis sur le flot associé à f, tous les charactères d'une ligne.
+//    Si context->transform est différent de NULL alors applique cette fonction
+//    à tous les charactères lu, sinon aucune transformation n'est effectuer sur
+//    les charactères lu. Si context->filter est différent de NULL et que
+//    sa condition est vérifié alors, tentes de les ajouter à t, sinon tente de
+//    les ajoutes à t. Si a la fin de la lecture, si aucune erreur n'a été
+//    détécter, tente d'ajouté '\0' à t.
+//    Retourne une valeur nulle en cas de succée, sinon une valeur strictement
 //    positif en cas d'erreur sur la lecture du ficiher. Enfin une valeur
-//    strictement négatif en cas d'erreur d'allocation.
-static int fnlines(FILE *f, da *t, cntxt *context);
+//    strictement négatif est renvoyé en cas d'erreur d'allocation.
+static int fnlines(FILE * restrict f, da * restrict t,
+    cntxt * restrict context);
 
+//  rfree, rda_dispose : Libère les ressources alloué dynamiquement pointé par p
+//    et respectivement d, puis renvoi 0.
 static int rfree(void *p);
-
 static int rda_dispose(da *d);
 
-static int scptr_display(cntxt *context, const char *s, da *cptr);
+//  scptr_display : Sans effet si il n'y a qu'un seul fichier dans
+//    context->filesptr et que cptr a une longeur de 1 ou qu'il y a plusieur
+//    fichier et que la longeur de cptr est différente du nombre de fichier.
+//    Sinon affiche sur la sortie standard le contenu de cptr avec comme
+//    séparateur le charactère ',' si il n'y a qu'un seul fichier sinon une
+//    tabulation, puis affiche une tabulation et la chaine s.
+//    Renvoie zéro en cas de succès, une valeur non nulle en cas d'échec.
+static int scptr_display(cntxt * restrict context, const char * restrict s,
+    da * restrict cptr);
 
 int main(int argc, char **argv) {
   int r = EXIT_SUCCESS;
@@ -131,34 +149,31 @@ int main(int argc, char **argv) {
   }
   optreturn ot;
   const char *err;
-  if ((ot = opt_init(argv, argc, aop, AOPT_LENGTH,
+  if ((ot = opt_init(argc, argv, aop, AOPT_LENGTH,
       (int (*)(void *, const char *, const char **))file_handler, &context,
-      &err, "[OPTION]... <file>", DESC)) != DONE) {
+      &err, USAGE, DESC)) != DONE) {
     if (ot == STOP_PROCESS) {
       goto dispose;
     }
     if (ot == NO_PARAM) {
-      SYNTAX(context, "No paramettre where given, see the help for more"
-          " information");
+      const char *c = "-";
+      if (da_add(context.filesptr, &c) == NULL) {
+        goto err_allocation;
+      }
     } else {
       ERROR(context, err);
+      goto error;
     }
-    goto error;
   }
-
-  if (da_length(context.filesptr) == 0) {
-    goto error_no_file;
-  }
-  /*boucle principal*/
   for (size_t i = 0; i < da_length(context.filesptr); ++i) {
     char *filename = *(char **) da_nth(context.filesptr, i);
     if (*filename == '-' && *(filename + 1) == '\0') {
       f = stdin;
     } else {
       f = fopen(filename, "r");
-    }
-    if (f == NULL) {
-      goto err_open_file;
+      if (f == NULL) {
+        goto err_open_file;
+      }
     }
     long int n = 1;
     int c;
@@ -239,9 +254,6 @@ int main(int argc, char **argv) {
     goto error_write;
   }
   goto dispose;
-error_no_file:
-  ERROR(context, "Does have a file/s");
-  goto error;
 error_write:
   ERROR(context, "A write error occurs");
   goto error;
@@ -338,7 +350,7 @@ int rda_dispose(da *d) {
   return 0;
 }
 
-int sort_handler(cntxt * restrict context, const char * restrict value,
+int sort_handler(cntxt *context, const char *value,
     const char **err) {
   if (strcmp(value, "standard") == 0) {
     context->sort = (int (*)(const void *, const void *))strcmp;
@@ -353,7 +365,7 @@ int sort_handler(cntxt * restrict context, const char * restrict value,
   return 0;
 }
 
-int filter(cntxt *context, const char *value, const char **err) {
+int filter_handler(cntxt *context, const char *value, const char **err) {
   if (strcmp(value, "alnum") == 0) {
     context->filter = isalnum;
   } else if (strcmp(value, "alpha") == 0) {

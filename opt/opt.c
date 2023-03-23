@@ -12,7 +12,6 @@
 //    longue de l'option. desc est une chaine de carractère, la description de
 //    l'option. le booléen vaut vrai si l'option demande un paramètre et faux
 //    sinon. la fonction fun représente les actions l'ors de l'appel de l'option
-//    .
 struct optparam {
   const char *optshort;
   const char *optlong;
@@ -42,7 +41,7 @@ static const char *prefix(const char *s1, const char *s2) {
   return prefix(s1 + 1, s2 + 1);
 }
 
-//--- OPT function -------------------------------------------------------------
+//--- Implémentation opt -------------------------------------------------------
 
 optparam *opt_gen(const char *optshort, const char *optlong, const char *desc,
     bool arg, int (*fun)(void *cntxt, const char *value, const char **err)) {
@@ -72,15 +71,14 @@ enum parse_return {
   NOT_EQUAL,
 };
 
-//  opt_check : Vérifie si la chaine d'indice k du tableau argv (de longueur
+//  opt_parse : Vérifie si la chaine d'indice k du tableau argv (de longueur
 //    argc) correspond à une entrée correct de l'option pointer par opt.
 //    Retourne SUCCESS_PARAM si l'entrée était correct, option pointe alors sur
 //    argv[k + 1] si le l'option a besoin d'un paramètre sinon pointe sur
 //    argv[k]. Si la valuer retourner est egale a NOT_EQUAL alors l'entrée n'est
 //    pas l'option pointer par opt et option vaut NULL. Enfin FAILURE_PARAM est
 //    renvoyer quand l'utilisateur a rentrée l'option pointé par opt mais ne lui
-//    à pas donner d'argument alors qu'elle en demander un, dans se cas option
-//    pointe sur argv[k].
+//    à pas donner son argument, dans se cas option pointe sur argv[k].
 static enum parse_return opt_parse(const optparam *opt, int *k, char **argv, int argc,
     const char **option) {
   if (strcmp(SHORT(opt), argv[*k]) == 0) {
@@ -111,14 +109,14 @@ static enum parse_return opt_parse(const optparam *opt, int *k, char **argv, int
   return SUCCESS_PARAM;
 }
 
-#define PRINT_OPTION(opt) printf("\t%s%s | %s%s : %s\n", opt->optshort,        \
+#define PRINT_OPTION(opt) printf("   %s%s\t| %s%s : %s\n", opt->optshort,        \
     (opt->arg ? " [option]" : ""), opt->optlong,                               \
     (opt->arg ? "=[option]" : ""), opt->desc)                                  \
 
 #define SHORT_HELP "-h"
 #define LONG_HELP "--help"
 
-optreturn opt_init(char **argv, int argc, optparam **aopt,
+optreturn opt_init(int argc, char **argv, optparam **aopt,
     size_t nmemb, int (*other)(void *cntxt, const char *value,
     const char **err), void *cntxt, const char **err, const char *usage,
     const char *desc) {
@@ -128,13 +126,13 @@ optreturn opt_init(char **argv, int argc, optparam **aopt,
   for (int k = 1; k < argc; ++k) {
     if (strcmp(SHORT_HELP, argv[k]) == 0 || strcmp(LONG_HELP, argv[k]) == 0) {
       if (usage != NULL) {
-        printf("Usage: %s %s\n\n", argv[0], usage);
+        printf("Usage: %s %s\n", argv[0], usage);
+      }
+      if (desc != NULL) {
+        printf("%s\n\n", desc);
       }
       for (size_t i = 0; i < nmemb; ++i) {
         PRINT_OPTION(aopt[i]);
-      }
-      if (desc != NULL) {
-        printf("\n%s\n", desc);
       }
       return STOP_PROCESS;
     }

@@ -20,11 +20,9 @@
 //      avec succès) doit donner lieu à un appelle en fin d'utilisation du
 //      tableau à la fonction da_dispose, pour une libération propre et
 //      controler de la mémoire.
-//  - On garantie que les éléments ce suivent dans la mémoire et qu'il n'y a
-//      aucun espace entre les élements
+//  - L'implémentation garantie que les éléments sont contiguue dans la mémoire.
 
 #include <stdlib.h>
-#include <stdbool.h>
 
 //  struct da, da : type et nom de type d'un contrôleur regroupant les
 //    informations nécessaires pour gérer un tableau infinie.
@@ -32,8 +30,8 @@ typedef struct da da;
 
 //  da_empty : tente d'allouer les ressources nécessaires pour gérer un
 //    nouveau tableau initialement vide de futurs éléments de taille size.
-//    Renvoie NULL en cas de dépassement de capacité. Renvoie sinon un pointeur
-//    vers le contrôleur associé a ce tableau.
+//    Renvoie NULL en cas de dépassement de capacité.
+//    Renvoie sinon un pointeur vers le contrôleur associé a ce tableau.
 extern da *da_empty(size_t size);
 
 //  da_dispose : sans effet si *dptr vaut NULL. Libère sinon les
@@ -57,7 +55,7 @@ extern void *da_nth(da *d, size_t n);
 //    d.
 extern size_t da_length(da *d);
 
-//  da_reset : vide le tableau pointé par d.
+//  da_reset : reinitialise le tableau pointé par d.
 extern void da_reset(da *d);
 
 #endif
