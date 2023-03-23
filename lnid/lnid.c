@@ -56,7 +56,7 @@
 
 typedef struct {
   int (*filter)(int c);
-  int (*class)(int c);
+  int (*transform)(int c);
   bool use_color;
   int (*sort)(const void *, const void *);
   da *filesptr;
@@ -72,7 +72,7 @@ typedef struct {
     return 0;                                                                  \
   }
 
-HANDLE_PARAM_NO_ARG(uppercasing, class, toupper)
+HANDLE_PARAM_NO_ARG(uppercasing, transform, toupper)
 HANDLE_PARAM_NO_ARG(no_color, use_color, false)
 
 static int filter(cntxt *context, const char *value, const char **err);
@@ -95,7 +95,7 @@ static int sort_handler(cntxt * restrict context,
 static size_t str_hashfun(const char *d);
 
 //  fnlines : lis tous les charactères d'une ligne sur le flot associé à f. Pour
-//    tous les charactres lu transformer par la fonction context->class, si
+//    tous les charactres lu transformer par la fonction context->transform, si
 //    c'est charactère vérifient la condition context->filter, tentes de les
 //    ajouter à t. A la fin de la lecture, si aucune erreur n'a été détécter,
 //    tente d'ajouté '\0' à t.
@@ -110,16 +110,13 @@ static int rda_dispose(da *d);
 
 static int scptr_display(cntxt *context, const char *s, da *cptr);
 
-//  is_zero: retourne vrai si c est egale a 0
-static bool is_zero(int *c);
-
 int main(int argc, char **argv) {
   int r = EXIT_SUCCESS;
   optparam *aop[] = {
     AOPT
   };
   cntxt context = {
-    .filesptr = da_empty(sizeof(char *)), .filter = NULL, .class = NULL,
+    .filesptr = da_empty(sizeof(char *)), .filter = NULL, .transform = NULL,
     .use_color = true, .sort = NULL
   };
   FILE *f = NULL;
@@ -148,6 +145,7 @@ int main(int argc, char **argv) {
     }
     goto error;
   }
+
   if (da_length(context.filesptr) == 0) {
     goto error_no_file;
   }
@@ -187,44 +185,28 @@ int main(int argc, char **argv) {
               goto err_allocation;
             }
             strcpy(w, (char *) da_nth(line, 0));
-            if (da_length(context.filesptr) > 1) {
-              /*On est pas obliger de l'initialiser je crois, si au lieu d'initiliser un compteur pour chaque fichier on peut pas plutôt ce dire :
-               *    - pour le premier fichier j'ajoute que 1 au compteur (car y a eu qu'une occurence)
-               *    - pour les autres fichier, on regarde si la taille de dcptr est égal au numéro du fichier, ou si elle est égal au numéro du fichier moins 1
-               *        ✦ si length de dcptr == numéro de fichier alors on incrémente l'indice numéro du fichier
-               *        ✦ sinon on ajoute 1 à dcptr à l'indice du fichier
-               * (en plus d'un gain de place dans le code, on gagne un peut d'espace mémoire, celle des 0 qui pouvait ne pas être utiliser même si sa reste presque rien)
-               * */
-              size_t k = 0;
-              long int z = 1;
-              while (k < da_length(context.filesptr)
-                  && da_add(dcptr, &z) != NULL) {
-                z = 0;
-                ++k;
-              }
-              if (k != da_length(context.filesptr)
-                  || holdall_put(has, w) != 0
-                  || holdall_put(hada, dcptr) != 0
-                  || hashtable_add(ht, w, dcptr) == NULL) {
-                free(w);
-                da_dispose(&dcptr);
-                goto err_allocation;
-              }
-            } else {
-              if (da_add(dcptr, &n) == NULL
-                  || holdall_put(hada, dcptr) != 0
-                  || holdall_put(has, w) != 0
-                  || hashtable_add(ht, w, dcptr) == NULL) {
-                free(w);
-                da_dispose(&dcptr);
-                goto err_allocation;
-              }
+            long int z = da_length(context.filesptr) > 1 ? 1 : n;
+            if (da_add(dcptr, &z) == NULL
+                || holdall_put(has, w) != 0
+                || holdall_put(hada, dcptr) != 0
+                || hashtable_add(ht, w, dcptr) == NULL) {
+              free(w);
+              da_dispose(&dcptr);
+              goto err_allocation;
             }
           }
-        } else if (cptr != NULL) {
-          *(long int *) da_nth(cptr, i) += 1;
+        } else if (cptr != NULL && da_length(cptr) >= i) {
+          if (da_length(cptr) == i) {
+            long int z = 1;
+            if (da_add(cptr, &z) == NULL) {
+              goto err_allocation;
+            }
+          } else {
+            *(long int *) da_nth(cptr, i) += 1;
+          }
         }
       } else if (feof(f)) {
+        da_reset(line);
         break;
       }
       ++n;
@@ -275,8 +257,6 @@ error:
   r = EXIT_FAILURE;
 dispose:
   if (f != NULL && f != stdin) {
-    /*Ce fclose ne s'éxecute que dans le cas où y a déjà eu une erreur donc pas
-     *  besoin de le tester*/
     fclose(f);
   }
   da_dispose(&context.filesptr);
@@ -317,7 +297,7 @@ int file_handler(cntxt *context, const char *filename, const char **err) {
 int fnlines(FILE *f, da *t, cntxt *context) {
   int c;
   while ((c = fgetc(f)) != EOF && c != '\n') {
-    c = context->class == NULL ? c : context->class(c);
+    c = context->transform == NULL ? c : context->transform(c);
     if ((context->filter == NULL || context->filter(c))
         && da_add(t, &c) == NULL) {
       return -1;
@@ -334,8 +314,8 @@ int fnlines(FILE *f, da *t, cntxt *context) {
 }
 
 int scptr_display(cntxt *context, const char *s, da *cptr) {
-  if ((da_length(context->filesptr) == 1 && da_length(cptr) == 1)
-      || (da_cond_left_search(cptr, (bool (*)(const void *))is_zero) != NULL)) {
+  if (da_length(context->filesptr) == 1 ? da_length(cptr) == 1
+      : da_length(cptr) != da_length(context->filesptr)) {
     return 0;
   }
   int r = 0;
@@ -356,10 +336,6 @@ int rfree(void *p) {
 int rda_dispose(da *d) {
   da_dispose(&d);
   return 0;
-}
-
-bool is_zero(int *c) {
-  return *c == 0;
 }
 
 int sort_handler(cntxt * restrict context, const char * restrict value,

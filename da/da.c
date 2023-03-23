@@ -60,16 +60,6 @@ void *da_add(da *d, const void *ref) {
   return (void *) ref;
 }
 
-void *da_cond_left_search(da *d, bool (*cond)(const void *)) {
-  for (const char *p = (char *) d->ref;
-      p < (char *) d->ref + d->size * d->nmemb; p += d->size) {
-    if (cond(p)) {
-      return (void *) p;
-    }
-  }
-  return NULL;
-}
-
 void *da_nth(da *d, size_t n) {
   if (n >= d->nmemb) {
     return NULL;

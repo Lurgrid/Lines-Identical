@@ -48,11 +48,6 @@ extern void da_dispose(da **dptr);
 //    dépassement de capacité.
 extern void *da_add(da *d, const void *ref);
 
-//  da_cond_left_search : recherche la première occurrence dans le tableau d,
-//    d'un composant  qui satisfait une fonction de test. Renvoie l'adresse du
-//    composant trouvé en cas de succès, NULL en cas d'échec.
-extern void *da_cond_left_search(da *d, bool (*cond)(const void *));
-
 //  da_nth : recherche la nième valeur dans le tableau pointé par d.
 //    Retourne la référence trouver à l'indice n dans le tableau sinon renvoie
 //    NULL.
