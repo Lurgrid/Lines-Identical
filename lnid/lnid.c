@@ -128,6 +128,10 @@ static int rda_dispose(da *d);
 static int scptr_display(cntxt * restrict context, const char * restrict s,
     da * restrict cptr);
 
+static int aopt_once_null(optparam **aopt, size_t nmemb);
+
+static void aopt_dispose(optparam **aopt, size_t nmemb);
+
 int main(int argc, char **argv) {
   int r = EXIT_SUCCESS;
   optparam *aop[] = {
@@ -144,7 +148,7 @@ int main(int argc, char **argv) {
   holdall *hada = holdall_empty();
   da *line = da_empty(sizeof(char));
   if (context.filesptr == NULL || ht == NULL || has == NULL || hada == NULL
-      || line == NULL) {
+      || line == NULL || aopt_once_null(aop, AOPT_LENGTH) != 0) {
     goto err_allocation;
   }
   optreturn ot;
@@ -282,6 +286,7 @@ dispose:
   }
   holdall_dispose(&hada);
   da_dispose(&line);
+  aopt_dispose(aop, AOPT_LENGTH);
   return r;
 }
 
@@ -363,6 +368,21 @@ int sort_handler(cntxt *context, const char *value,
   }
   *err = NULL;
   return 0;
+}
+
+int aopt_once_null(optparam **aopt, size_t nmemb) {
+  for (size_t k = 0; k < nmemb; ++k) {
+    if (aopt[k] == NULL) {
+      return -1;
+    }
+  }
+  return 0;
+}
+
+void aopt_dispose(optparam **aopt, size_t nmemb) {
+  for (size_t k = 0; k < nmemb; ++k) {
+    opt_dispose(&(aopt[k]));
+  }
 }
 
 int filter_handler(cntxt *context, const char *value, const char **err) {
