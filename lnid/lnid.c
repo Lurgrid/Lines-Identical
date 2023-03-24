@@ -37,11 +37,11 @@
     (int (*)(void *, const char *, const char **))sort_handler)                \
 
 #define DESC                                                                   \
-  "Si un seul FICHIER, alors renvoie vers la sortie standard les numéros et le" \
-  " contenu des lignes équivalentes.\nSi plusieurs FICHIERs, alors renvoie "   \
+  "Si un seul FICHIER, alors renvoie vers la sortie standard les numéros et "  \
+  "le contenu des lignes équivalentes.\nSi plusieurs FICHIERs, alors renvoie " \
   "vers la sortie standart, le nombre d'occurence des lignes equivalents "     \
-  "toute présentes dans les FICHIERs.\n\nSans FICHIER ou quand FICHIER est -, " \
-  "lire l'entrée standard."
+  "toute présentes dans les FICHIERs.\n\nSans FICHIER ou quand FICHIER est -," \
+  " lire l'entrée standard."
 
 #define USAGE "[OPTION]... [FICHIER]..."
 
@@ -128,8 +128,12 @@ static int rda_dispose(da *d);
 static int scptr_display(cntxt * restrict context, const char * restrict s,
     da * restrict cptr);
 
+//  aopt_once_null : Retourne une valeur non nulle si le tableau aopt de longeur
+//    nmemb ne contient aucun élément NULL. Sinon renvoie une valeur nulle.
 static int aopt_once_null(optparam **aopt, size_t nmemb);
 
+//  aopt_dispose : Libère tout les nmemb éléments du tableau aopt, puis met la
+//    valeur de ces champs à NULL.
 static void aopt_dispose(optparam **aopt, size_t nmemb);
 
 int main(int argc, char **argv) {
