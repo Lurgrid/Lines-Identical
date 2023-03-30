@@ -79,8 +79,8 @@ enum parse_return {
 //    pas l'option pointer par opt et option vaut NULL. Enfin FAILURE_PARAM est
 //    renvoyer quand l'utilisateur a rentrée l'option pointé par opt mais ne lui
 //    à pas donner son argument, dans se cas option pointe sur argv[k].
-static enum parse_return opt_parse(const optparam *opt, int *k, char **argv, int argc,
-    const char **option) {
+static enum parse_return opt_parse(const optparam *opt, int *k, char **argv,
+    int argc, const char **option) {
   if (strcmp(SHORT(opt), argv[*k]) == 0) {
     if (ARG(opt)) {
       if (*k + 1 >= argc) {
@@ -101,7 +101,7 @@ static enum parse_return opt_parse(const optparam *opt, int *k, char **argv, int
     *option = NULL;
     return NOT_EQUAL;
   }
-  if (*p != '=') {
+  if (*p != LONG_JOIN) {
     *option = argv[*k];
     return FAILURE_PARAM;
   }
@@ -109,7 +109,7 @@ static enum parse_return opt_parse(const optparam *opt, int *k, char **argv, int
   return SUCCESS_PARAM;
 }
 
-#define PRINT_OPTION(opt) printf("   %s%s\t| %s%s : %s\n", opt->optshort,        \
+#define PRINT_OPTION(opt) printf("   %s%s\t| %s%s : %s\n", opt->optshort,      \
     (opt->arg ? " [option]" : ""), opt->optlong,                               \
     (opt->arg ? "=[option]" : ""), opt->desc)                                  \
 

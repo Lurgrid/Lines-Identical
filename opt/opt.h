@@ -24,6 +24,8 @@ typedef enum {
   DONE,
 } optreturn;
 
+#define LONG_JOIN '='
+
 //  opt_gen : Tente d'allouer les resources néssaires pour gérer une options.
 //    Avec pour valeur d'attribut optshort, optlong qui représente
 //    respectivement les version courte et longue de l'option. desc, une

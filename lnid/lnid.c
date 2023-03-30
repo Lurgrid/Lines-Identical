@@ -9,6 +9,8 @@
 #include "hashtable.h"
 #include "opt.h"
 
+//#include <time.h> // srand((unsigned int) time(NULL));
+
 //--- Macro définissant les couleurs utilisables dans le terminal --------------
 
 #define ANSI_RED    "\033[0;31m"
@@ -22,28 +24,28 @@
   fprintf(stderr, "%s*** Error: %s%s\n", (context).use_color ? ANSI_RED : "",  \
     (err), (context).use_color ? ANSI_NORM : "")
 
-//--- Macro des options --------------------------------------------------------
+//--- Macro et structure utilisé pour les fonctions d'option -------------------
 
-#define AOPT_LENGTH 4
+#define STD "standard"
+#define LC "local"
 
-#define AOPT                                                                   \
-  opt_gen("-u", "--uppercasing", "met en majuscule", false,                    \
-    (int (*)(void *, const char *, const char **))uppercasing_handler),        \
-  opt_gen("-nc", "--no-color", "enlève les couleurs", false,                   \
-    (int (*)(void *, const char *, const char **))no_color_handler),           \
-  opt_gen("-f", "--filter", "la fonction de filtre", true,                     \
-    (int (*)(void *, const char *, const char **))filter_handler),             \
-  opt_gen("-s", "--sort", "trie la chienté", true,                             \
-    (int (*)(void *, const char *, const char **))sort_handler)                \
+#define ALNUM "alnum"
+#define ALPHA "alpha"
+#define BLANK "blank"
+#define DIGIT "digit"
+#define CNTRL "cntrl"
+#define GRAPH "graph"
+#define LOWER "lower"
+#define PRINT "print"
+#define PUNCT "punct"
+#define SPACE "space"
+#define UPPER "upper"
+#define XDIGIT "xdigit"
 
-#define DESC                                                                   \
-  "Si un seul FICHIER, alors renvoie vers la sortie standard les numéros et "  \
-  "le contenu des lignes équivalentes.\nSi plusieurs FICHIERs, alors renvoie " \
-  "vers la sortie standart, le nombre d'occurence des lignes equivalents "     \
-  "toute présentes dans les FICHIERs.\n\nSans FICHIER ou quand FICHIER est -," \
-  " lire l'entrée standard."
-
-#define USAGE "[OPTION]... [FICHIER]..."
+struct category {
+  const char *label;
+  int (*cond)(int c);
+};
 
 //--- Structure de context -----------------------------------------------------
 
@@ -136,10 +138,19 @@ static int aopt_once_null(optparam **aopt, size_t nmemb);
 //    valeur de ces champs à NULL.
 static void aopt_dispose(optparam **aopt, size_t nmemb);
 
+#define STDIN "-"
+
 int main(int argc, char **argv) {
   int r = EXIT_SUCCESS;
   optparam *aop[] = {
-    AOPT
+    opt_gen("-u", "--uppercasing", "met en majuscule", false,
+        (int (*)(void *, const char *, const char **))uppercasing_handler),
+    opt_gen("-nc", "--no-color", "enlève les couleurs", false,
+        (int (*)(void *, const char *, const char **))no_color_handler),
+    opt_gen("-f", "--filter", "la fonction de filtre", true,
+        (int (*)(void *, const char *, const char **))filter_handler),
+    opt_gen("-s", "--sort", "trie la chienté", true,
+        (int (*)(void *, const char *, const char **))sort_handler)
   };
   cntxt context = {
     .filesptr = da_empty(sizeof(char *)), .filter = NULL, .transform = NULL,
@@ -152,20 +163,24 @@ int main(int argc, char **argv) {
   holdall *hada = holdall_empty();
   da *line = da_empty(sizeof(char));
   if (context.filesptr == NULL || ht == NULL || has == NULL || hada == NULL
-      || line == NULL || aopt_once_null(aop, AOPT_LENGTH) != 0) {
+      || line == NULL || aopt_once_null(aop, sizeof(aop) / sizeof(*aop)) != 0) {
     goto err_allocation;
   }
   optreturn ot;
   const char *err;
-  if ((ot = opt_init(argc, argv, aop, AOPT_LENGTH,
+  if ((ot = opt_init(argc, argv, aop, sizeof(aop) / sizeof(*aop),
       (int (*)(void *, const char *, const char **))file_handler, &context,
-      &err, USAGE, DESC)) != DONE) {
+      &err, "[OPTION]... [FICHIER]...", "Si un seul FICHIER, alors renvoie"
+      "vers la sortie standard les numéros et le contenu des lignes "
+      "équivalentes.\nSi plusieurs FICHIERs, alors renvoie vers la sortie "
+      "standart, le nombre d'occurence des lignes equivalents toute présentes "
+      "dans les FICHIERs.\n\nSans FICHIER ou quand FICHIER est -,lire l'entrée"
+      " standard.")) != DONE) {
     if (ot == STOP_PROCESS) {
       goto dispose;
     }
     if (ot == NO_PARAM) {
-      const char *c = "-";
-      if (da_add(context.filesptr, &c) == NULL) {
+      if (da_add(context.filesptr, &STDIN) == NULL) {
         goto err_allocation;
       }
     } else {
@@ -175,7 +190,7 @@ int main(int argc, char **argv) {
   }
   for (size_t i = 0; i < da_length(context.filesptr); ++i) {
     char *filename = *(char **) da_nth(context.filesptr, i);
-    if (*filename == '-' && *(filename + 1) == '\0') {
+    if (strcmp(filename, STDIN) == 0) {
       f = stdin;
     } else {
       f = fopen(filename, "r");
@@ -239,12 +254,12 @@ int main(int argc, char **argv) {
       f = NULL;
       goto err_file;
     }
+    f = NULL;
     if (c < 0) {
       goto err_allocation;
     } else if (c > 0) {
       goto err_file;
     }
-    f = NULL;
   }
   if (context.sort != NULL) {
     holdall_sort(has, (int (*)(const void *, const void *))context.sort);
@@ -290,7 +305,7 @@ dispose:
   }
   holdall_dispose(&hada);
   da_dispose(&line);
-  aopt_dispose(aop, AOPT_LENGTH);
+  aopt_dispose(aop, sizeof(aop) / sizeof(*aop));
   return r;
 }
 
@@ -340,12 +355,12 @@ int scptr_display(cntxt *context, const char *s, da *cptr) {
     return 0;
   }
   int r = 0;
-  char separator = da_length(context->filesptr) == 1 ? ',' : '\t';
   for (size_t k = 0; k < da_length(cptr) - 1; ++k) {
-    r = printf("%d%c", *(int *) da_nth(cptr, k), separator) < 0 ? -1 : r;
+    r = printf("%d%c", *(int *) da_nth(cptr, k),
+        da_length(context->filesptr) == 1 ? ',' : '\t') < 0 ? -1 : r;
   }
-  r = printf("%d\t%s\n", *(int *) da_nth(cptr, da_length(cptr) - 1),
-      s) < 0 ? -1 : r;
+  r = printf("%d\t%s\n", *(int *) da_nth(cptr, da_length(cptr) - 1), s) < 0
+      ? -1 : r;
   return r;
 }
 
@@ -361,9 +376,9 @@ int rda_dispose(da *d) {
 
 int sort_handler(cntxt *context, const char *value,
     const char **err) {
-  if (strcmp(value, "standard") == 0) {
+  if (strcmp(value, STD) == 0) {
     context->sort = (int (*)(const void *, const void *))strcmp;
-  } else if (strcmp(value, "local") == 0) {
+  } else if (strcmp(value, LC) == 0) {
     setlocale(LC_COLLATE, "");
     context->sort = (int (*)(const void *, const void *))strcoll;
   } else {
@@ -390,32 +405,27 @@ void aopt_dispose(optparam **aopt, size_t nmemb) {
 }
 
 int filter_handler(cntxt *context, const char *value, const char **err) {
-  if (strcmp(value, "alnum") == 0) {
-    context->filter = isalnum;
-  } else if (strcmp(value, "alpha") == 0) {
-    context->filter = isalpha;
-  } else if (strcmp(value, "blank") == 0) {
-    context->filter = isblank;
-  } else if (strcmp(value, "cntrl") == 0) {
-    context->filter = iscntrl;
-  } else if (strcmp(value, "graph") == 0) {
-    context->filter = isgraph;
-  } else if (strcmp(value, "lower") == 0) {
-    context->filter = islower;
-  } else if (strcmp(value, "print") == 0) {
-    context->filter = isprint;
-  } else if (strcmp(value, "punct") == 0) {
-    context->filter = ispunct;
-  } else if (strcmp(value, "space") == 0) {
-    context->filter = isspace;
-  } else if (strcmp(value, "upper") == 0) {
-    context->filter = isupper;
-  } else if (strcmp(value, "xdigit") == 0) {
-    context->filter = isxdigit;
-  } else {
-    *err = "Pas le bon paramettre\n";
-    return -1;
+  struct category cl[] = {
+    {ALNUM, isalnum},
+    {ALPHA, isalpha},
+    {BLANK, isblank},
+    {DIGIT, isdigit},
+    {UPPER, isupper},
+    {LOWER, islower},
+    {SPACE, isspace},
+    {CNTRL, iscntrl},
+    {GRAPH, isgraph},
+    {PRINT, isprint},
+    {PUNCT, ispunct},
+    {XDIGIT, isxdigit}
+  };
+  for (size_t k = 0; k < sizeof(cl) / sizeof(*cl); ++k) {
+    if (strcmp(cl[k].label, value) == 0) {
+      context->filter = cl[k].cond;
+      *err = NULL;
+      return 0;
+    }
   }
-  *err = NULL;
-  return 0;
+  *err = "Pas le bon paramettre\n";
+  return -1;
 }
