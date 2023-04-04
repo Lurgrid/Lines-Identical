@@ -11,13 +11,13 @@
 //    champs optshort, optlong représente respectivement les version courte et
 //    longue de l'option. desc est une chaine de carractère, la description de
 //    l'option. le booléen vaut vrai si l'option demande un paramètre et faux
-//    sinon. la fonction fun représente les actions l'ors de l'appel de l'option
+//    sinon. la fonction hdl représente les actions l'ors de l'appel de l'option
 struct optparam {
   const char *optshort;
   const char *optlong;
   const char *desc;
   bool arg;
-  int (*fun)(void *cntxt, const char *value, const char **err);
+  int (*hdl)(void *cntxt, const char *value, const char **err);
 };
 
 //--- Racourcis ----------------------------------------------------------------
@@ -44,7 +44,7 @@ static const char *prefix(const char *s1, const char *s2) {
 //--- Implémentation opt -------------------------------------------------------
 
 optparam *opt_gen(const char *optshort, const char *optlong, const char *desc,
-    bool arg, int (*fun)(void *cntxt, const char *value, const char **err)) {
+    bool arg, int (*hdl)(void *cntxt, const char *value, const char **err)) {
   optparam *op = malloc(sizeof *op);
   if (op == NULL) {
     return NULL;
@@ -53,7 +53,7 @@ optparam *opt_gen(const char *optshort, const char *optlong, const char *desc,
   op->optlong = optlong;
   op->desc = desc;
   op->arg = arg;
-  op->fun = fun;
+  op->hdl = hdl;
   return op;
 }
 
@@ -109,12 +109,10 @@ static enum parse_return opt_parse(const optparam *opt, int *k, char **argv,
   return SUCCESS_PARAM;
 }
 
+// en lever le égal pour mettre la macro
 #define PRINT_OPTION(opt) printf("   %s%s\t| %s%s : %s\n", opt->optshort,      \
     (opt->arg ? " [option]" : ""), opt->optlong,                               \
-    (opt->arg ? "=[option]" : ""), opt->desc)                                  \
-
-#define SHORT_HELP "-h"
-#define LONG_HELP "--help"
+    (opt->arg ? "=[option]" : ""),opt->desc)                                   \
 
 optreturn opt_init(int argc, char **argv, optparam **aopt,
     size_t nmemb, int (*other)(void *cntxt, const char *value,
@@ -145,7 +143,7 @@ optreturn opt_init(int argc, char **argv, optparam **aopt,
           *err = aopt[i]->optlong;
           return ERROR_PARAM;
         }
-        if (aopt[i]->fun(cntxt, v, err) != 0) {
+        if (aopt[i]->hdl(cntxt, v, err) != 0) {
           return ERROR_FUN;
         }
         break;

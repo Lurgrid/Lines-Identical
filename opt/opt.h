@@ -3,6 +3,8 @@
 //  Ce module permet de mettre en place, une gestion d'options pour son
 //    utilisateur.
 
+//  LA SEULE MODIFICATION AUTORISÉE DE CE SOURCE CONCERNE LES LIGNES 30 à 33.
+
 #ifndef OPT__H
 #define OPT__H
 
@@ -24,20 +26,24 @@ typedef enum {
   DONE,
 } optreturn;
 
+//  LONG_JOIN: séparateur entre les longues options et son argument.
 #define LONG_JOIN '='
+
+#define SHORT_HELP "-h"
+#define LONG_HELP "--help"
 
 //  opt_gen : Tente d'allouer les resources néssaires pour gérer une options.
 //    Avec pour valeur d'attribut optshort, optlong qui représente
 //    respectivement les version courte et longue de l'option. desc, une
 //    chaine de carractère, la description de l'option. Un booléen qui vaut vrai
-//    si l'option demande un paramètre et faux sinon. la fonction fun représente
+//    si l'option demande un paramètre et faux sinon. la fonction hdl représente
 //    les actions l'ors de l'appel de l'option, avec cntxt un pointeur vers un
 //    context, value le possible paramettre de l'option à traiter et err un
 //    pointeur de chaine de caractère qui change de valeur en cas d'erreur.
 //    Renvoie NULL en cas de dépassement de capacité. Renvoie sinon un pointer
 //    vers la structure associé a cette option.
 extern optparam *opt_gen(const char *optshort, const char *optlong,
-    const char *desc, bool arg, int (*fun)(void *cntxt, const char *value,
+    const char *desc, bool arg, int (*hdl)(void *cntxt, const char *value,
     const char **err));
 
 //  opt_dispose : Sans effet si *optptr vaut NULL, sinon libère les ressources
@@ -62,14 +68,15 @@ extern void opt_dispose(optparam **optptr);
 //    le pointeur *err, est mis à jour, avec une chaine représentant l'erreur
 //    intervenue. Sinon en cas de succés du traitement de toutes les options,
 //    retourne DONE et *err est mis à la valeur NULL. Une options par default
-//    existe, celle du "help" (-h et --help pour y accéder. Cette option affiche
-//    la façon dont il faut utiliser le programme argv[0], usage, la description
-//    du programme desc et la liste des options du tableau aopt) si cette option
-//    est appeler, la fonction retourne STOP_PROCESS, *err est mis à la valeur
-//    NULL, de plus la fonction n'a donc pas effectuer les traitement des
-//    options pas encore traiter. Pour toutes chaine de caractère présente dans
-//    argv qui ne correspont ni à une options ni a l'arguments d'une options, le
-//    traitement de ces chaines est assurer par la fonction other qui prend en
+//    existe, celle du "help" (SHORT_HELP et LONG_HELP pour y accéqder. Cette
+//    option affiche la façon dont il faut utiliser le programme argv[0], usage,
+//    la description du programme desc et la liste des options du tableau aopt)
+//    si cette option est appeler, la fonction retourne STOP_PROCESS, *err est
+//    mis à la valeur NULL, de plus la fonction n'a donc pas effectuer les
+//    traitement des options pas encore traiter. Pour toutes chaine de caractère
+//    présente dans argv qui ne correspont ni à une options ni a l'arguments
+//    d'une options, le traitement de ces chaines est assurer par la fonction
+//    other qui prend en
 //    paramettre cette chaine (dans l'argument value), cntxt (un pointeur sur un
 //    context) et err (de même spécification que précédament) et qui retourne
 //    une valeur nule en cas de succés, non nul en cas d'echec ce qui amène au

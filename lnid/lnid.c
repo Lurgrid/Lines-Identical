@@ -9,8 +9,6 @@
 #include "hashtable.h"
 #include "opt.h"
 
-//#include <time.h> // srand((unsigned int) time(NULL));
-
 //--- Macro définissant les couleurs utilisables dans le terminal --------------
 
 #define ANSI_RED    "\033[0;31m"
