@@ -1,2 +1,4 @@
- - refaire le trie du holdall
+
  - demander chaine magique 
+ - changer fun pour hdl 
+
