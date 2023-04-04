@@ -73,6 +73,7 @@ static int cbst__balance(const cbst *p) {
   return cbst__height(LEFT(p)) - cbst__height(RIGHT(p));
 }
 
+//  cbst__rotation_left:
 static void cbst__rotation_left(cbst **pp) {
   cbst *p = RIGHT(*pp);
   RIGHT(*pp) = LEFT(p);
@@ -82,6 +83,7 @@ static void cbst__rotation_left(cbst **pp) {
   cbst__update_height(*pp);
 }
 
+//  cbst__rotation_right:
 static void cbst__rotation_right(cbst **pp) {
   cbst *p = *pp;
   *pp = LEFT(p);
@@ -91,16 +93,19 @@ static void cbst__rotation_right(cbst **pp) {
   cbst__update_height(*pp);
 }
 
+//  cbst__rotation_left_right:
 static void cbst__rotation_left_right(cbst **pp) {
   cbst__rotation_left(&LEFT(*pp));
   cbst__rotation_right(pp);
 }
 
+//  cbst__rotation_right_left:
 static void cbst__rotation_right_left(cbst **pp) {
   cbst__rotation_right(&RIGHT(*pp));
   cbst__rotation_left(pp);
 }
 
+//  cbst__balancing:
 static int cbst__balancing(cbst **pp) {
   cbst__update_height(*pp);
   int b = cbst__balance(*pp);
