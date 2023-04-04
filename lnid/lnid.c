@@ -178,7 +178,8 @@ int main(int argc, char **argv) {
       goto dispose;
     }
     if (ot == NO_PARAM) {
-      if (da_add(context.filesptr, &STDIN) == NULL) {
+      const char *s  = STDIN;
+      if (da_add(context.filesptr, &s) == NULL) {
         goto err_allocation;
       }
     } else {
