@@ -1,4 +1,0 @@
-
- - demander chaine magique 
- - changer fun pour hdl 
-

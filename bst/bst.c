@@ -286,6 +286,7 @@ static size_t cbst__rank(const cbst *p, const void *ref,
 #define REPR_SYM_LINK_DOWN "╰"
 #define REPR_SYM_SEP "─"
 
+//  GET_NBIT:
 #define GET_NBIT(m, n) ((1 << ((n) - 1)) & (m))
 
 #define DISPLAY_BRANCH(num, level)                                             \
@@ -312,10 +313,10 @@ static size_t cbst__rank(const cbst *p, const void *ref,
 //    Le niveau du sous-arbre est supposé être level, le numéro num et son rang
 //    correspond au résultat du calcule taille(sa-gauche(p)) + rank (avec taille
 //    (sa-gauche(p)) la taille du sous arbre gauche de p).
-static void cbst__repr_graphic_aux(const cbst *p, void (*put)(const void *ref),
+static void cbst__repr_graphic(const cbst *p, void (*put)(const void *ref),
     int level, size_t num, size_t rank) {
   while (!IS_EMPTY(p)) {
-    cbst__repr_graphic_aux(RIGHT(p), put, level + 1, 2 * num + 1,
+    cbst__repr_graphic(RIGHT(p), put, level + 1, 2 * num + 1,
         cbst__size(LEFT(p)) + rank + 1);
     DISPLAY_BRANCH(num, level);
     put(p->value);
@@ -380,8 +381,8 @@ size_t bst_size(bst *t) {
   return cbst__size(t->root);
 }
 
-int bst_height(bst *t) {
-  return cbst__height(t->root);
+size_t bst_height(bst *t) {
+  return (size_t) cbst__height(t->root);
 }
 
 size_t bst_distance(bst *t) {
@@ -400,5 +401,5 @@ size_t bst_rank(bst *t, const void *ref) {
 }
 
 void bst_repr_graphic(bst *t, void (*put)(const void *ref)) {
-  cbst__repr_graphic_aux(t->root, put, 0, 1, 0);
+  cbst__repr_graphic(t->root, put, 0, 1, 0);
 }

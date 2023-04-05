@@ -109,10 +109,16 @@ static enum parse_return opt_parse(const optparam *opt, int *k, char **argv,
   return SUCCESS_PARAM;
 }
 
-// en lever le égal pour mettre la macro
-#define PRINT_OPTION(opt) printf("   %s%s\t| %s%s : %s\n", opt->optshort,      \
-    (opt->arg ? " [option]" : ""), opt->optlong,                               \
-    (opt->arg ? "=[option]" : ""),opt->desc)                                   \
+#define PRINT_OPTION(opt)                                                      \
+  printf("   %s%s\t| %s", opt->optshort, (opt->arg ? " [option]" : ""),        \
+      opt->optlong);                                                           \
+  if (opt->arg) {                                                              \
+    putchar(LONG_JOIN);                                                        \
+    printf("[option] ");                                                       \
+  } else {                                                                     \
+    putchar(' ');                                                              \
+  }                                                                            \
+  printf(": %s\n", opt->desc);                                                 \
 
 optreturn opt_init(int argc, char **argv, optparam **aopt,
     size_t nmemb, int (*other)(void *cntxt, const char *value,
@@ -121,7 +127,19 @@ optreturn opt_init(int argc, char **argv, optparam **aopt,
   if (argc < 2) {
     return NO_PARAM;
   }
+  char fnf = 0;
   for (int k = 1; k < argc; ++k) {
+    if (fnf == 1) {
+      if (other(cntxt, argv[k], err) != 0) {
+        return ERROR_FUN;
+      }
+      fnf = 0;
+      continue;
+    }
+    if (strcmp(NEXT_IS_FILE, argv[k]) == 0) {
+      fnf = 1;
+      continue;
+    }
     if (strcmp(SHORT_HELP, argv[k]) == 0 || strcmp(LONG_HELP, argv[k]) == 0) {
       if (usage != NULL) {
         printf("Usage: %s %s\n", argv[0], usage);

@@ -3,7 +3,7 @@
 //  Ce module permet de mettre en place, une gestion d'options pour son
 //    utilisateur.
 
-//  LA SEULE MODIFICATION AUTORISÉE DE CE SOURCE CONCERNE LES LIGNES 30 à 33.
+//  LA SEULE MODIFICATION AUTORISÉE DE CE SOURCE CONCERNE LES LIGNES 30 à 35.
 
 #ifndef OPT__H
 #define OPT__H
@@ -28,6 +28,8 @@ typedef enum {
 
 //  LONG_JOIN: séparateur entre les longues options et son argument.
 #define LONG_JOIN '='
+
+#define NEXT_IS_FILE "--"
 
 #define SHORT_HELP "-h"
 #define LONG_HELP "--help"

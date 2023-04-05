@@ -8,6 +8,7 @@
 #include "holdall.h"
 #include "hashtable.h"
 #include "opt.h"
+#include "bst.h"
 
 //--- Macro définissant les couleurs utilisables dans le terminal --------------
 
@@ -20,7 +21,7 @@
 
 #define ERROR(context, err)                                                    \
   fprintf(stderr, "%s*** Error: %s%s\n", (context).use_color ? ANSI_RED : "",  \
-    (err), (context).use_color ? ANSI_NORM : "")
+      (err), (context).use_color ? ANSI_NORM : "")
 
 //--- Macro et structure utilisé pour les fonctions d'option -------------------
 
@@ -51,9 +52,19 @@ typedef struct {
   int (*filter)(int c);
   int (*transform)(int c);
   bool use_color;
+  bool use_avl;
   int (*sort)(const void *, const void *);
   da *filesptr;
 } cntxt;
+
+//--- Structure du type de valeur dans les avl ---------------------------------
+
+typedef struct {
+  const char *ref;
+  da *count;
+} hcell;
+
+//--- J'ai pas de noms ---------------------------------------------------------
 
 //--- Fonction de traitement d'option ------------------------------------------
 
@@ -64,16 +75,17 @@ typedef struct {
 //    attribuant la valeur val, en méttant *err à NULL et en retournant 0.
 #define HANDLE_PARAM_NO_ARG(fun, attribut, val)                                \
   static int fun ## _handler(cntxt * restrict context, __attribute__((unused)) \
-    const char * restrict value, const char **err) {                           \
+      const char * restrict value, const char **err) {                           \
     *err = NULL;                                                               \
     context->attribut = val;                                                   \
     return 0;                                                                  \
   }
 
-//  uppercasing_handler, no_color_handler : définition.
+//  uppercasing_handler, no_color_handler, avl_handler: définition.
 
 HANDLE_PARAM_NO_ARG(uppercasing, transform, toupper)
 HANDLE_PARAM_NO_ARG(no_color, use_color, false)
+HANDLE_PARAM_NO_ARG(avl, use_avl, true)
 
 //  file_handler : Ajoute le nom du fichier pointer par filename, au champs
 //    filesptr du context.
@@ -136,6 +148,12 @@ static int aopt_once_null(optparam **aopt, size_t nmemb);
 //    valeur de ces champs à NULL.
 static void aopt_dispose(optparam **aopt, size_t nmemb);
 
+static da *bst_search_aux(bst *t, const char *ref);
+
+static int hcell_cmp(hcell *h1, hcell *h2);
+
+static int rhcell_dispose(hcell *hc);
+
 #define STDIN "-"
 
 int main(int argc, char **argv) {
@@ -145,6 +163,8 @@ int main(int argc, char **argv) {
         (int (*)(void *, const char *, const char **))uppercasing_handler),
     opt_gen("-nc", "--no-color", "enlève les couleurs", false,
         (int (*)(void *, const char *, const char **))no_color_handler),
+    opt_gen("-a", "--avl", "utilise un avl au lieu d'une table de hashage",
+        false, (int (*)(void *, const char *, const char **))avl_handler),
     opt_gen("-f", "--filter", "la fonction de filtre", true,
         (int (*)(void *, const char *, const char **))filter_handler),
     opt_gen("-s", "--sort", "trie la chienté", true,
@@ -152,16 +172,15 @@ int main(int argc, char **argv) {
   };
   cntxt context = {
     .filesptr = da_empty(sizeof(char *)), .filter = NULL, .transform = NULL,
-    .use_color = true, .sort = NULL
+    .use_color = true, .use_avl = false, .sort = NULL
   };
   FILE *f = NULL;
-  hashtable *ht = hashtable_empty((int (*)(const void *, const void *))strcmp,
-      (size_t (*)(const void *))str_hashfun);
+  void *hoa = NULL;
   holdall *has = holdall_empty();
   holdall *hada = holdall_empty();
   da *line = da_empty(sizeof(char));
-  if (context.filesptr == NULL || ht == NULL || has == NULL || hada == NULL
-      || line == NULL || aopt_once_null(aop, sizeof(aop) / sizeof(*aop)) != 0) {
+  if (context.filesptr == NULL || has == NULL || hada == NULL || line == NULL
+      || aopt_once_null(aop, sizeof(aop) / sizeof(*aop)) != 0) {
     goto err_allocation;
   }
   optreturn ot;
@@ -178,7 +197,7 @@ int main(int argc, char **argv) {
       goto dispose;
     }
     if (ot == NO_PARAM) {
-      const char *s  = STDIN;
+      const char *s = STDIN;
       if (da_add(context.filesptr, &s) == NULL) {
         goto err_allocation;
       }
@@ -186,6 +205,15 @@ int main(int argc, char **argv) {
       ERROR(context, err);
       goto error;
     }
+  }
+  if (context.use_avl) {
+    hoa = bst_empty((int (*)(const void *, const void *))hcell_cmp);
+  } else {
+    hoa = hashtable_empty((int (*)(const void *, const void *))strcmp,
+            (size_t (*)(const void *))str_hashfun);
+  }
+  if (hoa == NULL) {
+    goto err_allocation;
   }
   for (size_t i = 0; i < da_length(context.filesptr); ++i) {
     char *filename = *(char **) da_nth(context.filesptr, i);
@@ -201,7 +229,12 @@ int main(int argc, char **argv) {
     int c;
     while ((c = fnlines(f, line, &context)) == 0) {
       if (da_length(line) > 1) {
-        da *cptr = hashtable_search(ht, da_nth(line, 0));
+        da *cptr;
+        if (context.use_avl) {
+          cptr = bst_search_aux(hoa, da_nth(line, 0));
+        } else {
+          cptr = hashtable_search(hoa, da_nth(line, 0));
+        }
         if (i == 0) {
           if (cptr != NULL) {
             if (da_length(context.filesptr) > 1) {
@@ -223,13 +256,33 @@ int main(int argc, char **argv) {
             }
             strcpy(w, (char *) da_nth(line, 0));
             long int z = da_length(context.filesptr) > 1 ? 1 : n;
-            if (da_add(dcptr, &z) == NULL
-                || holdall_put(has, w) != 0
-                || holdall_put(hada, dcptr) != 0
-                || hashtable_add(ht, w, dcptr) == NULL) {
-              free(w);
-              da_dispose(&dcptr);
-              goto err_allocation;
+            if (context.use_avl) {
+              hcell *hc = malloc(sizeof *hc);
+              if (hc == NULL) {
+                free(w);
+                da_dispose(&dcptr);
+                goto err_allocation;
+              }
+              hc->ref = w;
+              hc->count = dcptr;
+              if (da_add(dcptr, &z) == NULL
+                  || holdall_put(has, w) != 0
+                  || holdall_put(hada, hc) != 0
+                  || bst_add_endofpath(hoa, hc) == NULL) {
+                free(w);
+                free(hc);
+                da_dispose(&dcptr);
+                goto err_allocation;
+              }
+            } else {
+              if (da_add(dcptr, &z) == NULL
+                  || holdall_put(has, w) != 0
+                  || holdall_put(hada, dcptr) != 0
+                  || hashtable_add(hoa, w, dcptr) == NULL) {
+                free(w);
+                da_dispose(&dcptr);
+                goto err_allocation;
+              }
             }
           }
         } else if (cptr != NULL && da_length(cptr) >= i) {
@@ -249,9 +302,13 @@ int main(int argc, char **argv) {
       ++n;
       da_reset(line);
     }
-    if (f != stdin && fclose(f) != 0) {
-      f = NULL;
-      goto err_file;
+    if (f != stdin) {
+      if (fclose(f) != 0) {
+        f = NULL;
+        goto err_file;
+      }
+    } else {
+      clearerr(f);
     }
     f = NULL;
     if (c < 0) {
@@ -271,8 +328,9 @@ int main(int argc, char **argv) {
   }
   putchar('\n');
   if (holdall_apply_context2(has,
-      ht, (void *(*)(void *, void *))hashtable_search,
-      &context, (int (*)(void *, void *, void *))scptr_display) != 0) {
+      hoa, (context.use_avl ? (void *(*)(void *, void *))bst_search_aux
+      : (void *(*)(void *, void *))hashtable_search), &context,
+      (int (*)(void *, void *, void *))scptr_display) != 0) {
     goto error_write;
   }
   goto dispose;
@@ -294,13 +352,18 @@ dispose:
     fclose(f);
   }
   da_dispose(&context.filesptr);
-  hashtable_dispose(&ht);
+  if (context.use_avl) {
+    bst_dispose((bst **) &hoa);
+  } else {
+    hashtable_dispose((hashtable **) &hoa);
+  }
   if (has != NULL) {
     holdall_apply(has, (int (*)(void *))rfree);
   }
   holdall_dispose(&has);
   if (hada != NULL) {
-    holdall_apply(hada, (int (*)(void *))rda_dispose);
+    holdall_apply(hada, (context.use_avl ? (int (*)(void *))rhcell_dispose
+        : (int (*)(void *))rda_dispose));
   }
   holdall_dispose(&hada);
   da_dispose(&line);
@@ -356,7 +419,7 @@ int scptr_display(cntxt *context, const char *s, da *cptr) {
   int r = 0;
   for (size_t k = 0; k < da_length(cptr) - 1; ++k) {
     r = printf("%d%c", *(int *) da_nth(cptr, k),
-        da_length(context->filesptr) == 1 ? ',' : '\t') < 0 ? -1 : r;
+            da_length(context->filesptr) == 1 ? ',' : '\t') < 0 ? -1 : r;
   }
   r = printf("%d\t%s\n", *(int *) da_nth(cptr, da_length(cptr) - 1), s) < 0
       ? -1 : r;
@@ -401,6 +464,25 @@ void aopt_dispose(optparam **aopt, size_t nmemb) {
   for (size_t k = 0; k < nmemb; ++k) {
     opt_dispose(&(aopt[k]));
   }
+}
+
+int hcell_cmp(hcell *h1, hcell *h2) {
+  return strcmp(h1->ref, h2->ref);
+}
+
+da *bst_search_aux(bst *t, const char *ref) {
+  hcell hc;
+  hc.ref = ref;
+  hcell *r = bst_search(t, &hc);
+  return r == NULL ? NULL : r->count;
+}
+
+int rhcell_dispose(hcell *hc) {
+  if (hc != NULL) {
+    da_dispose(&(hc->count));
+    free(hc);
+  }
+  return 0;
 }
 
 int filter_handler(cntxt *context, const char *value, const char **err) {
