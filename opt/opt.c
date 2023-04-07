@@ -137,6 +137,9 @@ optreturn opt_init(int argc, char **argv, optparam **aopt,
       continue;
     }
     if (strcmp(NEXT_IS_FILE, argv[k]) == 0) {
+      if (argc == 2) {
+        return NO_PARAM;
+      }
       fnf = 1;
       continue;
     }
