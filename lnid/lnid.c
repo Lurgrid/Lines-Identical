@@ -21,7 +21,7 @@
 
 #define ERROR(context, err)                                                    \
   fprintf(stderr, "%s*** Error: %s%s\n", (context).use_color ? ANSI_RED : "",  \
-      (err), (context).use_color ? ANSI_NORM : "")
+    (err), (context).use_color ? ANSI_NORM : "")
 
 //--- Macro et structure utilisé pour les fonctions d'option -------------------
 
@@ -75,7 +75,7 @@ typedef struct {
 //    attribuant la valeur val, en méttant *err à NULL et en retournant 0.
 #define HANDLE_PARAM_NO_ARG(fun, attribut, val)                                \
   static int fun ## _handler(cntxt * restrict context, __attribute__((unused)) \
-      const char * restrict value, const char **err) {                           \
+    const char * restrict value, const char **err) {                           \
     *err = NULL;                                                               \
     context->attribut = val;                                                   \
     return 0;                                                                  \
@@ -210,7 +210,7 @@ int main(int argc, char **argv) {
     hoa = bst_empty((int (*)(const void *, const void *))hcell_cmp);
   } else {
     hoa = hashtable_empty((int (*)(const void *, const void *))strcmp,
-            (size_t (*)(const void *))str_hashfun);
+        (size_t (*)(const void *))str_hashfun);
   }
   if (hoa == NULL) {
     goto err_allocation;
@@ -419,7 +419,7 @@ int scptr_display(cntxt *context, const char *s, da *cptr) {
   int r = 0;
   for (size_t k = 0; k < da_length(cptr) - 1; ++k) {
     r = printf("%d%c", *(int *) da_nth(cptr, k),
-            da_length(context->filesptr) == 1 ? ',' : '\t') < 0 ? -1 : r;
+        da_length(context->filesptr) == 1 ? ',' : '\t') < 0 ? -1 : r;
   }
   r = printf("%d\t%s\n", *(int *) da_nth(cptr, da_length(cptr) - 1), s) < 0
       ? -1 : r;
