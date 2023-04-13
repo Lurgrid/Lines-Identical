@@ -159,7 +159,7 @@ static int rhcell_dispose(hcell *hc);
 int main(int argc, char **argv) {
   int r = EXIT_SUCCESS;
   optparam *aop[] = {
-    opt_gen("-u", "--uppercasing", "met en majuscule", false,
+    opt_gen("-", "--uppercasing", "met en majuscule", false,
         (int (*)(void *, const char *, const char **))uppercasing_handler),
     opt_gen("-nc", "--no-color", "enlève les couleurs", false,
         (int (*)(void *, const char *, const char **))no_color_handler),
