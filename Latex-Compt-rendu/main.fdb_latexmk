@@ -1,4 +1,5 @@
 # Fdb version 3
+<<<<<<< Updated upstream
 ["pdflatex"] 1680854454 "/home/renauth6/Documents/Cour/Fac/L2/Algothemie 3/Projet/Algo-P/Latex-Compt-rendu/main.tex" "main.pdf" "main" 1680854454
   "/etc/texmf/web2c/texmf.cnf" 1680535717 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/renauth6/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1095.600pk" 1680853521 28952 b4d6691dd5d89535d5a3e651f4d7460a ""
@@ -13,6 +14,12 @@
   "/home/renauth6/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ectt1200.600pk" 1680854043 24132 dbdc69c6d99de0f4cb7a113af8207439 ""
   "/home/renauth6/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1200.600pk" 1680854042 14040 0074df0eb38e7ba1e5af2662d96d92ad ""
   "/home/renauth6/Documents/Cour/Fac/L2/Algothemie 3/Projet/Algo-P/Latex-Compt-rendu/main.tex" 1680854453 15956 74c3f508a6d1ed0392339aba52dff50a ""
+=======
+["pdflatex"] 1681452057 "/home/lurgrid/Documents/GitHub/Algo-P/Latex-Compt-rendu/main.tex" "main.pdf" "main" 1681452057
+  "/dev/null" 1681451731 0 d41d8cd98f00b204e9800998ecf8427e ""
+  "/etc/texmf/web2c/texmf.cnf" 1680609629 475 c0e671620eb5563b2130f56340a5fde8 ""
+  "/home/lurgrid/Documents/GitHub/Algo-P/Latex-Compt-rendu/main.tex" 1681452056 15955 4bb9dfda088c820e66d22af850933fd6 ""
+>>>>>>> Stashed changes
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/ecbx1095.tfm" 1136768653 3584 21b378cca2e40816b0e6d74a4dc98f04 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/ecbx1200.tfm" 1136768653 3584 402da0b29eafbad07963b1224b222f18 ""
@@ -40,6 +47,12 @@
   "/usr/share/texlive/texmf-dist/tex/generic/babel-french/french.ldf" 1626810218 67482 0072396597d217335316b2928ec3a940 ""
   "/usr/share/texlive/texmf-dist/tex/generic/babel/babel.sty" 1643231327 147419 2058c0f5e6893b19c8f3ce95d177646c ""
   "/usr/share/texlive/texmf-dist/tex/generic/babel/txtbabel.def" 1643231327 5233 d5e383ed66bf272b71b1a90b596e21c6 ""
+<<<<<<< Updated upstream
+=======
+  "/usr/share/texlive/texmf-dist/tex/generic/catchfile/catchfile.sty" 1576016007 8622 63834878edeb14dd71d58d8f22bc3e06 ""
+  "/usr/share/texlive/texmf-dist/tex/generic/etexcmds/etexcmds.sty" 1576625273 7734 b98cbb34c81f667027c1e3ebdbfce34b ""
+  "/usr/share/texlive/texmf-dist/tex/generic/iftex/ifluatex.sty" 1572645307 492 1994775aa15b0d1289725a0b1bbc2d4c ""
+>>>>>>> Stashed changes
   "/usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty" 1583617216 6501 4011d89d9621e0b0901138815ba5ff29 ""
   "/usr/share/texlive/texmf-dist/tex/generic/iftex/ifvtex.sty" 1572645307 1057 525c2192b5febbd8c1f662c9468335bb ""
   "/usr/share/texlive/texmf-dist/tex/generic/infwarerr/infwarerr.sty" 1575499628 8356 7bbb2c2373aa810be568c29e333da8ed ""
@@ -85,6 +98,10 @@
   "/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty" 1622581934 2671 4de6781a30211fe0ea4c672e4a2a8166 ""
   "/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty" 1636758526 4009 187ea2dc3194cd5a76cd99a8d7a6c4d0 ""
   "/usr/share/texlive/texmf-dist/tex/latex/ifoddpage/ifoddpage.sty" 1461535682 2148 0426cd8bb94163c1e23726d0c15e2c21 ""
+<<<<<<< Updated upstream
+=======
+  "/usr/share/texlive/texmf-dist/tex/latex/ifplatform/ifplatform.sty" 1507930826 3910 e04f6a6d983bdbdb024917b7ccc80262 ""
+>>>>>>> Stashed changes
   "/usr/share/texlive/texmf-dist/tex/latex/koma-script/scrbase.sty" 1637529091 99856 6cbb9d59d820d727b2acbf2edddcf8c8 ""
   "/usr/share/texlive/texmf-dist/tex/latex/koma-script/scrlfile-hook.sty" 1637529091 11081 5538240709a5dbcdc97e4d1524f034a8 ""
   "/usr/share/texlive/texmf-dist/tex/latex/koma-script/scrlfile.sty" 1637529091 3225 54deb0fdd4552a94c6525a4a8ff74efc ""
@@ -110,6 +127,7 @@
   "/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty" 1635798903 56029 3f7889dab51d620aa43177c391b7b190 ""
   "/usr/share/texlive/texmf-dist/tex/latex/xkeyval/xkeyval.sty" 1605910342 4902 efb3d66683a2da2a232f71e3a571a899 ""
   "/usr/share/texlive/texmf-dist/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
+<<<<<<< Updated upstream
   "/usr/share/texmf/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1680853489 165051 331a4b0cc8c79ccd6b2fbd918be026fc ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1680853493 1442206 469697ba45bfcdbf16b756f6aeafff36 ""
@@ -118,6 +136,28 @@
   "logo-univ-rouen-normandie-noir.png" 1680845998 37111 7eef968e90bd53a80b5202866ea2c059 ""
   "main.aux" 1680854454 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
   "main.tex" 1680854453 15956 74c3f508a6d1ed0392339aba52dff50a ""
+=======
+  "/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1636152094 2971 def0b6c1f0b107b3b936def894055589 ""
+  "/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1636152094 2900 1537cc8184ad1792082cd229ecc269f4 ""
+  "/usr/share/texmf/fonts/type1/public/cm-super/sfbx1095.pfb" 1680854208 154600 ea54091d31de803b613ba9e80ca51709 ""
+  "/usr/share/texmf/fonts/type1/public/cm-super/sfbx1200.pfb" 1680854208 140176 d4962f948b4cc0adf4d3dde77a128c95 ""
+  "/usr/share/texmf/fonts/type1/public/cm-super/sfbx1440.pfb" 1680854208 135942 859a90cad7494a1e79c94baf546d7de5 ""
+  "/usr/share/texmf/fonts/type1/public/cm-super/sfbx1728.pfb" 1680854208 139826 9213617a7cb78635fc326b859c0b2273 ""
+  "/usr/share/texmf/fonts/type1/public/cm-super/sfcc1200.pfb" 1680854208 108594 1a08a22405bc37650b977f219cc3597d ""
+  "/usr/share/texmf/fonts/type1/public/cm-super/sfrm1095.pfb" 1680854208 145929 f25e56369a345c4ff583b067cd87ce8e ""
+  "/usr/share/texmf/fonts/type1/public/cm-super/sfrm1200.pfb" 1680854208 136101 f533469f523533d38317ab5729d00c8a ""
+  "/usr/share/texmf/fonts/type1/public/cm-super/sfrm1440.pfb" 1680854208 131078 d96015a2fa5c350129e933ca070b2484 ""
+  "/usr/share/texmf/fonts/type1/public/cm-super/sfrm2074.pfb" 1680854208 131290 ea265c7de37664eae04a6f91a1f7a51f ""
+  "/usr/share/texmf/fonts/type1/public/cm-super/sftt1200.pfb" 1680854208 167085 68de377d2744a68a88fa40a1f610615a ""
+  "/usr/share/texmf/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
+  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1680854213 4379155 98693266ff65f58d9f98aff394de12d2 ""
+  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1680854242 2801557 90f764d0d011d2e4963f1c5e1970cf2f ""
+  "dessin.svg" 1680765974 172658 9a8598634482e44c427486baf2217c85 ""
+  "dessin2.svg" 1680773672 176538 2486309ba5c87521c0bea48c97bc2107 ""
+  "logo-univ-rouen-normandie-noir.png" 1680853898 37111 7eef968e90bd53a80b5202866ea2c059 ""
+  "main.aux" 1681452057 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
+  "main.tex" 1681452056 15955 4bb9dfda088c820e66d22af850933fd6 ""
+>>>>>>> Stashed changes
   "main.toc" 0 -1 0 "pdflatex"
   (generated)
   "main.aux"

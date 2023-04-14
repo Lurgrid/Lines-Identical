@@ -1,10 +1,29 @@
+<<<<<<< Updated upstream
 This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.4.7)  7 APR 2023 10:00
+=======
+<<<<<<< Updated upstream
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.4.7)  7 APR 2023 09:50
+>>>>>>> Stashed changes
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
+<<<<<<< Updated upstream
 **"/home/renauth6/Documents/Cour/Fac/L2/Algothemie 3/Projet/Algo-P/Latex-Compt-rendu/main.tex"
 (/home/renauth6/Documents/Cour/Fac/L2/Algothemie 3/Projet/Algo-P/Latex-Compt-rendu/main.tex
+=======
+**main.tex
+(./main.tex
+=======
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.4.7)  14 APR 2023 08:00
+entering extended mode
+ \write18 enabled.
+ file:line:error style messages enabled.
+ %&-line parsing enabled.
+**/home/lurgrid/Documents/GitHub/Algo-P/Latex-Compt-rendu/main.tex
+(/home/lurgrid/Documents/GitHub/Algo-P/Latex-Compt-rendu/main.tex
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 LaTeX2e <2021-11-15> patch level 1
 L3 programming layer <2022-01-21> (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2021/10/04 v1.4n Standard LaTeX document class
@@ -26,16 +45,26 @@ File: size12.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
 Package: babel 2022/01/26 3.70 The Babel package
 \babel@savecnt=\count193
 \U@D=\dimen139
+<<<<<<< Updated upstream
 \l@unhyphenated=\language9
+<<<<<<< Updated upstream
  (/usr/share/texlive/texmf-dist/tex/generic/babel/txtbabel.def)
+=======
+
+(/usr/share/texlive/texmf-dist/tex/generic/babel/txtbabel.def)
+=======
+\l@unhyphenated=\language87
+ (/usr/share/texlive/texmf-dist/tex/generic/babel/txtbabel.def)
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 \bbl@readstream=\read2
 \bbl@dirlevel=\count194
  (/usr/share/texlive/texmf-dist/tex/generic/babel-french/french.ldf
 Language: french 2021/07/20 v3.5m French support from the babel system
 Package babel Info: Hyphen rules for 'acadian' set to \l@french
-(babel)             (\language5). Reported on input line 91.
+(babel)             (\language14). Reported on input line 91.
 Package babel Info: Hyphen rules for 'canadien' set to \l@french
-(babel)             (\language5). Reported on input line 92.
+(babel)             (\language14). Reported on input line 92.
 \FB@nonchar=\count195
 Package babel Info: Making : an active character on input line 430.
 Package babel Info: Making ; an active character on input line 431.
@@ -233,7 +262,21 @@ Package pdftexcmds Info: \pdfdraftmode found.
 Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
 ) (/usr/share/texlive/texmf-dist/tex/latex/tools/shellesc.sty
 Package: shellesc 2019/11/08 v1.0c unified shell escape interface for LaTeX
-Package shellesc Info: Restricted shell escape enabled on input line 77.
+Package shellesc Info: Unrestricted shell escape enabled on input line 75.
+) (/usr/share/texlive/texmf-dist/tex/latex/ifplatform/ifplatform.sty
+Package: ifplatform 2017/10/13 v0.4a Testing for the operating system
+ (/usr/share/texlive/texmf-dist/tex/generic/catchfile/catchfile.sty
+Package: catchfile 2019/12/09 v1.8 Catch the contents of a file (HO)
+ (/usr/share/texlive/texmf-dist/tex/generic/etexcmds/etexcmds.sty
+Package: etexcmds 2019/12/15 v1.7 Avoid name clashes with e-TeX commands (HO)
+)) (/usr/share/texlive/texmf-dist/tex/generic/iftex/ifluatex.sty
+Package: ifluatex 2019/10/25 v1.5 ifluatex legacy package. Use iftex instead.
+)
+runsystem(uname -s > "main.w18")...executed.
+
+ (./main.w18)
+runsystem(rm -- "main.w18")...executed.
+
 )
 \c@svg@param@lastpage=\count285
 \svg@box=\box56
@@ -385,6 +428,12 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+*geometry* verbose mode - [ p
+=======
+>>>>>>> Stashed changes
 *geometry* verbose mode - [ preamble ] result:
 * driver: pdftex
 * paper: letterpaper
@@ -418,6 +467,18 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 \c@lstlisting=\count307
+<<<<<<< Updated upstream
+=======
+(|'inkscape' -V )
+
+Package svg Warning: No version of Inkscape was detected by invoking
+(svg)                `inkscape -V'
+(svg)                so the Inkscape export will fail quite sure as the
+(svg)                command is probably unknown to your OS. You could set
+(svg)                `inkscapeversion=<version>' manually but this is very
+(svg)                unlikely to work on input line 45.
+
+>>>>>>> Stashed changes
 <logo-univ-rouen-normandie-noir.png, id=4, 433.1382pt x 156.585pt>
 File: logo-univ-rouen-normandie-noir.png Graphic file (type png)
 <use logo-univ-rouen-normandie-noir.png>
@@ -441,6 +502,7 @@ File: t1cmtt.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 
 LaTeX Warning: Reference `opt-tab' on page 2 undefined on input line 73.
 
+<<<<<<< Updated upstream
 
 Package svg Warning: You didn't enable `shell escape' (or `write18')
 (svg)                so it wasn't possible to launch the Inkscape export
@@ -448,6 +510,38 @@ Package svg Warning: You didn't enable `shell escape' (or `write18')
 
 
 /home/renauth6/Documents/Cour/Fac/L2/Algothemie 3/Projet/Algo-P/Latex-Compt-rendu/main.tex:77: Package svg Error: File `dessin_svg-tex.pdf' is missing.
+=======
+Package svg Info: Calling Inkscape on input line 77.
+runsystem(inkscape "dessin.svg" -D --export-latex --export-filename="dessin_svg-tex.pdf")...executed.
+
+runsystem(inkscape "dessin.svg" -D --export-latex \relax --without-gui --export-pdf="dessin_svg-tex.pdf")...executed.
+
+
+/home/lurgrid/Documents/GitHub/Algo-P/Latex-Compt-rendu/main.tex:77: Package svg Error: Inkscape version not detected.
+
+See the svg package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.77 ...  \includesvg[width=0.7\linewidth]{dessin}
+                                                  
+It was tried to invoke `inkscape'
+for file "dessin.svg"
+but no result was produced. Check the log file
+and set `inkscapeversion=<version>' manually.
+
+runsystem(inkscape "dessin.svg" -D --export-latex --export-filename="dessin_svg-tex.pdf")...executed.
+
+
+Package svg Warning: The export with Inkscape failed for file
+(svg)                `dessin.svg'
+(svg)                Troubleshooting: Please check in the log file how
+(svg)                the invocation of Inkscape took place and try to
+(svg)                execute it yourself in the terminal on input line 77.
+
+
+/home/lurgrid/Documents/GitHub/Algo-P/Latex-Compt-rendu/main.tex:77: Package svg Error: File `dessin_svg-tex.pdf' is missing.
+>>>>>>> Stashed changes
 
 See the svg package documentation for explanation.
 Type  H <return>  for immediate help.
@@ -460,7 +554,11 @@ Did you run the export with Inkscape? There's no file
 although `dessin.svg' was found.
 
 
+<<<<<<< Updated upstream
 /home/renauth6/Documents/Cour/Fac/L2/Algothemie 3/Projet/Algo-P/Latex-Compt-rendu/main.tex:77: Package svg Error: File `dessin_svg-tex.pdf_tex' is missing.
+=======
+/home/lurgrid/Documents/GitHub/Algo-P/Latex-Compt-rendu/main.tex:77: Package svg Error: File `dessin_svg-tex.pdf_tex' is missing.
+>>>>>>> Stashed changes
 
 See the svg package documentation for explanation.
 Type  H <return>  for immediate help.
@@ -472,6 +570,7 @@ Did you run the export with Inkscape? There's no file
 `./svg-inkscape/dessin_svg-tex.pdf_tex'
 although `dessin.svg' was found.
 
+<<<<<<< Updated upstream
 
 Package svg Warning: You didn't enable `shell escape' (or `write18')
 (svg)                so it wasn't possible to launch the Inkscape export
@@ -479,6 +578,38 @@ Package svg Warning: You didn't enable `shell escape' (or `write18')
 
 
 /home/renauth6/Documents/Cour/Fac/L2/Algothemie 3/Projet/Algo-P/Latex-Compt-rendu/main.tex:78: Package svg Error: File `dessin2_svg-tex.pdf' is missing.
+=======
+Package svg Info: Calling Inkscape on input line 78.
+runsystem(inkscape "dessin2.svg" -D --export-latex --export-filename="dessin2_svg-tex.pdf")...executed.
+
+runsystem(inkscape "dessin2.svg" -D --export-latex \relax --without-gui --export-pdf="dessin2_svg-tex.pdf")...executed.
+
+
+/home/lurgrid/Documents/GitHub/Algo-P/Latex-Compt-rendu/main.tex:78: Package svg Error: Inkscape version not detected.
+
+See the svg package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.78 ... \includesvg[width=0.7\linewidth]{dessin2}
+                                                  
+It was tried to invoke `inkscape'
+for file "dessin2.svg"
+but no result was produced. Check the log file
+and set `inkscapeversion=<version>' manually.
+
+runsystem(inkscape "dessin2.svg" -D --export-latex --export-filename="dessin2_svg-tex.pdf")...executed.
+
+
+Package svg Warning: The export with Inkscape failed for file
+(svg)                `dessin2.svg'
+(svg)                Troubleshooting: Please check in the log file how
+(svg)                the invocation of Inkscape took place and try to
+(svg)                execute it yourself in the terminal on input line 78.
+
+
+/home/lurgrid/Documents/GitHub/Algo-P/Latex-Compt-rendu/main.tex:78: Package svg Error: File `dessin2_svg-tex.pdf' is missing.
+>>>>>>> Stashed changes
 
 See the svg package documentation for explanation.
 Type  H <return>  for immediate help.
@@ -491,7 +622,11 @@ Did you run the export with Inkscape? There's no file
 although `dessin2.svg' was found.
 
 
+<<<<<<< Updated upstream
 /home/renauth6/Documents/Cour/Fac/L2/Algothemie 3/Projet/Algo-P/Latex-Compt-rendu/main.tex:78: Package svg Error: File `dessin2_svg-tex.pdf_tex' is missing.
+=======
+/home/lurgrid/Documents/GitHub/Algo-P/Latex-Compt-rendu/main.tex:78: Package svg Error: File `dessin2_svg-tex.pdf_tex' is missing.
+>>>>>>> Stashed changes
 
 See the svg package documentation for explanation.
 Type  H <return>  for immediate help.
@@ -540,6 +675,7 @@ LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
  ) 
 Here is how much of TeX's memory you used:
+<<<<<<< Updated upstream
  10295 strings out of 480145
  176811 string characters out of 5893301
  688085 words of memory out of 5000000
@@ -555,3 +691,21 @@ PDF statistics:
  0 named destinations out of 1000 (max. 500000)
  18 words of extra memory for PDF output out of 10000 (max. 10000000)
 
+=======
+ 10445 strings out of 478287
+ 180256 string characters out of 5849290
+ 693949 words of memory out of 5000000
+ 28424 multiletter control sequences out of 15000+600000
+ 481185 words of font info for 52 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 94i,14n,99p,942b,1196s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx1095.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx1200.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx1728.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfcc1200.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1095.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1200.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1440.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm2074.pfb></usr/share/texmf/fonts/type1/public/cm-super/sftt1200.pfb>
+Output written on main.pdf (10 pages, 236547 bytes).
+PDF statistics:
+ 103 PDF objects out of 1000 (max. 8388607)
+ 65 compressed objects within 1 object stream
+ 0 named destinations out of 1000 (max. 500000)
+ 18 words of extra memory for PDF output out of 10000 (max. 10000000)
+
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
