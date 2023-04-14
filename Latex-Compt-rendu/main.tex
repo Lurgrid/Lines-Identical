@@ -163,7 +163,8 @@
 
         Nous avons décider de gérer les options a l'aide d'un module, opt ("option"). Notre objetctif a été de disgner un module génréque donc réutilisable à souhait. Mais aussi de les gérers "à la linux" (notament avec les cas spéciales de "--", "-" et que la valeur d'une option soit déterminé par sa dernière définition). 
 
-        Pour cela, nous avons décider de mettre en pratique l'encapsulation des donners à l'aide d'un type (optparam). Représentant une options, sur la base des opitions linux nous avons donc une représentation longue et court mais aussi une descritpion de celle-ci. Pour le traiment, l'utilisateur fournit sa liste d'option et la liste d'argument de son programme et notre module traitement chaqu'un des arguments avec le traitement adéquemtement fournit par l'utilisateur. Ce traitement s'organise de la façon suivant, avec le traitement de l'option et de l'argument représenter par les fonctions hdl de la structure opt et other tout deux passer en paramettre dans la fonction opt\_init:\\
+        Pour cela, nous avons décider de mettre en pratique l'encapsulation des 
+        donners à l'aide d'un type (optparam). Représentant une options, sur la base des opitions linux nous avons donc une représentation longue et court mais aussi une descritpion de celle-ci. Pour le traiment, l'utilisateur fournit sa liste d'option et la liste d'argument de son programme et notre module traitement chaqu'un des arguments avec le traitement adéquemtement fournit par l'utilisateur. Ce traitement s'organise de la façon suivant, avec le traitement de l'option et de l'argument représenter par les fonctions hdl de la structure opt et other tout deux passer en paramettre dans la fonction opt\_init:\\
 
         \begin{figure}[ht]
             \renewcommand{\algorithmicwhile}{\textbf{Pour chaque}}
