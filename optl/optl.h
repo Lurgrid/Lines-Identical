@@ -16,7 +16,7 @@
 //    les informations nécessaire à la gestion d'une option.
 typedef struct optparam optparam;
 
-//  LONG_JOIN : séparateur entre mot-clé et argument pour les "longues" options.
+//  LONG_JOIN : séparateur entre le mot-clé et l'argument des "longues" options.
 #define LONG_JOIN '='
 
 //  NEXT_NOPT : Spécifieur indiquant que l'élément qui le suis ne doit pas être
