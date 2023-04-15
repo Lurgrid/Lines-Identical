@@ -1,6 +1,6 @@
 // optgnu.c : partie implantation de l'interface optg.h
 
-#include "optgnu.h"
+#include "optl.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -65,49 +65,34 @@ optparam *opt_init(const char optshort, const char *optlong,
 //  opt_parse_long :
 static optreturn opt_parse_long(const char **param, const optparam **aopt,
     size_t nmemb, const optparam **opt) {
-  //size_t min = 0;
-  //size_t max = nmemb;
-  //size_t i = min;
-  //size_t j = 0;
-  //while (i < max && aopt[i]->optlong != NULL
-      //&& aopt[i]->optlong[j] == *param[j] && min + 1 < max) {
-  //}
   size_t min = 0;
   size_t max = nmemb;
   int i = 0;
   while ((*param)[i] != '\0' && (*param)[i] != LONG_JOIN && min < max) {
-    while (min < max) {
+    while (min < max && aopt[min]->optlong[i] < (*param)[i]) {
       if (aopt[min]->optlong[i] > (*param)[i]) {
         return ERROR_UNKNOWN;
       }
-      if (aopt[min]->optlong[i] < (*param)[i]) {
-        ++min;
-      } else {
-        break;
-      }
+      ++min;
     }
-    while (max > min) {
-      if (aopt[max]->optlong[i] < (*param)[i]) {
+    while (max > min && aopt[max - 1]->optlong[i] > (*param)[i]) {
+      if (aopt[max - 1]->optlong[i] < (*param)[i]) {
         return ERROR_UNKNOWN;
       }
-      if (aopt[max]->optlong[i] > (*param)[i]) {
-        --max;
-      } else {
-        break;
-      }
+      --max;
     }
     if (min == max) {
       return ERROR_UNKNOWN;
     }
-    if (min + 1 == max) {
-      *opt = aopt[min];
-      (*param) += i;
-      while (**param != '\0' || **param != LONG_JOIN) {
-        ++(*param);
-      }
-      return DONE;
-    }
     ++i;
+  }
+  if (min + 1 == max) {
+    *opt = aopt[min];
+    (*param) += i;
+    while (**param != '\0' && **param != LONG_JOIN) {
+      ++(*param);
+    }
+    return DONE;
   }
   return nmemb == 0 ? DONE : ERROR_AMB;
 }
@@ -117,51 +102,44 @@ static const optparam *opt_parse_short(const char **param,
     const optparam **aopt, size_t nmemb) {
   for (size_t i = 0; i < nmemb; ++i) {
     if (aopt[i]->optshort != '\0' && **param == aopt[i]->optshort) {
-      ++*param;
+      *param += 1;
       return aopt[i];
     }
   }
   return NULL;
 }
 
-static int opt_long_cmp(const optparam *opt1, const optparam *opt2) {
-  if (opt1->optlong == NULL) {
-    return opt2->optlong == NULL ? 0 : 1;
+static int opt_long_cmp(const optparam **opt1, const optparam **opt2) {
+  if ((*opt1)->optlong == NULL) {
+    return (*opt2)->optlong == NULL ? 0 : 1;
   }
-  if (opt2->optlong == NULL) {
+  if ((*opt2)->optlong == NULL) {
     return -1;
   }
-  return strcmp(opt1->optlong, opt2->optlong);
+  return strcmp((*opt1)->optlong, (*opt2)->optlong);
 }
 
 optreturn opt_process(int argc, char **argv, const optparam **aopt,
     size_t nmemb, int (*hdl_dlt)(void *cntxt, const char *value,
     const char **err), void *cntxt, const char **err, const char *short_cal,
     const char *long_cal) {
-  qsort(aopt, nmemb, sizeof *aopt, (int (*)(const void *,
-      const void *))opt_long_cmp);
+  qsort(aopt, nmemb, sizeof *aopt, (int (*)(const void *, const void *))opt_long_cmp);
   char nf = 0;
   for (int i = 0; i < argc; ++i) {
+    const char *endp;
     if (nf) {
       nf = 0;
       if (hdl_dlt(cntxt, argv[i], err) != 0) {
         return ERROR_DEFAULT;
       }
-      continue;
-    }
-    if (strcmp(NEXT_NOPT, argv[i]) == 0) {
+    } else if (strcmp(NEXT_NOPT, argv[i]) == 0) {
       nf = 1;
-      continue;
-    }
-    const char *endp;
-    if ((endp = prefix(long_cal, argv[i])) != NULL) {
-      // on peut enlever après le NULL
+    } else if ((endp = prefix(long_cal, argv[i])) != NULL) {
       const optparam *opt = NULL;
       optreturn r;
       if ((r = opt_parse_long(&endp, aopt, nmemb, &opt)) != DONE) {
         return r;
       }
-      // endp pointe sur le égal ou \0
       if (opt->arg) {
         if (*endp != LONG_JOIN || *(endp + 1) == '\0') {
           *err = argv[i];
@@ -171,7 +149,6 @@ optreturn opt_process(int argc, char **argv, const optparam **aopt,
           return ERROR_HDL;
         }
       } else {
-        //  voir sur ce que endp pointe
         if (opt->hdl(cntxt, endp, err) != 0) {
           return ERROR_HDL;
         }

@@ -20,6 +20,9 @@ typedef struct optparam optparam;
 //    arguments.
 #define LONG_JOIN '='
 
+//  STDIN_PAR :
+#define STDIN_PAR "-"
+
 //  NEXT_NOPT : Spécifie que le paramettre suivant, ne doit pas être traiter
 //    comme une option.
 #define NEXT_NOPT "--"
@@ -55,7 +58,7 @@ typedef enum {
   ERROR_DEFAULT,
   STOP_PROCESS,
   DONE,
-} optreturn;
+} optturn;
 
 //  opt_process : argc représente le nombre de chaine présente dans le tableau
 //    de chaine de charactère argv. aopt est un tableau de nmemb option qui sont
