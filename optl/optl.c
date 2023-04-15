@@ -7,16 +7,19 @@
 
 //--- Définition optparam ------------------------------------------------------
 
-//  struct optparam, optparam : representation une option d'un programme, les
-//    champs optshort, optlong représente respectivement les version courte et
-//    longue de l'option. Les deux représentation ne sont pas obligatoire, si
-//    l'un des deux vaut le charactère nul ('\0'), NULL respectivement alors
-//    cette options est considérer sant cette représentation. desc est une
-//    chaine de carractère, la description de l'option. Arg le booléen
-//    spécifiant le besoin ou non d'un argument pour cette options. Interup un
-//    booléen spécifiant si l'option arrête le traitement des autres options
-//    après son traitement. la fonction hdl représente les actions l'ors de
-//    l'appel de l'option.
+//  struct optparam, optparam : representation une option d'un programme.
+//    optshort, optlong représente tout deux la possible représentation de
+//    l'options sous forme respectivment 'courte' ou 'long'. Une au moins est
+//    obligatoire. La non prise en charge d'une options courte se spécifie par
+//    le passage du charactère '\0' pour cette arguement de même pour l'option
+//    longue avec la valeur NULL. Desc, une chaine de carractère, la description
+//    de l'option. Arg le booléen spécifiant le besoin ou non d'un argument pour
+//    cette options. Interup un booléen spécifiant si l'option arrête le
+//    traitement des autres options après son traitement. hdl, une fonctoin
+//    représentent l'actions à éffectuer l'ors de l'appel de l'option, avec
+//    cntxt un pointeur vers un context, value le possible paramettre de
+//    l'option à traiter et err un pointeur de chaine de caractère qui change de
+//    valeur en cas d'erreur.
 struct optparam {
   char optshort;
   const char *optlong;
@@ -157,7 +160,7 @@ optreturn opt_process(int argc, char **argv, const optparam **aopt,
         *err = NULL;
         return STOP_PROCESS;
       }
-    } else if ((endp = prefix(short_cal, argv[i])) != NULL) {
+    } else if ((endp = prefix(short_cal, argv[i])) != NULL && *endp != '\0') {
       const optparam *opt;
       while (*endp != '\0') {
         if ((opt = opt_parse_short(&endp, aopt, nmemb)) == NULL) {
