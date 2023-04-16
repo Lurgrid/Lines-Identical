@@ -338,5 +338,20 @@
 
     %faire le truc -- nom fichier même si help
     %faire le truc - - qui va devoir clearr de stdin car rester sur stdin
-    
+
+    \section{OPT}
+    Le dévellopement du module d'option est la partie du projet qui nous a été 
+    le plus chronofage. En effet, nous avons dès le début eu pour objectifs de 
+    produire un module générique, réutilisable pour de nombreux programme, a 
+    l'instar du module getopt qui nous sembler manquer certain fonctionnalités
+    très importante tel que la représentation des options par option courte et 
+    longue mais quelque fonctionnalités tel que le spécifieur de la prochaine 
+    non option (`--').
+    Dans un premier temps, cette objectifs ne nous a pas posser problème. Nous 
+    avons très vite trouver une solutions simple de traiter des options 
+    représenter par deux mots clé (la version courte et la version longue). Nous 
+    avons creer un type (le type optparam) regroupant toute les valeurs utiles 
+    a la représentation d'une option. A l'aide d'une fonction opt\_process, le 
+    module effectura le traitement liée au appelle des options fournis dans argv
+    .
 \end{document}
