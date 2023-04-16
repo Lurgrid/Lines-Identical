@@ -4,7 +4,7 @@
 //    utilisateur. L'implémentation de la gestsion d'option est baser sur la
 //    gestion des options des commandes linux.
 
-//  LES SEULES MODIFICATION AUTORISÉE DE CE SOURCE CONCERNE LES LIGNES 21 et 25.
+//  LES SEULES MODIFICATION AUTORISÉE DE CE SOURCE CONCERNE LES LIGNES 20 à 28.
 
 #ifndef OPTL__H
 #define OPTL__H
@@ -22,6 +22,10 @@ typedef struct optparam optparam;
 //  NEXT_NOPT : Spécifieur indiquant que l'élément qui le suis ne doit pas être
 //    condiérer comme une option.
 #define NEXT_NOPT "--"
+
+//  SHORT_HELP, LONG_HELP : représentation courte et longue de l'option help
+#define SHORT_HELP 'h'
+#define LONG_HELP "help"
 
 //  opt_init : Tente d'allouer les resources néssaires pour gérer une options.
 //    optshort, optlong représente tout deux la possible représentation de
