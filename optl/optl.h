@@ -51,13 +51,13 @@ extern optparam *opt_init(const char optshort, const char *optlong,
 //    opt_init. (chaque valeur est définie dans la spécfication de la fonction
 //    opt_process)
 typedef enum {
-  ERROR_HDL,
-  ERROR_AMB,
-  ERROR_PARAM,
-  ERROR_UNKNOWN,
-  ERROR_DEFAULT,
-  STOP_PROCESS,
-  DONE,
+  ERROR_HDL, // 0
+  ERROR_AMB, // 1
+  ERROR_PARAM, // 2
+  ERROR_UNKNOWN, // 3
+  ERROR_DEFAULT, // 4
+  STOP_PROCESS, // 5
+  DONE, // 6
 } optreturn;
 
 //  opt_process : argc représente le nombre de chaine présente dans le tableau
@@ -68,14 +68,15 @@ typedef enum {
 //    représente la chaine à traiter et err pointe sur une possible chaine de
 //    charactère représentant une erreur si il y a eu une occurence d'une
 //    erreur, valant NULL sinon. Une option courte est préfixé obligatoirement
-//    de short_cal, de même de long_cal pour les option longue. Si les option
+//    de short_cal puis suivie d'un charactère alpha numérique, de même, 
+//    long_cal est préfixe obligatoire des option longue. Si les option
 //    longues ont un paramettre alors LONG_JOIN est le séparateur entre l'option
 //    et son argument. Si NEXT_NOPT apparait, alors la chaine suivante ne sera
 //    pas considérer comme une option. Une option obligatoire est présente,
 //    celle de l'aide, représenter SHORT_HELP, LONG_HELP pour sa représenation
-//    longue et courte. Cette option affiche desc sur la sortie standart puis
-//    toutes les options présent dans aopt avec leur description et
-//    représenation.
+//    longue et courte. Cette option affiche sur la sortie standart, une aide 
+//    a l'utilisation avec la chaine usage et desc en sont sein (voir docuement 
+//    pour plus de détaille sur l'affichage).
 //    La fonction effectue le traitement suivant :
 //    - si toutes les élément de argv ont été traiter sans erreur
 //        .alors renvoie DONE
@@ -94,6 +95,6 @@ typedef enum {
 extern optreturn opt_process(int argc, char **argv, const optparam **aopt,
   size_t nmemb, int (*hdl_dlt)(void *cntxt, const char *value,
   const char **err), void *cntxt, const char **err, const char *short_cal,
-  const char *long_cal, const char *desc);
+  const char *long_cal, const char *desc, const char *usage);
 
 #endif

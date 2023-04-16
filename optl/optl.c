@@ -44,6 +44,38 @@ static const char *prefix(const char *s1, const char *s2) {
   return prefix(s1 + 1, s2 + 1);
 }
 
+#define SH 2
+
+#define PRINT_HELP(aopt, nmemb, usage, desc, short_cal, long_cal)              \
+  if (usage != NULL) {                                                         \
+    printf("Usage: %s\n", usage);                                              \
+  }                                                                            \
+  if (desc != NULL) {                                                          \
+    printf("%s\n", desc);                                                      \
+  }                                                                            \
+  for (size_t k = 0; k < nmemb; ++k) {                                         \
+    if (aopt[k]->optshort == '\0') {                                           \
+      printf("%*s", SH + 1 + (int) strlen(short_cal), " ");                    \
+    } else {                                                                   \
+      printf("%*s%s%c", SH, " ", short_cal, aopt[k]->optshort);                \
+    }                                                                          \
+    if (aopt[k]->optlong != NULL) {                                            \
+      printf("%s%s%s", (aopt[k]->optshort != '\0' ? ", " : "  "), long_cal,    \
+          aopt[k]->optlong);                                                   \
+      if (aopt[k]->arg) {                                                      \
+        putchar(LONG_JOIN);                                                    \
+        printf("[OPTION]");                                                    \
+      } else {                                                                 \
+        printf("\t");                                                          \
+      }                                                                        \
+    } else {                                                                   \
+      printf("\t\t");                                                          \
+    }                                                                          \
+    printf("\t%s\n", aopt[k]->desc);                                           \
+  }                                                                            \
+  printf("%*s%s%c, %s%s\t\tdisplay this help and exit\n", SH, " ",             \
+      short_cal, SHORT_HELP, long_cal, LONG_HELP);                             \
+
 //--- Implémentation opt -------------------------------------------------------
 
 optparam *opt_init(const char optshort, const char *optlong,
@@ -68,9 +100,18 @@ optparam *opt_init(const char optshort, const char *optlong,
 //  opt_parse_long :
 static optreturn opt_parse_long(const char **param, const optparam **aopt,
     size_t nmemb, const optparam **opt) {
-  size_t min = 0;
-  size_t max = nmemb;
-  int i = 0;
+  if (nmemb == 0) {
+    return ERROR_UNKNOWN;
+  }
+  register size_t min = 0;
+  register size_t max = nmemb;
+  register int i = 0;
+  while (max > min && aopt[max - 1]->optlong == NULL) {
+    --max;
+  }
+  if (min == max) {
+    return ERROR_UNKNOWN;
+  }
   while ((*param)[i] != '\0' && (*param)[i] != LONG_JOIN && min < max) {
     while (min < max && aopt[min]->optlong[i] < (*param)[i]) {
       if (aopt[min]->optlong[i] > (*param)[i]) {
@@ -97,7 +138,7 @@ static optreturn opt_parse_long(const char **param, const optparam **aopt,
     }
     return DONE;
   }
-  return nmemb == 0 ? DONE : ERROR_AMB;
+  return ERROR_AMB;
 }
 
 //  opt_parse_short :
@@ -125,23 +166,44 @@ static int opt_long_cmp(const optparam **opt1, const optparam **opt2) {
 optreturn opt_process(int argc, char **argv, const optparam **aopt,
     size_t nmemb, int (*hdl_dlt)(void *cntxt, const char *value,
     const char **err), void *cntxt, const char **err, const char *short_cal,
-    const char *long_cal, const char *desc) {
+    const char *long_cal, const char *desc, const char *usage) {
   qsort(aopt, nmemb, sizeof *aopt, (int (*)(const void *, const void *))opt_long_cmp);
   char nf = 0;
   for (int i = 0; i < argc; ++i) {
     const char *endp;
     if (nf) {
       nf = 0;
-      if (hdl_dlt(cntxt, argv[i], err) != 0) {
+      if (hdl_dlt != NULL && hdl_dlt(cntxt, argv[i], err) != 0) {
         return ERROR_DEFAULT;
       }
     } else if (strcmp(NEXT_NOPT, argv[i]) == 0) {
       nf = 1;
     } else if ((endp = prefix(long_cal, argv[i])) != NULL) {
       const optparam *opt = NULL;
-      optreturn r;
-      if ((r = opt_parse_long(&endp, aopt, nmemb, &opt)) != DONE) {
+      const char *fendp = endp;
+      optreturn r = opt_parse_long(&endp, aopt, nmemb, &opt);
+      if (r == ERROR_AMB) {
         return r;
+      }
+      const char *t = prefix(fendp, LONG_HELP);
+      if (r == ERROR_UNKNOWN) {
+        if (t != NULL) {
+          PRINT_HELP(aopt, nmemb, usage, desc, short_cal, long_cal)
+          *err = NULL;
+          return STOP_PROCESS;
+        }
+        return r;
+      }
+      if (t != NULL) {
+        if (strcmp(LONG_HELP, fendp) == 0) {
+          PRINT_HELP(aopt, nmemb, usage, desc, short_cal, long_cal)
+          *err = NULL;
+          return STOP_PROCESS;
+        }
+        if (strcmp(opt->optlong, fendp) != 0) {
+          *err = argv[i];
+          return ERROR_AMB;
+        }
       }
       if (opt->arg) {
         if (*endp != LONG_JOIN || *(endp + 1) == '\0') {
@@ -163,6 +225,11 @@ optreturn opt_process(int argc, char **argv, const optparam **aopt,
     } else if ((endp = prefix(short_cal, argv[i])) != NULL && *endp != '\0') {
       const optparam *opt;
       while (*endp != '\0') {
+        if (*endp == SHORT_HELP) {
+          PRINT_HELP(aopt, nmemb, usage, desc, short_cal, long_cal)
+          *err = NULL;
+          return STOP_PROCESS;
+        }
         if ((opt = opt_parse_short(&endp, aopt, nmemb)) == NULL) {
           *err = endp;
           return ERROR_UNKNOWN;
@@ -183,7 +250,7 @@ optreturn opt_process(int argc, char **argv, const optparam **aopt,
         }
       }
     } else {
-      if (hdl_dlt(cntxt, argv[i], err) != 0) {
+      if (hdl_dlt != NULL && hdl_dlt(cntxt, argv[i], err) != 0) {
         return ERROR_DEFAULT;
       }
     }
