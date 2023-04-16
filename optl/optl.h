@@ -71,7 +71,11 @@ typedef enum {
 //    de short_cal, de même de long_cal pour les option longue. Si les option
 //    longues ont un paramettre alors LONG_JOIN est le séparateur entre l'option
 //    et son argument. Si NEXT_NOPT apparait, alors la chaine suivante ne sera
-//    pas considérer comme une option.
+//    pas considérer comme une option. Une option obligatoire est présente,
+//    celle de l'aide, représenter SHORT_HELP, LONG_HELP pour sa représenation
+//    longue et courte. Cette option affiche desc sur la sortie standart puis
+//    toutes les options présent dans aopt avec leur description et
+//    représenation.
 //    La fonction effectue le traitement suivant :
 //    - si toutes les élément de argv ont été traiter sans erreur
 //        .alors renvoie DONE
@@ -90,6 +94,6 @@ typedef enum {
 extern optreturn opt_process(int argc, char **argv, const optparam **aopt,
   size_t nmemb, int (*hdl_dlt)(void *cntxt, const char *value,
   const char **err), void *cntxt, const char **err, const char *short_cal,
-  const char *long_cal);
+  const char *long_cal, const char *desc);
 
 #endif

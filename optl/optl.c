@@ -125,7 +125,7 @@ static int opt_long_cmp(const optparam **opt1, const optparam **opt2) {
 optreturn opt_process(int argc, char **argv, const optparam **aopt,
     size_t nmemb, int (*hdl_dlt)(void *cntxt, const char *value,
     const char **err), void *cntxt, const char **err, const char *short_cal,
-    const char *long_cal) {
+    const char *long_cal, const char *desc) {
   qsort(aopt, nmemb, sizeof *aopt, (int (*)(const void *, const void *))opt_long_cmp);
   char nf = 0;
   for (int i = 0; i < argc; ++i) {
