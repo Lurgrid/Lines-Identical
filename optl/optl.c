@@ -68,7 +68,7 @@ static const char *prefix(const char *s1, const char *s2) {
     }                                                                          \
     if (aopt[k]->optlong != NULL) {                                            \
       printf("%s%s%s", (aopt[k]->optshort != '\0' ? ", " : "  "), long_cal,    \
-          aopt[k]->optlong);                                                   \
+    aopt[k]->optlong);                                                   \
       if (aopt[k]->arg) {                                                      \
         putchar(LONG_JOIN);                                                    \
         printf("[OPTION]");                                                    \
@@ -81,7 +81,7 @@ static const char *prefix(const char *s1, const char *s2) {
     printf("\t%s\n", aopt[k]->desc);                                           \
   }                                                                            \
   printf("%*s%s%c, %s%s\t\tdisplay this help and exit\n", SH, " ",             \
-      short_cal, SHORT_HELP, long_cal, LONG_HELP);                             \
+    short_cal, SHORT_HELP, long_cal, LONG_HELP);                             \
 
 //--- Implémentation opt -------------------------------------------------------
 
@@ -127,13 +127,13 @@ static optreturn opt_parse_long(const char **param, const optparam **aopt,
   while ((*param)[i] != '\0' && (*param)[i] != LONG_JOIN && min < max) {
     while (min < max && aopt[min]->optlong[i] < (*param)[i]) {
       //if (aopt[min]->optlong[i] > (*param)[i]) {
-        //return ERROR_UNKNOWN;
+      //return ERROR_UNKNOWN;
       //}
       ++min;
     }
     while (max > min && aopt[max - 1]->optlong[i] > (*param)[i]) {
       //if (aopt[max - 1]->optlong[i] < (*param)[i]) {
-        //return ERROR_UNKNOWN;
+      //return ERROR_UNKNOWN;
       //}
       --max;
     }
@@ -189,7 +189,8 @@ optreturn opt_process(int argc, char **argv, const optparam **aopt,
     size_t nmemb, int (*hdl_dlt)(void *cntxt, const char *value,
     const char **err), void *cntxt, const char **err, const char *short_cal,
     const char *long_cal, const char *desc, const char *usage) {
-  qsort(aopt, nmemb, sizeof *aopt, (int (*)(const void *, const void *))opt_long_cmp);
+  qsort(aopt, nmemb, sizeof *aopt, (int (*)(const void *,
+      const void *))opt_long_cmp);
   char nf = 0;
   for (int i = 0; i < argc; ++i) {
     const char *endp;
@@ -211,7 +212,7 @@ optreturn opt_process(int argc, char **argv, const optparam **aopt,
       if (r == ERROR_UNKNOWN) {
         if (t != NULL) {
           PRINT_HELP(aopt, nmemb, usage, desc, short_cal, long_cal)
-          *err = NULL;
+          * err = NULL;
           return STOP_PROCESS;
         }
         return r;
@@ -219,10 +220,10 @@ optreturn opt_process(int argc, char **argv, const optparam **aopt,
       if (t != NULL) {
         if (*t == '\0') {
           PRINT_HELP(aopt, nmemb, usage, desc, short_cal, long_cal)
-          *err = NULL;
+          * err = NULL;
           return STOP_PROCESS;
         }
-        if (strcmp(opt->optlong, fendp) != 0) {// a quoi sa sert ????
+        if (strcmp(opt->optlong, fendp) != 0) { // a quoi sa sert ????
           *err = argv[i];
           return ERROR_AMB;
         }
@@ -246,7 +247,7 @@ optreturn opt_process(int argc, char **argv, const optparam **aopt,
       while (*endp != '\0') {
         if (*endp == SHORT_HELP) {
           PRINT_HELP(aopt, nmemb, usage, desc, short_cal, long_cal)
-          *err = NULL;
+          * err = NULL;
           return STOP_PROCESS;
         }
         if ((opt = opt_parse_short(&endp, aopt, nmemb)) == NULL) {

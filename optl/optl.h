@@ -76,7 +76,7 @@ typedef enum {
 //    celle de l'aide, représenter SHORT_HELP, LONG_HELP pour sa représenation
 //    longue et courte. Cette option affiche sur la sortie standart, une aide
 //    a l'utilisation avec la chaine usage et desc en sont sein (voir docuement
-//    pour plus de détaille sur l'affichage).
+//    pour plus de détaille sur cette affichage).
 //    La fonction effectue le traitement suivant :
 //    - si toutes les élément de argv ont été traiter sans erreur
 //        .alors renvoie DONE
