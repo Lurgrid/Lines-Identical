@@ -1,4 +1,4 @@
-CC = clang-15
+CC = gcc
 CFLAGS = -std=c18 \
   -Wall -Wconversion -Werror -Wextra -Wpedantic -Wwrite-strings \
   -O2

@@ -44,8 +44,15 @@ static const char *prefix(const char *s1, const char *s2) {
   return prefix(s1 + 1, s2 + 1);
 }
 
+//  SH : nombre d'espace entre les représentation short et long dans l'affichage
+//    de la fonction help.
 #define SH 2
 
+//  PRINT_HELP : fonction de traitement de l'option help. aopt un tableu de
+//    nmemb option. usage, desc des chaines représentent l'utilisation et la
+//    description du programme (il peuvent avoir la valeur NULL, si il ne sont
+//    pas définie). short_cal, long_cal les préfixes obligatoires respectivement
+//    des options courte et long.
 #define PRINT_HELP(aopt, nmemb, usage, desc, short_cal, long_cal)              \
   if (usage != NULL) {                                                         \
     printf("Usage: %s\n", usage);                                              \
@@ -97,7 +104,13 @@ optparam *opt_init(const char optshort, const char *optlong,
   return op;
 }
 
-//  opt_parse_long :
+//  opt_parse_long : Fonction d'identification du paramettre représenter par
+//    *param. aopt un tableau de nmemb option. opt un pointeur de pointeur qui
+//    pointera sur l'option possiblement représenter par param.
+//    Renvoie ERROR_UNKNOWN, si param n'est pas une option de aopt. ERROR_AMB si
+//    param porte a confusion quand au préfixe qu'il représente. DONE si une
+//    param représente bien de manière unique une options de aopt, alors opt
+//    pointe sur ce paramettre.
 static optreturn opt_parse_long(const char **param, const optparam **aopt,
     size_t nmemb, const optparam **opt) {
   if (nmemb == 0) {
@@ -141,7 +154,11 @@ static optreturn opt_parse_long(const char **param, const optparam **aopt,
   return ERROR_AMB;
 }
 
-//  opt_parse_short :
+//  opt_parse_short : **param, le charactère représentant la possible option
+//    courte entréer par l'utilisateur, aopt un tableau de nmemb option.
+//    Renvoie NULL si **param n'est pas une option courte présente dans aopt.
+//    Sinon renvoie un pointeur sur l'option correspondant à l'option courte
+//    représenter par **param.
 static const optparam *opt_parse_short(const char **param,
     const optparam **aopt, size_t nmemb) {
   for (size_t i = 0; i < nmemb; ++i) {
@@ -153,6 +170,12 @@ static const optparam *opt_parse_short(const char **param,
   return NULL;
 }
 
+//  opt_long_cmp : fonction de comparaison d'option optparam en fonction de leur
+//    possible option longue. Les champs optlong valent NULL sont considérer
+//    étant plus grand que toute autre possible chaine.
+//    Renvoie 0 si les deux options sont identiques, une valeur strictement
+//    négatif si opt1 est plus petite que opt2, sinon renvoie une valeur
+//    strictement positif.
 static int opt_long_cmp(const optparam **opt1, const optparam **opt2) {
   if ((*opt1)->optlong == NULL) {
     return (*opt2)->optlong == NULL ? 0 : 1;
