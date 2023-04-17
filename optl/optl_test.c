@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
   const optparam *aopt[] = {
     opt_init('l', "lol", "Affiche lol", false, false, lol),
     opt_init('\0', "value", "affiche la valeur", true, false, val),
-    opt_init('V', "version", "affiche la version", false, true, version)
+    opt_init('V', "helpa", "affiche la version", false, true, version)
   };
   if (!test_aopt(aopt, sizeof(aopt) / sizeof(*aopt))) {
     fprintf(stderr, "Error : aopt is null\n");
@@ -20,7 +20,6 @@ int main(int argc, char **argv) {
   }
   const char *err;
   printf("%d\n", opt_process(argc - 1, argv + 1, aopt, sizeof(aopt) / sizeof(*aopt), NULL, NULL, &err, "-", "--", "nique ta mere", "Je viole ta mere"));
-  printf("Done\n");
   return EXIT_SUCCESS;
 }
 

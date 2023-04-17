@@ -45,7 +45,7 @@ static const char *prefix(const char *s1, const char *s2) {
 }
 
 //  SH : nombre d'espace entre les représentation short et long dans l'affichage
-//    de l'option help.
+//    de l'option    help.
 #define SH 2
 
 //  PRINT_HELP : fonction de traitement de l'option help. aopt un tableu de
@@ -111,7 +111,8 @@ optparam *opt_init(const char optshort, const char *optlong,
 //    Renvoie ERROR_UNKNOWN, si param n'est pas une option présente dans aopt.
 //    ERROR_AMB si param porte a confusion quand a la possible option qu'elle
 //    pourait représenter. DONE en cas de réussite de l'indentification d'une
-//    option de manière unique.
+//    option de manière unique, alors *param pointe sur le charactère suivant la
+//    fin de la représentation de l'option longue.
 static optreturn opt_parse_long(const char **param, const optparam **aopt,
     size_t nmemb, const optparam **opt) {
   register size_t min = 0;
@@ -216,12 +217,12 @@ optreturn opt_process(int argc, char **argv, const optparam **aopt,
         return r;
       }
       if (t != NULL) {
-        if (strcmp(LONG_HELP, fendp) == 0) {
+        if (*t == '\0') {
           PRINT_HELP(aopt, nmemb, usage, desc, short_cal, long_cal)
           *err = NULL;
           return STOP_PROCESS;
         }
-        if (strcmp(opt->optlong, fendp) != 0) {
+        if (strcmp(opt->optlong, fendp) != 0) {// a quoi sa sert ????
           *err = argv[i];
           return ERROR_AMB;
         }
@@ -231,13 +232,10 @@ optreturn opt_process(int argc, char **argv, const optparam **aopt,
           *err = argv[i];
           return ERROR_PARAM;
         }
-        if (opt->hdl(cntxt, endp + 1, err) != 0) {
-          return ERROR_HDL;
-        }
-      } else {
-        if (opt->hdl(cntxt, endp, err) != 0) {
-          return ERROR_HDL;
-        }
+        ++endp;
+      }
+      if (opt->hdl(cntxt, endp, err) != 0) {
+        return ERROR_HDL;
       }
       if (opt->interup) {
         *err = NULL;
