@@ -45,7 +45,7 @@ static const char *prefix(const char *s1, const char *s2) {
 }
 
 //  SH : nombre d'espace entre les représentation short et long dans l'affichage
-//    de la fonction help.
+//    de l'option help.
 #define SH 2
 
 //  PRINT_HELP : fonction de traitement de l'option help. aopt un tableu de
@@ -104,18 +104,16 @@ optparam *opt_init(const char optshort, const char *optlong,
   return op;
 }
 
-//  opt_parse_long : Fonction d'identification du paramettre représenter par
-//    *param. aopt un tableau de nmemb option. opt un pointeur de pointeur qui
-//    pointera sur l'option possiblement représenter par param.
-//    Renvoie ERROR_UNKNOWN, si param n'est pas une option de aopt. ERROR_AMB si
-//    param porte a confusion quand au préfixe qu'il représente. DONE si une
-//    param représente bien de manière unique une options de aopt, alors opt
-//    pointe sur ce paramettre.
+//  opt_parse_long : Fonction visant à identifier l'option longue pointé par
+//    *param, en prenant en compte les options présente aopt. Le tableau aopt
+//    contient nmemb option. opt pointe en cas de succés d'identification d'une
+//    option longue de manière unique, sur la dite option.
+//    Renvoie ERROR_UNKNOWN, si param n'est pas une option présente dans aopt.
+//    ERROR_AMB si param porte a confusion quand a la possible option qu'elle
+//    pourait représenter. DONE en cas de réussite de l'indentification d'une
+//    option de manière unique.
 static optreturn opt_parse_long(const char **param, const optparam **aopt,
     size_t nmemb, const optparam **opt) {
-  if (nmemb == 0) {
-    return ERROR_UNKNOWN;
-  }
   register size_t min = 0;
   register size_t max = nmemb;
   register int i = 0;
@@ -127,15 +125,15 @@ static optreturn opt_parse_long(const char **param, const optparam **aopt,
   }
   while ((*param)[i] != '\0' && (*param)[i] != LONG_JOIN && min < max) {
     while (min < max && aopt[min]->optlong[i] < (*param)[i]) {
-      if (aopt[min]->optlong[i] > (*param)[i]) {
-        return ERROR_UNKNOWN;
-      }
+      //if (aopt[min]->optlong[i] > (*param)[i]) {
+        //return ERROR_UNKNOWN;
+      //}
       ++min;
     }
     while (max > min && aopt[max - 1]->optlong[i] > (*param)[i]) {
-      if (aopt[max - 1]->optlong[i] < (*param)[i]) {
-        return ERROR_UNKNOWN;
-      }
+      //if (aopt[max - 1]->optlong[i] < (*param)[i]) {
+        //return ERROR_UNKNOWN;
+      //}
       --max;
     }
     if (min == max) {
@@ -154,11 +152,11 @@ static optreturn opt_parse_long(const char **param, const optparam **aopt,
   return ERROR_AMB;
 }
 
-//  opt_parse_short : **param, le charactère représentant la possible option
-//    courte entréer par l'utilisateur, aopt un tableau de nmemb option.
+//  opt_parse_short : Fonction visant à identifier l'option longue pointé par
+//    **param, en prenant en compte les options présente aopt. aopt un tableau
+//    de nmemb option.
 //    Renvoie NULL si **param n'est pas une option courte présente dans aopt.
-//    Sinon renvoie un pointeur sur l'option correspondant à l'option courte
-//    représenter par **param.
+//    Sinon renvoie un pointeur sur la dite option représenter par **param.
 static const optparam *opt_parse_short(const char **param,
     const optparam **aopt, size_t nmemb) {
   for (size_t i = 0; i < nmemb; ++i) {
@@ -170,11 +168,11 @@ static const optparam *opt_parse_short(const char **param,
   return NULL;
 }
 
-//  opt_long_cmp : fonction de comparaison d'option optparam en fonction de leur
-//    possible option longue. Les champs optlong valent NULL sont considérer
-//    étant plus grand que toute autre possible chaine.
-//    Renvoie 0 si les deux options sont identiques, une valeur strictement
-//    négatif si opt1 est plus petite que opt2, sinon renvoie une valeur
+//  opt_long_cmp : fonction de comparaison d'option, par leur champ optlong. La
+//    valeur NULL est considérer plus grande que tout autre valeur pour cette
+//    comparaison.
+//    Renvoie une valeur nul en cas d'égaliter des options, une valeur
+//    strictement négatif si opt1 est plus petite que opt2, sinon une valeur
 //    strictement positif.
 static int opt_long_cmp(const optparam **opt1, const optparam **opt2) {
   if ((*opt1)->optlong == NULL) {

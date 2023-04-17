@@ -31,7 +31,7 @@ int lol(__attribute__((unused))void *cntxt, __attribute__((unused))const char *v
 int version(__attribute__((unused))void *cntxt, __attribute__((unused))const char *value, __attribute__((unused))const char **err) {
   printf("build on %s with ", __DATE__);
   #ifdef __clang__
-    printf("clang %d.%d.%d\n", __clang_major__, __clang_minor__, 
+    printf("clang %d.%d.%d\n", __clang_major__, __clang_minor__,
         __clang_patchlevel__);
   #elif defined(__GNUC__)
     printf("gcc %d.%d.%d\n", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
