@@ -1,0 +1,173 @@
+\documentclass[12pt]{article}
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[letterpaper,margin=3cm]{geometry}
+\usepackage[export]{adjustbox}
+\usepackage{listings}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage[table]{xcolor}
+\usepackage{svg}
+\usepackage{tocloft}
+\usepackage{algorithmic}
+\usepackage{indentfirst}
+\usepackage{hyperref}
+
+\renewcommand{\arraystretch}{1.7}
+\setlength{\arrayrulewidth}{1pt} % épaisseur de la ligne du 
+
+\renewcommand{\thesection}{\Roman{section}} 
+\renewcommand\thesubsection{\arabic{subsection}}
+\setlength{\cftsecnumwidth}{2em} % ajuste la largeur de la colonne des numéros de section
+\renewcommand{\algorithmicrequire}{\textbf{Pré-condition}}
+            
+\renewcommand{\algorithmicdo}{\textbf{faire}}
+\renewcommand{\algorithmicend}{\textbf{Fin}}
+\renewcommand{\algorithmicif}{\textbf{Si}}
+\renewcommand{\algorithmicelse}{\textbf{Sinon}}
+\renewcommand{\algorithmicthen}{\textbf{alors}}
+\renewcommand{\algorithmicwhile}{\textbf{Tant que}}
+\renewcommand{\algorithmicwhile}{\textbf{Pour chaque}}
+
+\newcommand{\spacebox}{8pt}
+
+
+\setlength{\parindent}{1cm}
+\sloppy
+
+\begin{document}
+    \section{Module de gestion d'option, optl}
+    Le dévellopement du module d'option est la partie du projet qui nous a été 
+    le plus chronofage. En effet, nous avons dès le début eu pour objectifs de 
+    produire un module générique, réutilisable pour de nombreux programme. A 
+    l'instar du module getopt qui nous sembler manquer certain fonctionnalités
+    très importante tel que la représentation des options par une chaine de 
+    charactère (représentation longue), mais aussi d'autre chose présente dans 
+    les option linux. 
+
+    Dans un premier temps, il nous a fallu effectue des recherches sur la 
+    gestion d'option des programmes linux. C'est après ces recherches que nous 
+    avons remarquer avec stupeur que les programme linux n'ont pas de norme pour 
+    définir pour leur option. Nous avons donc décider de nous en créer une en 
+    nous inspirant des commandes tel que cat, ls ou encore rm du système linux.
+
+    Les options peuvent être représenter par deux indentificateur, une version 
+    courte et une longue. Les deux ne sont pas obligatoire mais une des deux 
+    doit au moins exister. Toute option à possibliter d'intérompre le traitement 
+    d'option. Toute option peut exiger un arguement pour effectué son 
+    traitement. Toutes les options peuvent avoir une description. 
+
+    \subsection{Défintion d'option}
+
+    \subsubsection{Les options courte}
+
+    Une option courte est composer d'un `-' suivit d'un charactère 
+    alphanumérique. Pour donner un paramettre à une option courte il s'uffit de 
+    le séparer d'un espace On peut faire appelle à plusieur option courte en un 
+    seul  appelle, en suivant le '-` des charactère représentant les options 
+    voulus. Cependant, il ne peut y avoir dans cette forme d'appelle qu'un seul 
+    paramettre demandant un arguement et il doit alors être le dernier de la 
+    list. 
+
+    \subsubsection{Les options longue}
+
+    Une option longue est préfixé par la chaine `--'. Pour donner un paramettre 
+    à une longe il faut s'éparer celle-ci de son argument par le charactère `='. 
+    <parler de l'autocomplétion des options longues>
+
+    \subsubsection{Option help}
+
+    Nous avons aussi décider de rendre obligatoire une option, l'option `help'.
+    Cette option représenter par `-h', `--help', doit afficher une possible 
+    description du programme, comment l'utiliser mais aussi la liste de toutes 
+    les options suivit de leur possible description. Cette option intéromp le 
+    traitement des possibles option suivante. 
+
+    \subsection{Implémentation}
+
+    \subsubsection{Spécification}
+
+    Pour l'implémentation nous avons décider de permettre à l'utilisateur de 
+    pouvoir modifier certain chose. Notament les préfixe des option courte et 
+    longue (On peut notament envisager des utilisateur originaire windows qui 
+    préférerait utiliser le `\\' au `-'), l'indentificateur des deux 
+    représentation de l'option `help'. Nous avons aussi été contraint d'ajouter 
+    un spécifieur permétant de garantir que la valeur suivant celui-ci n'est pas
+    une option (lui aussi est modifiable par l'utilisateur du module). Sans ce 
+    spécifieur, l'utilisateur ne pourrait pas rentrer la valeur `--help' en 
+    prenant cette valeur non pas comme une option mais une valeur à traiter. Ce 
+    spécifieur vaux par défault la chaine `--'. De plus, nous avons mis en place 
+    un possible traitement sur les éléments qui ne sont pas des options.
+    
+    \subsubsection{Le code}
+
+    Pour regrouper toutes les informations nécessaire à la gestion d'une option 
+    nous avons donc mis en place un type optparam regroupant toutes ces 
+    informations. La fonction opt\_init initialise une instance de ce type. La 
+    véritable difficulter à été dans la conception de la fonction de traitement,
+    opt\_parse. Cette fonctoin peut être diviser de la façon suivante:
+
+    \begin{figure}
+        \begin{algorithmic}
+            \WHILE{argument \textbf{de} tableau-argument}
+                \IF{argument représente NEXT\_NOPT}
+                    \STATE{
+                        \vspace{\spacebox}
+                        \fcolorbox{red}{white}{
+                        \begin{minipage}[c][8ex]{10cm}
+                            Traitement de NEXT\_NOPT (le spécifieur que la 
+                            prochaine valeur ne doit pas être considérer comme 
+                            une option). 
+                        \end{minipage}
+                        }
+                        \vspace{\spacebox}
+                        }
+                \ELSIF{argument est une option longue}
+                    \STATE{
+                        \vspace{\spacebox}
+                        \fcolorbox{green}{white}{
+                        \begin{minipage}[c][8ex]{10cm}
+                            Traitement de l'option longue. Pour cela, un appelle
+                            a la fonction opt\_parse\_long vise a trouver 
+                            l'option dont argument est le seul préfix. 
+                        \end{minipage}
+                        }
+                        \vspace{\spacebox}
+                        }
+                \ELSIF{argument est une option courte}
+                    \STATE{
+                        \vspace{\spacebox}
+                        \fcolorbox{black}{white}{
+                        \begin{minipage}[c][8ex]{10cm}
+                            Traitement des possibles options courtes 
+                        \end{minipage}
+                        }
+                        \vspace{\spacebox}
+                        }
+                \ELSE{}
+                    \STATE{
+                        \vspace{\spacebox}
+                        \fcolorbox{blue}{white}{
+                        \begin{minipage}[c][8ex]{10cm}
+                            Traitement de ce qui n'est pas une option, à l'aide 
+                            la fonction hdl\_dlt possiblement fournit par 
+                            l'utilisateur.
+                        \end{minipage}
+                        }
+                        \vspace{\spacebox}
+                        }
+                \ENDIF{}
+            \ENDWHILE{}
+        \end{algorithmic}
+        \caption{Algorithme principal de la fonction opt\_init}
+    \end{figure}
+
+
+
+    \section{Bibli}
+    Lien: \\
+    \url{http://www.catb.org/~esr/writings/taoup/html/ch10s05.html}\\
+    \url{https://www.gnu.org/software/gawk/manual/html_node/Options.html}\\
+    \url{https://www.gnu.org/software/libc/manual/html_node/Getopt.html}
+\end{document}
