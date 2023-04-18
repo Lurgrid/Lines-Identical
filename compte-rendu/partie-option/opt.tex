@@ -41,6 +41,7 @@
 
 \begin{document}
     \section{Module de gestion d'option, optl}
+
     Le dévellopement du module d'option est la partie du projet qui nous a été 
     le plus chronofage. En effet, nous avons dès le début eu pour objectifs de 
     produire un module générique, réutilisable pour de nombreux programme. A 
@@ -59,7 +60,7 @@
     courte et une longue. Les deux ne sont pas obligatoire mais une des deux 
     doit au moins exister. Toute option à possibliter d'intérompre le traitement 
     d'option. Toute option peut exiger un arguement pour effectué son 
-    traitement. Toutes les options peuvent avoir une description. 
+    traitement. Toutes les options doivent avoir une description. 
 
     \subsection{Défintion d'option}
 
@@ -109,7 +110,7 @@
     nous avons donc mis en place un type optparam regroupant toutes ces 
     informations. La fonction opt\_init initialise une instance de ce type. La 
     véritable difficulter à été dans la conception de la fonction de traitement,
-    opt\_parse. Cette fonctoin peut être diviser de la façon suivante:
+    opt\_process. Cette fonctoin peut être diviser de la façon suivante:
 
     \newpage
 
