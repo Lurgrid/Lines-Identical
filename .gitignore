@@ -1,3 +1,23 @@
-*.o
-.*
+# Ignore all
+*
 
+# Except
+!*.c
+!*.h
+!makefile
+!*.tex
+!*.svg
+!*.png
+!.gitignore
+!*.md
+!*.sh
+
+!optl/
+!opt/
+!lnid/
+!holdall/
+!hashtable/
+!da/
+!bst/
+
+!compte-rendu/
