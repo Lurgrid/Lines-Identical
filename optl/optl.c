@@ -206,6 +206,7 @@ optreturn opt_process(int argc, char **argv, const optparam **aopt,
       const char *fendp = endp;
       optreturn r = opt_parse_long(&endp, aopt, nmemb, &opt);
       if (r == ERROR_AMB) {
+        *err = fendp;
         return r;
       }
       const char *t = prefix(fendp, LONG_HELP);
@@ -215,18 +216,13 @@ optreturn opt_process(int argc, char **argv, const optparam **aopt,
           * err = NULL;
           return STOP_PROCESS;
         }
+        *err = fendp;
         return r;
       }
-      if (t != NULL) {
-        if (*t == '\0') {
-          PRINT_HELP(aopt, nmemb, usage, desc, short_cal, long_cal)
-          * err = NULL;
-          return STOP_PROCESS;
-        }
-        if (strcmp(opt->optlong, fendp) != 0) { // a quoi sa sert ????
-          *err = argv[i];
-          return ERROR_AMB;
-        }
+      if (t != NULL && *t == '\0') {
+        PRINT_HELP(aopt, nmemb, usage, desc, short_cal, long_cal)
+        *err = NULL;
+        return STOP_PROCESS;
       }
       if (opt->arg) {
         if (*endp != LONG_JOIN || *(endp + 1) == '\0') {
@@ -256,7 +252,7 @@ optreturn opt_process(int argc, char **argv, const optparam **aopt,
         }
         if (opt->arg) {
           if (i >= argc - 1 || *endp != '\0') {
-            *err = endp;// y a un problème sur ce truc
+            *err = endp - 1;
             return ERROR_PARAM;
           }
           ++i;
