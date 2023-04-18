@@ -10,3 +10,4 @@
 !*.png
 !.gitignore
 !*.md
+!*.sh

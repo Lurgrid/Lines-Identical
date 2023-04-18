@@ -22,7 +22,10 @@
 
 \renewcommand{\thesection}{\Roman{section}} 
 \renewcommand\thesubsection{\arabic{subsection}}
-\setlength{\cftsecnumwidth}{2em} % ajuste la largeur de la colonne des numéros de section
+
+\setlength{\cftsecnumwidth}{2em} 
+% ajuste la largeur de la colonne des numéros de section
+
 \renewcommand{\algorithmicrequire}{\textbf{Pré-condition}}
             
 \renewcommand{\algorithmicdo}{\textbf{faire}}
@@ -268,9 +271,18 @@
 
         % nom_de_loption value
 
-        Dans ce cas, si notre option courte est à l'indice k du tableau argv de opt\_init il en vient alors que sa possible valeur est à l'indice k + 1, or le traitement opt\_parse va traiter les chaine k et k + 1. De ce faite opt\_init ne devra pas traiter l'argument d'indice k + 1, c'est donc pour cela que opt\_parse prend un pointeur sur l'indice de l'option. Alors si, l'option courte apprait mais aussi sa valeur à l'indice k + 1, dans opt\_init le k prendra la valeur k + 2 après sont tour de boucle de traitement de l'indice k. Ne traitent pas une chaine qu'il ne faut pas traiter.
+        Dans ce cas, si notre option courte est à l'indice k du tableau argv de 
+        opt\_init il en vient alors que sa possible valeur est à l'indice k + 1, 
+        or le traitement opt\_parse va traiter les chaine k et k + 1. De ce 
+        faite opt\_init ne devra pas traiter l'argument d'indice k + 1, c'est 
+        donc pour cela que opt\_parse prend un pointeur sur l'indice de 
+        l'option. Alors si, l'option courte apprait mais aussi sa valeur à 
+        l'indice k + 1, dans opt\_init le k prendra la valeur k + 2 après sont 
+        tour de boucle de traitement de l'indice k. Ne traitent pas une chaine 
+        qu'il ne faut pas traiter.
 
-        Une option longue est de la forme (avec LONG\_JOIN aillant pour valeur dans notre cas '='):
+        Une option longue est de la forme (avec LONG\_JOIN aillant pour valeur 
+        dans notre cas '='):
 
         % nom_de_loption=value
 
@@ -279,7 +291,8 @@
         Si l'option nécessite un argument dans ce cas un test d'égalier entre 
         le caractère suivant le préfixe et LONG\_JOIN alors le traitement de la 
         value s'effectura sur le reste de la chaine.   
-        Sinon, le traitement s'effectue avec la fonction défiene pour cette option.
+        Sinon, le traitement s'effectue avec la fonction défiene pour cette 
+        option.
 
         L'utilisateur choisie ou non en fonction de son besoin de modifier son 
         evyroenemt par le traitemnt de ces option a l'aide du paramettre 
@@ -299,17 +312,39 @@
 
     \subsection{hastable / avl}
 
-    La laison entre une ligne et son nombre d'occurence ou son numéro d'appartion peut être résolue par l'utilisation de structure de donné qui visent à joindre ces informations pour pouvoir les récupérers. Nous decider de mettre deux type de ces structures à dispostion, une d'arbres binaire et l'autre d'une table de hachage. 
+    La laison entre une ligne et son nombre d'occurence ou son numéro 
+    d'appartion peut être résolue par l'utilisation de structure de donné qui 
+    visent à joindre ces informations pour pouvoir les récupérers. Nous decider 
+    de mettre deux type de ces structures à dispostion, une d'arbres binaire 
+    et l'autre d'une table de hachage. 
 
     \subsubsection{hastable}
 
-    Constituant l'implémentation d'une table de hachage, cette structure permet a partir d'une clé une valeur. Dans notre cas la clé est ligne déjà lu et la valeur ces numéro de lignes (dans le cas d'un seul fichier) ou son nombre d'occurence (dans le cas de pluseir fichier). Cette structure est toutes choisite pour repondre a ce problème. En effet, théoriquement une table de hachage permet un accées presque constant à une valeur par sa clé. Malgrès tout en pratique cette accés dépends exclusivement de la focntion de hachage utilisé, c'est pour cela que dans la section de test nous métons à disposition divers exemple d'execution avec des fonction de hachages différentes. De plus, en pratique l'ajout dans une table de hachage pour entraiténer un agrandisement de celle-ci et donc un recalcule de toutes les valeurs en sont sein.  
+    Constituant l'implémentation d'une table de hachage, cette structure permet 
+    a partir d'une clé une valeur. Dans notre cas la clé est ligne déjà lu et 
+    la valeur ces numéro de lignes (dans le cas d'un seul fichier) ou son 
+    nombre d'occurence (dans le cas de pluseir fichier). Cette structure est 
+    toutes choisite pour repondre a ce problème. En effet, théoriquement une 
+    table de hachage permet un accées presque constant à une valeur par sa clé. 
+    Malgrès tout en pratique cette accés dépends exclusivement de la focntion 
+    de hachage utilisé, c'est pour cela que dans la section de test nous métons 
+    à disposition divers exemple d'execution avec des fonction de hachages 
+    différentes. De plus, en pratique l'ajout dans une table de hachage pour 
+    entraiténer un agrandisement de celle-ci et donc un recalcule de toutes les 
+    valeurs en sont sein.  
 
     \subsubsection{Avl}
 
-    L'utilisation des arbres binaires, nous a demander la création d'un type hcell pour permtettre de stocké les deux valeurs (chaine et compteur). Contrairement à la table de hachage notre implémentaion des arbres binaires garant une recherche au maximum en temps logarithemique. Mais un ajout dans un avl peut entrainer au plus deux rotation de temps constant après avoir effectuer sont ajout en bout de chemin ce qui donne une compléxité logarithemique.\\ \\
+    L'utilisation des arbres binaires, nous a demander la création d'un type 
+    hcell pour permtettre de stocké les deux valeurs (chaine et compteur). 
+    Contrairement à la table de hachage notre implémentaion des arbres binaires 
+    garant une recherche au maximum en temps logarithemique. Mais un ajout dans 
+    un avl peut entrainer au plus deux rotation de temps constant après avoir 
+    effectuer sont ajout en bout de chemin ce qui donne une compléxité 
+    logarithemique.\\ \\
     
-    Divers test, aillant pour but d'identifier la meilleur option sont effectuer dans la section test.
+    Divers test, aillant pour but d'identifier la meilleur option sont effectuer 
+    dans la section test.
 
     \subsection{main}\label{main}
        
