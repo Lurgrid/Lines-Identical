@@ -108,14 +108,16 @@
     véritable difficulter à été dans la conception de la fonction de traitement,
     opt\_parse. Cette fonctoin peut être diviser de la façon suivante:
 
-    \begin{figure}
+    \newpage
+
+    \begin{figure}[ht]
         \begin{algorithmic}
             \WHILE{argument \textbf{de} tableau-argument}
                 \IF{argument représente NEXT\_NOPT}
                     \STATE{
                         \vspace{\spacebox}
                         \fcolorbox{red}{white}{
-                        \begin{minipage}[c][8ex]{10cm}
+                        \begin{minipage}[c][8ex]{13cm}
                             Traitement de NEXT\_NOPT (le spécifieur que la 
                             prochaine valeur ne doit pas être considérer comme 
                             une option). 
@@ -127,10 +129,11 @@
                     \STATE{
                         \vspace{\spacebox}
                         \fcolorbox{green}{white}{
-                        \begin{minipage}[c][8ex]{10cm}
+                        \begin{minipage}[c][8ex]{13cm}
                             Traitement de l'option longue. Pour cela, un appelle
-                            a la fonction opt\_parse\_long vise a trouver 
-                            l'option dont argument est le seul préfix. 
+                            a la fonction opt\_parse\_long visent a trouver 
+                            l'option dont argument est le seul préfix. Puis la 
+                            fonction liée à l'option est éxecuter. 
                         \end{minipage}
                         }
                         \vspace{\spacebox}
@@ -139,8 +142,12 @@
                     \STATE{
                         \vspace{\spacebox}
                         \fcolorbox{black}{white}{
-                        \begin{minipage}[c][8ex]{10cm}
-                            Traitement des possibles options courtes 
+                        \begin{minipage}[c][8ex]{13cm}
+                            Traitement des possibles options courtes. Pour ce 
+                            faire, un traitement sur chaque charactère est 
+                            effectué permettant de trouver toutes les 
+                            options représenté dans argument. Puis effectue le 
+                            traitement liés à ces appelles.
                         \end{minipage}
                         }
                         \vspace{\spacebox}
@@ -149,7 +156,7 @@
                     \STATE{
                         \vspace{\spacebox}
                         \fcolorbox{blue}{white}{
-                        \begin{minipage}[c][8ex]{10cm}
+                        \begin{minipage}[c][8ex]{13cm}
                             Traitement de ce qui n'est pas une option, à l'aide 
                             la fonction hdl\_dlt possiblement fournit par 
                             l'utilisateur.
@@ -160,14 +167,34 @@
                 \ENDIF{}
             \ENDWHILE{}
         \end{algorithmic}
-        \caption{Algorithme principal de la fonction opt\_init}
+        \caption{Traitement du tableau des arguement par la fonction 
+        opt\_process.}
     \end{figure}
 
+    \subsection{Pour et contre du module}
 
+    Ce module à été consu pour être utiliser dans de nombreux cas. Il pourrait 
+    donc reservi pour des futurs projets. Cette généraliter entraine par contre 
+    une grande difficulter quand à la compréhension de ces fonctionnalités, on 
+    peut notament citer la Spécification de la fonction otp\_process qui est 
+    trop longue.
+    Un point fort du reste qu'il est complet, il met en pratique toute les 
+    fonctionnalités des commandes linux les plus connu (rm, ls, cat), notament d
+    des fonctionnalités tel que `l'autocomplétion' des options longues, la prise
+    en charge des multiple option courte ou encore le spécifieur NEXT\_NOPT 
+    (next is not an option). Un autre point fort, la compléxiter du traitement 
+    des options, toues les options ne sont parcourue qu'au plus deux fois pour 
+    exercuter leur traitement (avec la possible comparaison avec l'option 
+    `help'). De même ce module ne nécessite que le stockage des objets de type 
+    optparam pour traiter les options.
 
     \section{Bibli}
     Lien: \\
-    \url{http://www.catb.org/~esr/writings/taoup/html/ch10s05.html}\\
-    \url{https://www.gnu.org/software/gawk/manual/html_node/Options.html}\\
-    \url{https://www.gnu.org/software/libc/manual/html_node/Getopt.html}
+    Présentation des divers `tradition' de gestion d'option pour unix et gnu, 
+    \url{http://www.catb.org/~esr/writings/taoup/html/ch10s05.html}.\\
+    Descrpition de la gestion des option en ligne à la GNU, 
+    \url{https://www.gnu.org/software/gawk/manual/html_node/Options.html}.\\
+    Documentation du module getopt, pour possiblement faire une comparaison 
+    entre ce module et optl, 
+    \url{https://www.gnu.org/software/libc/manual/html_node/Getopt.html}.
 \end{document}

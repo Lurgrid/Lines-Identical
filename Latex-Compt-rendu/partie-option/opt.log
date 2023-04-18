@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.4.7)  18 APR 2023 18:54
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.4.7)  18 APR 2023 22:07
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -532,33 +532,33 @@ LaTeX Info: Redefining \nameref on input line 39.
 
  [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2]
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 123.
+(Font)              <12> on input line 125.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 123.
+(Font)              <8> on input line 125.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 123.
-LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 170.
+(Font)              <6> on input line 125.
+LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 194.
  (/usr/share/texlive/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 2019/12/16 v2.5j Standard LaTeX font definitions
-) [2] [3] (./opt.aux)
+) [3] [4] (./opt.aux)
 Package rerunfilecheck Info: File `opt.out' has not changed.
-(rerunfilecheck)             Checksum: E1E6BF16BEA4BE8CD15D1357A94E342C;1257.
+(rerunfilecheck)             Checksum: EEC33FA3E994691322112B070BADA19F;1447.
  ) 
 Here is how much of TeX's memory you used:
- 16277 strings out of 480145
- 272164 string characters out of 5893301
- 610204 words of memory out of 5000000
- 33946 multiletter control sequences out of 15000+600000
+ 16280 strings out of 480145
+ 272200 string characters out of 5893301
+ 611204 words of memory out of 5000000
+ 33947 multiletter control sequences out of 15000+600000
  477611 words of font info for 45 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
  94i,8n,92p,411b,635s stack positions out of 5000i,500n,10000p,200000b,80000s
- </home/renauth6/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/eccc1200.600pk> </home/renauth6/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ectt1200.600pk> </home/renauth6/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1200.600pk> </home/renauth6/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1440.600pk> </home/renauth6/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1200.600pk> </home/renauth6/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1728.600pk>
-Output written on opt.pdf (3 pages, 54551 bytes).
+ </home/renauth6/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ectt1200.600pk> </home/renauth6/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/eccc1200.600pk> </home/renauth6/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1200.600pk> </home/renauth6/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1440.600pk> </home/renauth6/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1200.600pk> </home/renauth6/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1728.600pk>
+Output written on opt.pdf (4 pages, 59243 bytes).
 PDF statistics:
- 264 PDF objects out of 1000 (max. 8388607)
- 99 compressed objects within 1 object stream
- 25 named destinations out of 1000 (max. 500000)
- 85 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 285 PDF objects out of 1000 (max. 8388607)
+ 109 compressed objects within 2 object streams
+ 27 named destinations out of 1000 (max. 500000)
+ 93 words of extra memory for PDF output out of 10000 (max. 10000000)
 

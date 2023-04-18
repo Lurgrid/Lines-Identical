@@ -256,7 +256,7 @@ optreturn opt_process(int argc, char **argv, const optparam **aopt,
         }
         if (opt->arg) {
           if (i >= argc - 1 || *endp != '\0') {
-            *err = endp;
+            *err = endp;// y a un problème sur ce truc
             return ERROR_PARAM;
           }
           ++i;
