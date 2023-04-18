@@ -1,5 +1,5 @@
 # Ignore all
-*
+/*
 
 # Except
 !*.c
@@ -8,3 +8,4 @@
 !*.tex
 !*.svg
 !*.png
+!.gitignore
