@@ -1,8 +1,8 @@
 //  Partie interface du module optl (gestion des options à la linux).
 //
 //  Ce module permet de mettre en place, une gestion d'options pour son
-//    utilisateur. L'implémentation de la gestsion d'option est baser sur la
-//    gestion des options des commandes linux.
+//    utilisateur. L'implémentation de la gestion d'option est baser sur celle
+//    des commandes linux.
 
 //  LES SEULES MODIFICATION AUTORISÉE DE CE SOURCE CONCERNE LES LIGNES 20 à 28.
 
@@ -64,12 +64,13 @@ typedef enum {
 //    de chaine de charactère argv. argv est le tableau contenant les éléments à
 //    traiter. aopt est un tableau de nmemb option supporter lors de ce
 //    traitement. hdl_dlt, traitement pour les chaines de argv n'étant pas des
-//    options. Cette fonction prend en paramettre un context cntxt, value
-//    représente la chaine à traiter et err pointe sur une possible chaine de
-//    charactère représentant une erreur si il y a eu une occurence d'une
-//    erreur, valant NULL sinon. Une option courte est préfixé obligatoirement
-//    de short_cal puis suivie d'un charactère alpha numérique, de même,
-//    long_cal est préfixe obligatoire des option longue. Si les option
+//    options, pouvant être NULL si l'utilisateur n'a aucun traitement pour les
+//    argumenent n'étant pas une option. Cette fonction prend en paramettre un
+//    context cntxt, value représente la chaine à traiter et err pointe sur une
+//    possible chaine de charactère représentant une erreur si il y a eu une
+//    occurence d'une erreur, valant NULL sinon. Une option courte est préfixé
+//    obligatoirement de short_cal puis suivie d'un charactère alpha numérique,
+//    de même, long_cal est préfixe obligatoire des option longue. Si les option
 //    longues ont un paramettre alors LONG_JOIN est le séparateur entre l'option
 //    et son argument. Si NEXT_NOPT apparait, alors la chaine suivante ne sera
 //    pas considérer comme une option. Une option obligatoire est présente,
