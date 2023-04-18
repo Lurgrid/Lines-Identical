@@ -1,0 +1,102 @@
+\documentclass[12pt]{article}
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[letterpaper,margin=3cm]{geometry}
+\usepackage[export]{adjustbox}
+\usepackage{listings}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage[table]{xcolor}
+\usepackage{svg}
+\usepackage{tocloft}
+\usepackage{algorithmic}
+\usepackage{indentfirst}
+\usepackage{hyperref}
+
+\renewcommand{\arraystretch}{1.7}
+\setlength{\arrayrulewidth}{1pt} % épaisseur de la ligne du 
+
+\renewcommand{\thesection}{\Roman{section}} 
+\renewcommand\thesubsection{\arabic{subsection}}
+
+\setlength{\cftsecnumwidth}{2em} 
+% ajuste la largeur de la colonne des numéros de section
+
+\renewcommand{\algorithmicrequire}{\textbf{Pré-condition}}
+            
+\renewcommand{\algorithmicdo}{\textbf{faire}}
+\renewcommand{\algorithmicend}{\textbf{Fin}}
+\renewcommand{\algorithmicif}{\textbf{Si}}
+\renewcommand{\algorithmicelse}{\textbf{Sinon}}
+\renewcommand{\algorithmicthen}{\textbf{alors}}
+\renewcommand{\algorithmicwhile}{\textbf{Tant que}}
+\renewcommand{\algorithmicwhile}{\textbf{Pour chaque}}
+
+\newcommand{\spacebox}{8pt}
+
+
+\setlength{\parindent}{1cm}
+\sloppy
+
+\begin{document}
+    \section{Module de tableau dynamique, da}
+
+    \subsection{Présentation du module.}
+
+    De nombreux problème dans ce projet réside dans l'ajout d'un nombre 
+    quelqu'onque d'élement à une structure de donné. Notament dans la 
+    lecture des lignes, le comptage des occurences de celle-ci ou leur 
+    numérotations mais aussi dans la gestion de la liste de fichier à 
+    traiter. C'est pour cela que nous avons opter pour la création d'un 
+    module de gestion d'un objet proche des listes disponible dans d'autre 
+    language tel que le python. 
+
+    Afin d'être en accord avec l'implémentation des tableaux en C, la 
+    spécification du module DA promet que les éléments stockés sont 
+    contingue dans la mémoire et sans offset.
+    
+    \subsection{Pour et contre}
+
+    Le point négatif d'une telle condition, est une perte de séparation 
+    entre l'implémentation et la spécification du module. Or, elle permet 
+    une simplification de l'uitilisation du module mais aussi des gains de 
+    performance. On peut notament cité le traitement des lignes lus. 
+
+    Une ligne lu est stoké dans un buffeur de type da. Sans la contrainte il
+    nous est impossible de la comparer au chaine de charactère déjà lu 
+    (les chaines déjà lu n'étant pas des da, car stocké des da ne 
+    permetterait pas l'utilisation de fonction de comparaison comme strmcp 
+    et strcoll). Il nous serait obligatoire d'allouer une nouvelle chaine 
+    de la taille de la ligne présente dans le buffer puis d'y recopier la 
+    ligne pour enfin pourvoir la comparer. Or de ce traitement on comprend 
+    qu'il faudra allouer une chaine dans touts les cas, même si cette ligne
+    est déjà lu ou même dans le cas ou le fichier qui est lu n'est pas le 
+    premier (Les lignes lu sur des fichiers qui ne sont pas le premier ne 
+    seront jamais sauvegrader). 
+    
+    Nous voillont bien que dans ces deux cas, cette restriction permet 
+    d'économiser une allocation d'un doublon pour le permier et pour le 
+    deuxième une d'allocation. Par exemple, pour deux fichier. Dont le 
+    premier est composer que d'une ligne et le deuxième de n ligne. On 
+    obtient les allocations suivantes:\\
+    \begin{figure}[ht]
+        \centering
+        \begin{tabular}{|r|c|c|c|}
+            \hline{}
+                \cellcolor{gray!25}     & Premier fichier & Deuxième fichier & 
+                Total d'allocation \\
+            \hline{}
+            Avec restriction  & 1 & 0 & 1 \\
+            \hline{}
+            Sans restriction & 1 & $n$ & n + 1\\
+            \hline
+        \end{tabular}
+        \caption{Comparaison nombre d'allocation sans prendre en compte 
+        celle du buffer}\label{tab-compar-da}
+    \end{figure}
+
+    Pour conclure, ce module n'a pas été d'une grande difficulter à 
+    implémenter, n'y même à imaginer. La seul difficulter à bien sur été 
+    d'accepter ou non la contrainte de continuéter que nous imposont à ce type.
+\end{document}
