@@ -47,6 +47,11 @@ extern optparam *opt_init(const char optshort, const char *optlong,
     const char *desc, bool arg, bool interup, int (*hdl)(void *cntxt,
     const char *value, const char **err));
 
+//  opt_dispose : Sans effet si *optptr vaut NULL, sinon libère les ressources
+//    allouées à la gestion du paramèttre pointé par optptr et met *optptr à
+//    NULL.
+extern void opt_dispose(optparam **optptr);
+
 //  optreturn : enumaration des valeurs de retours possible de la fonctions
 //    opt_init. (chaque valeur est définie dans la spécfication de la fonction
 //    opt_process)

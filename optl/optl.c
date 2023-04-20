@@ -104,6 +104,13 @@ optparam *opt_init(const char optshort, const char *optlong,
   return op;
 }
 
+void opt_dispose(optparam **optptr) {
+  if (*optptr != NULL) {
+    free(*optptr);
+    *optptr = NULL;
+  }
+}
+
 //  opt_parse_long : Fonction visant à identifier l'option longue pointé par
 //    *param, en prenant en compte les options présente aopt. Le tableau aopt
 //    contient nmemb option. opt pointe en cas de succés d'identification d'une
