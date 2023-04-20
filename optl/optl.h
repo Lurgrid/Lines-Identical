@@ -4,7 +4,7 @@
 //    utilisateur. L'implémentation de la gestion d'option est baser sur celle
 //    des commandes linux.
 
-//  LES SEULES MODIFICATION AUTORISÉE DE CE SOURCE CONCERNE LES LIGNES 20 à 28.
+//  LES SEULES MODIFICATION AUTORISÉE DE CE SOURCE CONCERNE LES LIGNES 20 à .
 
 #ifndef OPTL__H
 #define OPTL__H
@@ -23,9 +23,11 @@ typedef struct optparam optparam;
 //    condiérer comme une option.
 #define NEXT_NOPT "--"
 
-//  SHORT_HELP, LONG_HELP : représentation courte et longue de l'option help
+//  SHORT_HELP, LONG_HELP, DESC_HELP : représentation courte et longue de 
+//    l'option help, mais aussi sa description.
 #define SHORT_HELP 'h'
 #define LONG_HELP "help"
+#define DESC_HELP "display this help and exit"
 
 //  opt_init : Tente d'allouer les resources néssaires pour gérer une options.
 //    optshort, optlong représente tout deux la possible représentation de
@@ -73,31 +75,35 @@ typedef enum {
 //    argumenent n'étant pas une option. Cette fonction prend en paramettre un
 //    context cntxt, value représente la chaine à traiter et err pointe sur une
 //    possible chaine de charactère représentant une erreur si il y a eu une
-//    occurence d'une erreur, valant NULL sinon. Une option courte est préfixé
-//    obligatoirement de short_cal puis suivie d'un charactère alpha numérique,
-//    de même, long_cal est préfixe obligatoire des option longue. Si les option
-//    longues ont un paramettre alors LONG_JOIN est le séparateur entre l'option
-//    et son argument. Si NEXT_NOPT apparait, alors la chaine suivante ne sera
-//    pas considérer comme une option. Une option obligatoire est présente,
-//    celle de l'aide, représenter SHORT_HELP, LONG_HELP pour sa représenation
-//    longue et courte. Cette option affiche sur la sortie standart, une aide
-//    a l'utilisation avec la chaine usage et desc en sont sein (voir docuement
-//    pour plus de détaille sur cette affichage).
+//    occurence d'une erreur dans la fonction, valant NULL sinon. Une option 
+//    courte est préfixé obligatoirement de short_cal puis suivie d'un 
+//    charactère alpha numérique, de même, long_cal est préfixe obligatoire des 
+//    option longue. Si les option longues ont un paramettre alors LONG_JOIN est 
+//    le séparateur entre l'option et son argument. Si NEXT_NOPT apparait, alors
+//    la chaine suivante ne sera pas considérer comme une option. Une option 
+//    obligatoire est présente, celle de l'aide, représenter SHORT_HELP, 
+//    LONG_HELP pour sa représenation longue et courte. Cette option affiche sur
+//    la sortie standart, une aide a l'utilisation avec la chaine usage et desc 
+//    en sont sein (voir docuement pour plus de détaille sur cette affichage).
 //    La fonction effectue le traitement suivant :
 //    - si toutes les élément de argv ont été traiter sans erreur
-//        .alors renvoie DONE
+//        .alors renvoie DONE, *err pointe sur NULL
 //    - sinon, si lors d'une traitement d'une options:
-//        .Par manque du supposé paramettre de l'option alor renvoie ERROR_PARAM
-//        .L'option n'est pas présente dans aopt alors renvoie ERROR_UNKNOWN
+//        .Par manque du supposé paramettre de l'option alors renvoie 
+//          ERROR_PARAM et *err pointe sur la chaine représentant cette option 
+//        .L'option n'est pas présente dans aopt alors renvoie ERROR_UNKNOWN et 
+//          *err pointe sur la chaine qui n'est donc pas une options
 //        .La chaine tentant de représenter une option est ambigue, car elle
-//          peut correspondre à plusieur option, alors renvoie ERROR_AMB
+//          peut correspondre à plusieur option, alors renvoie ERROR_AMB et *err
+//          pointe sur la représenatation qui est ambigue
 //        .En cas d'une erreur l'ors du traitement de l'option par sa fonction,
-//          alors renvoie ERROR_HDL
+//          alors renvoie ERROR_HDL et *err pointe sur un message représentant 
+//            l'erreur.
 //        .L'option a bien été traiter et elle spécifie de terminer le traitment
 //           alors renvoie STOP_PROCESS
 //    - sinon, si lors du traitment d'une chaine qui n'est pas option:
 //        .Si une erreur interviant dans la fonction hdl_dlt, alors renvoie
-//          ERROR_DEFAULT
+//          ERROR_DEFAULT, et *err pointe sur une chaine représentnat l'option.
 extern optreturn opt_process(int argc, char **argv, const optparam **aopt,
   size_t nmemb, int (*hdl_dlt)(void *cntxt, const char *value,
   const char **err), void *cntxt, const char **err, const char *short_cal,

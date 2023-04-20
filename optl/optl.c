@@ -80,7 +80,7 @@ static const char *prefix(const char *s1, const char *s2) {
     }                                                                          \
     printf("\t%s\n", aopt[k]->desc);                                           \
   }                                                                            \
-  printf("%*s%s%c, %s%s\t\tdisplay this help and exit\n", SH, " ",             \
+  printf("%*s%s%c, %s%s\t\t"DESC_HELP"\n", SH, " ",                            \
       short_cal, SHORT_HELP, long_cal, LONG_HELP);                             \
 
 //--- Implémentation opt -------------------------------------------------------
@@ -220,15 +220,20 @@ optreturn opt_process(int argc, char **argv, const optparam **aopt,
         *err = fendp;
         return r;
       }
-      fprintf(stderr, "Error: %s\n", t);
-      if (t != NULL && *t == '\0') {
-        PRINT_HELP(aopt, nmemb, usage, desc, short_cal, long_cal)
-        * err = NULL;
-        return STOP_PROCESS;
+      if (t != NULL) {
+        if (strcmp(fendp, opt->optlong) != 0) {
+          *err = fendp;
+          return ERROR_AMB;
+        }
+        if (*t == '\0') {
+          PRINT_HELP(aopt, nmemb, usage, desc, short_cal, long_cal)
+          *err = NULL;
+          return STOP_PROCESS;
+        }
       }
       if (opt->arg) {
         if (*endp != LONG_JOIN || *(endp + 1) == '\0') {
-          *err = argv[i];
+          *err = fendp;
           return ERROR_PARAM;
         }
         ++endp;
@@ -254,7 +259,7 @@ optreturn opt_process(int argc, char **argv, const optparam **aopt,
         }
         if (opt->arg) {
           if (i >= argc - 1 || *endp != '\0') {
-            *err = endp - 1;
+            *err = &opt->optshort;
             return ERROR_PARAM;
           }
           ++i;

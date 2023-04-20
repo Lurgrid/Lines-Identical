@@ -1,16 +1,16 @@
 da_dir = ../da/
 holdall_dir = ../holdall/
 bst_dir = ../bst/
-opt_dir = ../opt/
+optl_dir = ../optl/
 hashtable_dir = ../hashtable/
 CC = gcc
 CFLAGS = -std=c18 \
   -Wall -Wconversion -Werror -Wextra -Wpedantic -Wwrite-strings \
   -O2 -DHOLDALL_PUT_TAIL\
-  -I$(holdall_dir) -I$(opt_dir) -I$(da_dir) -I$(hashtable_dir) -I$(bst_dir)
-vpath %.c $(da_dir) $(holdall_dir) $(opt_dir) $(hashtable_dir) $(bst_dir)
-vpath %.h $(da_dir) $(holdall_dir) $(opt_dir) $(hashtable_dir) $(bst_dir)
-objects = opt.o da.o holdall.o lnid.o hashtable.o bst.o
+  -I$(holdall_dir) -I$(optl_dir) -I$(da_dir) -I$(hashtable_dir) -I$(bst_dir)
+vpath %.c $(da_dir) $(holdall_dir) $(optl_dir) $(hashtable_dir) $(bst_dir)
+vpath %.h $(da_dir) $(holdall_dir) $(optl_dir) $(hashtable_dir) $(bst_dir)
+objects = optl.o da.o holdall.o hashtable.o bst.o lnid.o 
 executable = lnid
 makefile_indicator = .\#makefile\#
 
@@ -25,12 +25,12 @@ clean:
 $(executable): $(objects)
 	$(CC) $(objects) -o $(executable)
 
-opt.o: opt.c opt.h
+optl.o: optl.c optl.h
 da.o: da.c da.h
 holdall.o: holdall.c holdall.h
 hashtable.o: hashtable.c hashtable.h
 bst.o: bst.c bst.h
-lnid.o: lnid.c opt.h holdall.h da.h
+lnid.o: lnid.c optl.h holdall.h da.h
 
 include $(makefile_indicator)
 

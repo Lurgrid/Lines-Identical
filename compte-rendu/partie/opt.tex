@@ -78,7 +78,10 @@
 
     Une option longue est préfixé par la chaine `--'. Pour donner un paramettre 
     à une longe il faut s'éparer celle-ci de son argument par le charactère `='. 
-    <parler de l'autocomplétion des options longues>
+    Si un utilisateur passe en paramettre une option longue qui est préfix d'une
+    et une seul option alors l'option préfixé sera appeler. Si elle est préfixe 
+    de plusieur option, alors elle sera considérer comme ambigue, et conduira à 
+    la lever d'une erreur.
 
     \subsubsection{Option help}
 

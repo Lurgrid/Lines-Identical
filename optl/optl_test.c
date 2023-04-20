@@ -17,7 +17,6 @@ int main(int argc, char **argv) {
     opt_init('V', "version", "affiche la version", false, true, version),
     opt_init('e', "keske", "test1", true, false, test),
     opt_init('f', "banon", "test2", true, false, test),
-    opt_init('z', "helpop", "test3", false, false, test),
     opt_init('w', "he", "test4", false, false, test),
   };
   if (test_aopt(aopt, sizeof(aopt) / sizeof(*aopt)) != 0) {
