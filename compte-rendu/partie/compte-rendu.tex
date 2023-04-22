@@ -39,8 +39,179 @@
 \setlength{\parindent}{1cm}
 \sloppy
 
+\title{Projet d'Algorithemique}
+\author{Edouard.H Théo.R.V}
+\date{2022--2023}
+
 \begin{document}
-    \section{Module de gestion d'option, optl}
+
+    \begin{figure}
+        \includegraphics[scale=0.3, right]{logo-univ-rouen-normandie-noir.png}
+    \end{figure}
+    
+    \maketitle
+
+    \begin{abstract}
+        Ce document constitue notre compte rendu du projet d'Algorithemique 
+        Lines Identical (lnid).
+
+        Dans une première partie, nous aborderons une brève description du 
+        projet et de ses objectifs.
+        Puis, nous présenterons les divers problématiques qu'entraine ce sujet.
+        Enfin, nous verrons les solutions trouvées à ces problèmes par le biais 
+        d'une présentation complète de notre implémentation. Suivie d'une mise 
+        en pratique avec des tests intéressant et des tests de performance. Pour
+        conclure, nous aborderons les diverses limitations et possible 
+        amélioration de cette implémentation, mais aussi nous dibrifferons de la 
+        production de ce projet.
+    \end{abstract}
+
+    \newpage
+
+    \tableofcontents
+
+    \newpage
+
+    \section{Gestion des objets dynamique, holdall}
+
+    \subsection{Explication de l'objectifs du module}
+    
+    De nombreux problème peuvent être résolue à l'aide de structure de donnée. 
+    Pour facilité leur implémentaion en C, une façon commune est de passer par 
+    des structure allouers dynamiquement. Or certain de ces structures demandent 
+    un nombre important de ces allocations dynamique. On peut notament cité les 
+    table de hashage, dont il est courant pour chaque valeur d'être stoquer 
+    dans un maillont lui même gérer par une liste allouer dynamiquement (voir 
+    shéma d'implémentaion du module hastable figure \ref{hastable-fig}). De 
+    plus, certaine de ces implémentation de structure peuvent engager des 
+    contraintes tel que la suppresion d'une de ces allocations pour un certain
+    traitement. On peut notament citée des implémentation d'ensemble à l'aide de 
+    liste. De tel structure n'aillant pas de requête de parkour, il faut allors 
+    vidé toutes les valeurs de cette ensemble pour les affichers par exemple. 
+    Ces dans ce cas que toutes les allocations devrai être désalloué et alors il 
+    faudrait tous réajouter pour faire de nouvelles opération sur cette 
+    ensemble. Alors que si ces donnés était stocké dans une autre structure, on 
+    pourrait plus ou moins les parkourir simplément selon cette structure. On 
+    voit bien que dans notre implémentation l'utilisation d'une liste simplement
+    chainé est tous à fait justifier.
+
+    \subsection{Mise en place dans ce projet}
+
+    Dans notre projet, de nombreuse donnés sont alloué dynamiquement. Les lignes
+    lu,les numéros de ces lignes. C'est pour cela que l'utilisation du fourt 
+    tous est tous à fait justifier. De ce faite, les structures provenant du 
+    module da et avl n'ont absolument pas besoin d'avoir des opérations tel que 
+    la liébration de mémoire pour les valeurs qu'elle contient. De ce faite, 
+    l'utilisation du four tout, permet la simplification du dévellopement de 
+    certain module (par les gestions des donnés contenu dans les structures qui 
+    reviennent à l'utilisateur), mais aussi une certain lisibilité dans le code
+    (On voit très bien dans lnid.c, que les lignes et leurs compteurs sont 
+    stocké tous deux dans des fourts touts). 
+
+    \section{Module de tableau dynamique, da}
+
+    \subsection{Présentation du module.}
+
+    De nombreux problème dans ce projet réside dans l'ajout d'un nombre 
+    quelqu'onque d'élement à une structure de donné. Notament dans la 
+    lecture des lignes, le comptage des occurences de celle-ci ou leur 
+    numérotations mais aussi dans la gestion de la liste de fichier à 
+    traiter. C'est pour cela que nous avons opter pour la création d'un 
+    module de gestion d'un objet proche des listes disponible dans d'autre 
+    language tel que le python. 
+
+    Afin d'être en accord avec l'implémentation des tableaux en C, la 
+    spécification du module DA promet que les éléments stockés sont 
+    contingue dans la mémoire et sans offset.
+    
+    \subsection{Pour et contre}
+
+    Le point négatif d'une telle condition, est une perte de séparation 
+    entre l'implémentation et la spécification du module. Or, elle permet 
+    une simplification de l'uitilisation du module mais aussi des gains de 
+    performance. On peut notament cité le traitement des lignes lus. 
+
+    Une ligne lu est stoké dans un buffeur de type da. Sans la contrainte il
+    nous est impossible de la comparer au chaine de charactère déjà lu 
+    (les chaines déjà lu n'étant pas des da, car stocké des da ne 
+    permetterait pas l'utilisation de fonction de comparaison comme strmcp 
+    et strcoll). Il nous serait obligatoire d'allouer une nouvelle chaine 
+    de la taille de la ligne présente dans le buffer puis d'y recopier la 
+    ligne pour enfin pourvoir la comparer. Or de ce traitement on comprend 
+    qu'il faudra allouer une chaine dans touts les cas, même si cette ligne
+    est déjà lu ou même dans le cas ou le fichier qui est lu n'est pas le 
+    premier (Les lignes lu sur des fichiers qui ne sont pas le premier ne 
+    seront jamais sauvegrader). 
+    
+    Nous voillont bien que dans ces deux cas, cette restriction permet 
+    d'économiser une allocation d'un doublon pour le permier et pour le 
+    deuxième une d'allocation. Par exemple, pour deux fichier. Dont le 
+    premier est composer que d'une ligne et le deuxième de n ligne. On 
+    obtient les allocations suivantes:\\
+    \begin{figure}[ht]
+        \centering
+        \begin{tabular}{|r|c|c|c|}
+            \hline{}
+                \cellcolor{gray!25}     & Premier fichier & Deuxième fichier & 
+                Total d'allocation \\
+            \hline{}
+            Avec restriction  & 1 & 0 & 1 \\
+            \hline{}
+            Sans restriction & 1 & $n$ & n + 1\\
+            \hline
+        \end{tabular}
+        \caption{Comparaison nombre d'allocation sans prendre en compte 
+        celle du buffer}\label{tab-compar-da}
+    \end{figure}
+
+    Pour conclure, ce module n'a pas été d'une grande difficulter à 
+    implémenter, n'y même à imaginer. La seul difficulter à bien sur été 
+    d'accepter ou non la contrainte de continuéter que nous imposont à ce type.
+
+    \section{hastable / avl}
+
+    La laison entre une ligne et son nombre d'occurence ou son numéro 
+    d'appartion peut être résolue par l'utilisation de structure de donné qui 
+    visent à joindre ces informations pour pouvoir les récupérers. Nous decider 
+    de mettre deux type de ces structures à dispostion, une d'arbres binaire 
+    et l'autre de table de hachage. 
+
+    \subsection{hastable}
+
+    Constituant l'implémentation d'une table de hachage, cette structure permet 
+    a partir d'une clé une valeur. Dans notre cas la clé est ligne déjà lu et 
+    la valeur ces numéro de lignes (dans le cas d'un seul fichier) ou son 
+    nombre d'occurence (dans le cas de pluseir fichier). Cette structure est 
+    toutes choisite pour repondre a ce problème. En effet, théoriquement une 
+    table de hachage permet un accées presque constant à une valeur par sa clé. 
+    Malgrès tout en pratique cette accés dépends exclusivement de la focntion 
+    de hachage utilisé, c'est pour cela que dans la section de test nous métons 
+    à disposition divers exemple d'execution avec des fonction de hachages 
+    différentes. De plus, en pratique l'ajout dans une table de hachage pour 
+    entraiténer un agrandisement de celle-ci et donc un recalcule de toutes les 
+    valeurs en sont sein. L'implémentation de cette table est représenter dans 
+    la figure : 
+    
+    \begin{figure}[ht]
+        \caption{Implémentation de la structure de table de hashage du module 
+        hastable}
+        \label{hastable-fig}
+    \end{figure}
+
+    \subsection{Avl}
+
+    L'utilisation des arbres binaires, nous a demander la création d'un type, 
+    hcell pour permtettre de stocké les deux valeurs (chaine et compteur). 
+    Contrairement à la table de hachage notre implémentaion des arbres binaires 
+    garant une recherche au maximum en temps logarithemique. Mais un ajout dans 
+    un avl peut entrainer au plus deux rotation de temps constant après avoir 
+    effectuer sont ajout en bout de chemin ce qui donne une compléxité 
+    logarithemique.\\
+    
+    Divers test, aillant pour but d'identifier la meilleur option sont effectuer 
+    dans la section test.
+
+    \section{Module de gestion d'option, optl}\label{opt}
 
     Le dévellopement du module d'option est la partie du projet qui nous a été 
     le plus chronofage. En effet, nous avons dès le début eu pour objectifs de 
@@ -195,8 +366,8 @@
     `help'). De même ce module ne nécessite que le stockage des objets de type 
     optparam pour traiter les options.
 
-    \section{Bibli}
-    Lien: \\
+    \section{Bibliographie}
+    \noindent Concernant la partie du module d'option optl (section \ref{opt}):\\
     Présentation des divers `tradition' de gestion d'option pour unix et gnu, 
     \url{http://www.catb.org/~esr/writings/taoup/html/ch10s05.html}.\\
     Descrpition de la gestion des option en ligne à la GNU, 
