@@ -13,6 +13,8 @@
 \usepackage{algorithmic}
 \usepackage{indentfirst}
 \usepackage{hyperref}
+\usepackage{array}
+\usepackage{float}
 
 \renewcommand{\arraystretch}{1.7}
 \setlength{\arrayrulewidth}{1pt} % épaisseur de la ligne du 
@@ -20,7 +22,7 @@
 \renewcommand{\thesection}{\Roman{section}} 
 \renewcommand\thesubsection{\arabic{subsection}}
 
-\setlength{\cftsecnumwidth}{2em} 
+\setlength{\cftsecnumwidth}{3em} 
 % ajuste la largeur de la colonne des numéros de section
 
 \renewcommand{\algorithmicrequire}{\textbf{Pré-condition}}
@@ -66,7 +68,7 @@
         utilisé. Enfin, nous présenterons une mise en pratique avec des tests 
         intéressant mais aussi de performance. Pour conclure, nous aborderons 
         les diverses limitations et possible amélioration de cette 
-        implémentation, mais aussi nous dibrifferons de la production de ce 
+        implémentation, mais aussi nous débrifferons de la production de ce 
         projet.
     \end{abstract}
 
@@ -76,37 +78,7 @@
 
     \newpage
 
-    \section{Lines Identical, lnid}
-
-    \subsection{Descrpition du programmes}
-
-    Lnid, programme (écrit en c) élaborant le traitement suivant:
-    \begin{enumerate}
-        \item[] Si un seul fichier lui est fourni, alors affiche la liste 
-        des numéros des lignes redondante puis affiche cette ligne.
-        \item[] Sinon si, plusieurs fichiers lui sont fournit, affiche pour
-         tous les fichiers le nombre d'occurrence de ligne commune et 
-         affiche ces lignes.
-        \item[] Sinon si aucun fichier n'est fournie alors effectue le 
-        traitement de fichier unique sur les lignes présente sur l'entrée 
-        standart.
-    \end{enumerate}
-
-    Il visent à être dans la ligné des commandes linux tel que \textbf{cat} ou 
-    \textbf{ls}. Il implémente donc des fonctionnalités tel que le charactère 
-    \textbf{'-'} qui doit être considéré comme indentificateur de l'entrée 
-    standart ou encore \textbf{'--'} qui prévient que l'argument qui le suit 
-    doit être considérer comme un fichier. De plus, diverses options sont 
-    disponible ajoutant des fonctionnalités. Voir ci-dessous pour leurs 
-    spécifications, figure \ref{table-opt}.
-
-    \subsection{Implémentation du programmes}
-
-    
-
-    \newpage
-
-    \begin{figure}[ht]
+    \begin{figure}[H]
         \centering
         \begin{tabular}{|c|c|c|}
             \hline
@@ -166,7 +138,91 @@
         \caption{Tableau des options}\label{table-opt}
     \end{figure}
 
-    \section{Gestion des objets dynamique, holdall}
+    \newpage
+
+    \section{Lines Identical, lnid}
+
+    \subsection{Descrpition du programmes}
+
+    Lnid, programme (écrit en C) élaborant le traitement suivant:
+    \begin{enumerate}
+        \item[] Si un seul fichier lui est fourni, alors affiche la liste 
+        des numéros des lignes redondante puis affiche cette ligne.
+        \item[] Sinon si, plusieurs fichiers lui sont fournit, affiche pour
+         tous les fichiers le nombre d'occurrence de ligne commune et 
+         affiche ces lignes.
+        \item[] Sinon si aucun fichier n'est fournie alors effectue le 
+        traitement de fichier unique sur les lignes présente sur l'entrée 
+        standart.
+    \end{enumerate}
+
+    Il visent à être dans la ligné des commandes linux tel que \textbf{cat} ou 
+    \textbf{ls}. Il implémente donc des fonctionnalités tel que le charactère 
+    \textbf{'-'} qui doit être considéré comme indentificateur de l'entrée 
+    standart ou encore \textbf{'--'} qui prévient que l'argument qui le suit 
+    doit être considérer comme un fichier. De plus, diverses options sont 
+    disponible ajoutant des fonctionnalités. Voir ci-dessous pour leurs 
+    spécifications, figure \ref{table-opt}.
+
+    \subsection{Implémentation du programmes}
+    Il y a déjà deux cas a disocier, le cas d'un seul fichier et le cas de 
+    plusieur fichiers. En réalité nous pouvons pouvons les regrouper en deux 
+    cas, le cas du premier fichier et le cas des autres fichier.
+
+    Pour la lecture de ligne de consome pas trop de mémoire a l'utilisateur
+    (par l'alloctions d'un buffer a chaque ligne lu), nous avons donc décider de 
+    mettre en place un buffer de type \textbf{da} (voir section~\ref{test} pour
+    analyse complet de ce choix). Pour cette lecture nous utilisons donc notre
+    fonction \textbf{fnlines} qui ajoute donc au buffer chaque lettre lu (si 
+    l'utilisateur a choisie une option filtrante ou transformante des charactère 
+    alors le charactère sera d'abord transformer puis filter et enfin ajouté) 
+    sur le fichier.
+
+    Chaque ligne lu ne sera pas traiter de la même facon selon les deux cas 
+    évoquer précédament:
+    \begin{enumerate}
+        \item[] Pour le premier cas toutes les lignes lu seront tester pour 
+        voir si elle on dors et déjà était lu. Si c'est le cas alors pour le 
+        cas d'entrée d'un fichiers unique ou de plusieur nous avons 
+        réspectivement l'ajoute du numéro de ligne dans la liste des lignes ou 
+        de l'incrémentation de son nombre d'occurence. Sinon associe cette ligne 
+        a cette ligne un compteur initialialement mis a 1 ou une liste de ligne 
+        avec comme première valeur le numéro de cette ligne réspectivement selon 
+        qu'il y a plusieur fichiers ou un fichiers
+        \item[] Pour les autre fichiers les lignes seront tester pour voir si 
+        elle on dors et déjà était lu. Si c'est le cas alors incrémente le 
+        compteur associé a cette ligne. Sinon cette ligne n'est pas traité
+    \end{enumerate}
+
+    Pour associé une ligne à son compteur/liste de numéro de lignes, vous 
+    proposons deux type de structure par default une table de hashage et avec 
+    une option un AVL (voir section~\ref{test} pour un comparatif de ces deux 
+    solutions). Dans les deux les données présente dans ces structure sont 
+    stocker dans un \textit{fourre-tout} (holdall) (voir section~\ref{holdall} 
+    pour plus d'information sur l'utilisation de celui-ci).
+
+    Une fois ce traitement effectuer nous affichons donc le resultat du 
+    traitement esconté par l'intermédiaire de l'affiche des divers valeur 
+    présente dans le \textit{fourre-tout} de ligne. Cette affichage peut se 
+    décrire de la manière suivante selons les deux cas cité au debut de cette 
+    sous section.
+
+    %graph
+
+    L'implémentaion de l'option de trie (\textbf{-s | --sort}) par un trie du 
+    \textit{fourre-tout} (a l'aide d'un trie fusion).
+
+    Tout au long du programme chaque opération pouvent entrainer un échec se 
+    voit correspondre une gestion d'erreur lui étant associé. On peut notament 
+    les erreurs d'allocation dynamique, les erreur de lecture/ouverture des 
+    fichiers ou encore des erreur quand a la gestion des options entré par 
+    l'utilisateur. Toute ces erreurs donne lieu a des message envoyer sur la 
+    sortie d'erreur (en couleur selon le choix de l'utilisateur avec l'option 
+    \textbf{--no-color}).
+
+    \newpage
+
+    \section{Gestion des objets dynamique, holdall}\label{holdall}
 
     \subsection{Explication de l'objectifs du module}
     
@@ -176,31 +232,34 @@
     demandent un nombre important de ces allocations dynamique. On peut notament
     cité les table de hashage, dont il est courant pour chaque valeur d'être 
     stoquer dans un maillont lui même gérer par une liste allouer dynamiquement 
-    (voir shéma d'implémentaion du module hastable figure \ref{hastable-fig}). De 
-    plus, certaine de ces implémentation de structure peuvent engager des 
+    (voir shéma d'implémentaion du module hastable figure \ref{hastable-fig}). 
+    De plus, certaine de ces implémentation de structure peuvent engager des 
     contraintes, tel que la suppresion d'une de ces allocations pour un certain
     traitement. On peut notament citée des implémentation d'ensemble à l'aide de 
     liste. De tel structure n'aillant pas de requête de parkour, il faut allors 
     vidé toutes les valeurs de cette ensemble pour les affichers par exemple. 
-    Ces dans ce cas, que toutes les allocations devraient être désalloué et alors, il 
-    faudrait tous réajouter pour faire de nouvelles opération sur cette 
-    ensemble. Alors que si ces donnés était stocké dans une autre structure, on 
-    pourrait plus ou moins les parcourir simplément selon cette structure. On 
-    voit bien que dans notre implémentation l'utilisation d'une liste simplement
-    chainé est tous à fait justifier.
+    Ces dans ce cas, que toutes les allocations devraient être désalloué et 
+    alors, il  faudrait tous réajouter pour faire de nouvelles opération sur 
+    cette ensemble. Alors que si ces donnés était stocké dans une autre 
+    structure, on pourrait plus ou moins les parcourir simplément selon cette 
+    structure. On voit bien que dans notre implémentation l'utilisation d'une 
+    liste simplement chainé est tous à fait justifier.
 
     \subsection{Mise en place dans ce projet}
 
-    Dans notre projet, de nombreuses donnés sont alloué dynamiquement. Les lignes
-    lu, les numéros de ces lignes. C'est pour cela que l'utilisation du 
-    `four-tout' est tous à fait justifier. De ce fait, les structures provenant 
-    du module da et avl n'ont absolument pas besoin d'avoir des opérations tel 
-    que la libération de mémoire pour les valeurs qu'elles contiennent. De ce 
-    fait, l'utilisation du `four-tout' permet la simplification du dévellopement
-    de certain module (par les gestions des donnés contenu dans les structures 
-    qui reviennent à l'utilisateur), mais aussi une certainnes lisibilité dans 
-    le code (On voit très bien dans lnid.c, que les lignes et leurs compteurs 
-    sont stocké tous deux dans des fourts touts). 
+    Dans notre projet, de nombreuses donnés sont alloué dynamiquement. Les 
+    lignes lu, les numéros de ces lignes. C'est pour cela que l'utilisation du 
+    `fourre-tout' est tous à fait justifier. De ce fait, les structures 
+    provenant du module da et avl n'ont absolument pas besoin d'avoir des
+    opérations tel que la libération de mémoire pour les valeurs qu'elles 
+    contiennent. De ce fait, l'utilisation du `four-tout' permet la 
+    simplification du dévellopement de certain module (par les gestions des 
+    donnés contenu dans les structures qui reviennent à l'utilisateur), mais 
+    aussi une certainnes lisibilité dans le code (On voit très bien dans lnid.c,
+    que les lignes et leurs compteurs sont stocké tous deux dans des fourre 
+    touts).*
+
+    \newpage
 
     \section{Module de tableau dynamique, da}
 
@@ -262,7 +321,7 @@
     implémenter n'y même à imaginer. La seul difficulter à été  
     d'accepter ou non la contrainte de continuiter que nous imposont à ce type.
 
-    \section{hastable / avl}
+    \section{Hastable / AVL}
 
     La laison entre une ligne et son nombre d'occurence ou son numéro 
     d'appartion, peut être résolue par l'utilisation de structure de donné qui 
@@ -270,7 +329,7 @@
     decidé de mettre deux type de ces structures à dispostion, une d'arbres 
     binaire et l'autre de table de hachage. 
 
-    \subsection{hastable}
+    \subsection{Hastable}
 
     Constituant l'implémentation d'une table de hachage, cette structure permet 
     a partir d'une clé une valeur. Dans notre cas, la clé est ligne déjà lu et 
@@ -291,14 +350,15 @@
         hastable}\label{hastable-fig}
     \end{figure}
 
-    \subsection{Avl}
+    \subsection{AVL}
 
     L'utilisation des arbres binaires nous a demandé la création d'un type, 
-    hcell pour permtettre de stocké les deux valeurs (chaine et compteur). 
+    hcell pour permtettre de stocké les deux valeurs (chaine et compteur, voir 
+    figure~\ref{test} pour voir une figure représentant cette structure). 
     Contrairement à la table de hachage notre implémentaion des arbres binaires 
-    garantie une recherche au maximum en temps logarithemique. Mais un ajout dans 
-    un avl peut entrainer au plus deux rotation de temps constant, après avoir 
-    effectuer sont ajout en bout de chemin ce qui donne une compléxité 
+    garantie une recherche au maximum en temps logarithemique. Mais un ajout 
+    dans un AVL peut entrainer au plus deux rotation de temps constant, après 
+    avoir effectuer sont ajout en bout de chemin ce qui donne une compléxité 
     logarithemique.\\
     
     Divers test aillant pour but d'identifier la meilleur option sont effectuer 
@@ -459,13 +519,32 @@
     `help'). De même ce module ne nécessite que le stockage des objets de type 
     optparam pour traiter les options.
 
-    \section{Mise en pratique}
+    \section{Mise en pratique}\label{test}
 
     \subsection{Test}
 
+    % Fichier test commun (gros petit)
+    % Fichier particulier (grosse ligne) (beaucoup de ligne)
+
     \subsection{performance}
 
+    % (concurrence association)
+    % (concurrence groupe)
+
     \section{Conclusion}
+
+    % Difficulté rencontré (pur rédaction) (du mal a s'arrêter)
+    % touche d'humour le LaTex
+
+    \subsection{Remerciment}
+
+    % illyes
+    % Erwan
+    % Madame Gonsalvez (latex)
+    % Soeur théo
+    % ChatGPT (latex, ortographe)
+
+    \newpage
 
     \section{Bibliographie}
         \noindent Concernant la partie du module d'option optl 
