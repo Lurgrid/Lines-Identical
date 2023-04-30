@@ -15,6 +15,29 @@
 \usepackage{hyperref}
 \usepackage{array}
 \usepackage{float}
+\usepackage{tcolorbox,url}
+\tcbuselibrary{skins,xparse,listings}
+
+\newtcblisting{ubuntu}{colback=violet!50!black,
+colupper=white,colframe=gray!65!black,listing only,
+listing options={style=tcblatex,language=sh,escapeinside=``,},
+title={\textcolor{orange}{\Huge{$\bullet$}}{\textcolor{gray}
+{\Huge{$\bullet\bullet$}}}},
+every listing line={\MyUbuntuPrompt}}
+\pgfkeys{/ubuntu/.cd,
+user/.code={\gdef\MyUbuntuUser{#1}},user={},
+host/.code={\gdef\MyUbuntuHost{#1}},host={},
+color/.code={\gdef\MyUbuntuColor{#1}},color=white,
+prompt char/.code={\gdef\MyUbuntuPromptChar{\noindent #1}},prompt char=\#,
+root/.style={user=root,host=ubuntu,color=lime,prompt char=\#},
+bob/.style={user=bob,host=remotehost,color=cyan},
+}
+\newcommand{\SU}[1]{\pgfkeys{/ubuntu/.cd,#1}
+
+\gdef\MyUbuntuPrompt{\textcolor{\MyUbuntuColor}{\small\ttfamily\bfseries
+\MyUbuntuUser@\MyUbuntuHost{\textcolor{white}:}\textcolor{cyan!60}
+{$\scriptstyle\sim$}{\textcolor{white}\MyUbuntuPromptChar}}}}
+\newcommand{\StartConsole}{\gdef\MyUbuntuPrompt{}}
 
 \renewcommand{\arraystretch}{1.7}
 \setlength{\arrayrulewidth}{1pt} % épaisseur de la ligne du 
@@ -91,14 +114,13 @@
                 \cellcolor{blue-s!25} -u  & \cellcolor{blue-s!25} --uppercasing 
                 & \cellcolor{blue-t!70} \\
             \hline
-                \multicolumn{3}{|c|}{\cellcolor{blue-u!7}Enlève les couleurs de 
-                l'affichage du programme}\\
+                \multicolumn{3}{|c|}{\cellcolor{blue-u!7}Tous les caractères 
+                traiter seront en sortie en majuscule.}\\
             \hline 
                 \cellcolor{blue-s!25} -N & \cellcolor{blue-s!25} --no-color  & 
                 \cellcolor{blue-t!70} \\
             \hline
-                \multicolumn{3}{|c|}{\cellcolor{blue-u!7}Tous les caractères 
-                traiter seront en sortie en majuscule.}\\
+                \multicolumn{3}{|c|}{\cellcolor{blue-u!7}Enlève les couleurs de l'affichage du programme.}\\
             \hline
                 \cellcolor{blue-s!25} -a & \cellcolor{blue-s!25} --avl & 
                 \cellcolor{blue-t!70} \\
@@ -521,10 +543,45 @@
 
     \section{Mise en pratique}\label{test}
 
+    Tout au long de ce compte rendu nous avons évoquer l'implémentation de programme sans parler de la pratique. Dans cette section nous allons voir
+    quelque tests nous semblent intérrêsant.
+    Les temps d'éxecution donné ne sont qu'a titre indicatif et ne représente en 
+    aucun cas une promesse, étant donner que ces temps dépends de nombreux facteur.
+    En revanche l'utilisation mémoire du programme pourra être évoquer dans 
+    certaine comparaison. En effet tout les tests étant éffectuer sur la même
+    marchine, nous supposons donc que l'utilisation mémoire du programme 
+    n'évolue pas pour un même traitement. De plus les compléxiter étant universelle, nous favoriseront l'étude de celle-ci.
+
     \subsection{Test}
 
-    % Fichier test commun (gros petit)
-    % Fichier particulier (grosse ligne) (beaucoup de ligne)
+    \subsubsection{Avl vs Hashtable}\label{avl-has}
+
+    ll
+
+    \subsubsection{Le cout du traitement d'options}
+
+    On peut classer les traitement d'options du programme en plusieur catégorie (avl exclue aillant déjà été traiter longuement dans la partie \ref{avl-has}):
+    
+    \begin{enumerate}
+        \item[] \textbf{modfication affichage erreur},  avec l'option \textbf{no-color}. Cette options à un traitement executable en compléxité constante.
+        \item[] \textbf{l'affichage d'information}, les options \textbf{help} et \textbf{version}. Leur traitement étant en compléxité constant mais aussi leur spécificité à stopper le logiciel, il ne constitue alors qu'une compléxité global de $O(n)$ avec $n$ le nombre d'option à traiter. Cette compléxiter résulte du possible traitement des n options possiblement placer avant l'une de ces deux options.
+        \item[] \textbf{trie}, de l'option \textbf{sort}. Ce trie s'effectuant sur le `four-tout', il ne change en rien la lecture des lignes. Ce trie est un tri par fusion, donc en compléxité $\theta(nln)$ avec $n$ le nombre de ligne (toujours en supposant que les fonction de comparaison \textbf{strcmp} et \textbf{strcoll} s'execute en temps constant), ce qui veut dire qu'il suffit d'ajouter cette compléxiter à celle du programme, compléxiter qui sera donc négligable en théorie. Or dans la pratique on remarque avec les test ... que les fonctions strcoll et strcmp ne sont pas constante mais qu'une certain différence semble apparaitre. En effet,            
+        \item[] \textbf{modification}, l'option \textbf{uppercasing}. Ce traitement présent dans la fonction de lecture de ligne \textbf{fnlines} oblige la modification de touts les charactères lu. Même dans le cas ou cette option n'est pas appeler par l'utilisateur, il force un teste (pour savoir si une telle modification est nécessaire). Donc ce traitement n'ajoute que une action en cas d'appelles à cette option (en supposant que la fonction \textbf{toupper} s'execute en temps constant).
+        \item[] \textbf{filtrage}, l'option \textbf{filter}. Ce traitement tous comme la modification, ajout une action dans le pire des cas, qui correspond à celui ou l'option est choisite par l'utilisateur (en supposant que les fonctions is... s'éxecute en temps constant). 
+    \end{enumerate}
+    Ce qui revient toujour à un traitement de $O(n)$ pour toute ligne lu.
+
+    \subsubsection{L'enfer des gros fichier}
+
+    \SU{user=root,host=ubuntu,color=lime}
+    \begin{ubuntu}
+        ./lnid  ./bobdylan_iwysb.txt `\StartConsole`
+        ./bobdylan_iwysb.txt
+        9,21,38,50      I want you, I want you
+        10,22,39,51     I want you so bad
+        11,23,40,52     Honey, I want you
+        0,00s user 0,00s system 77\% cpu 0,001 total
+    \end{ubuntu}
 
     \subsection{Performance}
 
@@ -553,10 +610,12 @@
 
     Merci à: 
 
-    Erwan `zelgadon', pour le nom qu'il nous a frounit pour le module de tableau 
-    dynamique `da' (=`dynamique array').\\ 
-    Au logiciel Chatgpt pour la correction des nombreuses fautes d'ortographe 
-    présent tout au long de la production de ce projet et de son compte rendu.\\
+    Erwan Lievin, pour le nom qu'il nous a frounit pour le module de tableau 
+    dynamique `da' (dynamique array).
+
+    Au logiciel ChatGPT pour la correction des nombreuses fautes d'ortographe 
+    présent tout au long de la production de ce projet et de son compte rendu.
+
     Ilyas [Nom de famille], pour avoir effectuer une relécture des fautes 
     d'ortographes present dans ce conte-rendu est dans les spécifications du 
     code source de ce programme. 

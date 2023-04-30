@@ -10,7 +10,7 @@ CFLAGS = -std=c18 \
   -I$(holdall_dir) -I$(optl_dir) -I$(da_dir) -I$(hashtable_dir) -I$(bst_dir)
 vpath %.c $(da_dir) $(holdall_dir) $(optl_dir) $(hashtable_dir) $(bst_dir)
 vpath %.h $(da_dir) $(holdall_dir) $(optl_dir) $(hashtable_dir) $(bst_dir)
-objects = optl.o da.o holdall.o hashtable.o bst.o lnid.o 
+objects = optl.o da.o holdall.o hashtable.o bst.o lnid.o
 executable = lnid
 makefile_indicator = .\#makefile\#
 
@@ -23,7 +23,7 @@ clean:
 	@$(RM) $(makefile_indicator)
 
 $(executable): $(objects)
-	$(CC) $(objects) -o $(executable)
+	$(CC) -pg $(objects) -o $(executable)
 
 optl.o: optl.c optl.h
 da.o: da.c da.h
