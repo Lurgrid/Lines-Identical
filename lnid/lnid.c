@@ -29,7 +29,7 @@
 
 //--- Macro et structure utilisé pour les fonctions d'option -------------------
 
-#define STD "standart"
+#define STD "standard"
 #define LC "local"
 
 #define ALNUM "alnum"
@@ -109,9 +109,9 @@ static int filter_handler(cntxt * restrict context, const char * restrict value,
     const char ** restrict err);
 
 //  version : Affiche sur la sortie la date de compilation du programme suivit
-//    du compilateur utiliser avec sa version si et seulement si le programme 
+//    du compilateur utiliser avec sa version si et seulement si le programme
 //    a été compiler soit avec GCC ou CLANG. Sinon affiche Unknow Compiler.
-//    Retourne une valeur nul.    
+//    Retourne une valeur nul.
 static int version(void *cntxt, const char *value, const char **err);
 
 //--- Utilitaire ---------------------------------------------------------------
@@ -156,43 +156,43 @@ static int aopt_once_null(optparam **aopt, size_t nmemb);
 //    valeur de ces champs à NULL.
 static void aopt_dispose(optparam **aopt, size_t nmemb);
 
-//  bst_search_aux : Recherche dans l'arbre binaire de recherche contenant des 
-//    hcell associé à t la référence d'un objet égal à celle de référence ref au 
-//    sens de la fonction de comparaison. Renvoie NULL si la recherche est 
+//  bst_search_aux : Recherche dans l'arbre binaire de recherche contenant des
+//    hcell associé à t la référence d'un objet égal à celle de référence ref au
+//    sens de la fonction de comparaison. Renvoie NULL si la recherche est
 //    négative, la référence de sont attribut count trouvée sinon.
 static da *bst_search_aux(bst *t, const char *ref);
 
 //  hcell_cmp : Fonction de comparasaison entre 2 objets hcell.
-//    Renvois un entier nul si les 2 objets sont égaux, un entier strictement 
-//    négatif si h1 est plus petit que h2 enfin, un entier strictement prositif 
+//    Renvois un entier nul si les 2 objets sont égaux, un entier strictement
+//    négatif si h1 est plus petit que h2 enfin, un entier strictement prositif
 //    si h1 est plus grand que h2.
 static int hcell_cmp(hcell *h1, hcell *h2);
 
-//  Libère les ressources alloué pour la gestion de l'objet pointé par hc, puis 
+//  Libère les ressources alloué pour la gestion de l'objet pointé par hc, puis
 //    renvoi 0.
 static int rhcell_dispose(hcell *hc);
 
-//  STDIN : Valeur représentant l'entréer standart.
+//  STDIN : Valeur représentant l'entréer standard.
 #define STDIN "-"
 
 int main(int argc, char **argv) {
   int r = EXIT_SUCCESS;
   optparam *aop[] = {
-    opt_init('u', "uppercasing", "Capitalize the characters read and process", 
+    opt_init('u', "uppercasing", "Capitalize the characters read and process",
         false, false,
         (int (*)(void *, const char *, const char **))uppercasing_handler),
-    opt_init('N', "no-color", "To disable the color on the standard output", 
+    opt_init('N', "no-color", "To disable the color on the standard output",
         false, false,
         (int (*)(void *, const char *, const char **))no_color_handler),
     opt_init('a', "avl", "To use an AVL to process the file",
-        false, false, 
+        false, false,
         (int (*)(void *, const char *, const char **))avl_handler),
     opt_init('f', "filter", "To filter the characters read, according to the "
         "function pass in parameter CLASS, such as isCLASS is a function of "
         "ctype", true, false,
         (int (*)(void *, const char *, const char **))filter_handler),
     opt_init('s', "sort", "To display the results sort according to the "
-        "function pass in parameter \"standart\" or \"local\", standart for "
+        "function pass in parameter \"standard\" or \"local\", standard for "
         "the order of C and local for the order of system", true, false,
         (int (*)(void *, const char *, const char **))sort_handler),
     opt_init('v', "version", "display the version", false, true, version)
@@ -212,14 +212,14 @@ int main(int argc, char **argv) {
   }
   optreturn ot;
   const char *err;
-  if ((ot = opt_process(argc - 1, argv + 1, (const optparam **)aop, 
+  if ((ot = opt_process(argc - 1, argv + 1, (const optparam **)aop,
       sizeof(aop) / sizeof(*aop),
       (int (*)(void *, const char *, const char **))file_handler, &context,
       &err, "-", "--", "If only one FILE, then returns to the standard output"
       " the numbers and contents of the equivalent lines.\nIf several FILES, "
       "then returns to the standard output, the number of occurrences of the "
       "equivalent lines present in the FILES.\n\nWithout FILE or when an "
-      "argument is -, read the standard input.", "[OPTION]... [FILE]...")) 
+      "argument is -, read the standard input.", "[OPTION]... [FILE]..."))
       != DONE) {
     switch(ot) {
       case STOP_PROCESS:
@@ -408,11 +408,6 @@ dispose:
   da_dispose(&line);
   aopt_dispose(aop, sizeof(aop) / sizeof(*aop));
   return r;
-}
-
-int add_to_ptr(char *c, size_t *h) {
-  *h = 37 * *h + (size_t) *c;
-  return 0;
 }
 
 size_t str_hashfun(const char *s) {

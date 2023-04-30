@@ -120,7 +120,8 @@ bob/.style={user=bob,host=remotehost,color=cyan},
                 \cellcolor{blue-s!25} -N & \cellcolor{blue-s!25} --no-color  & 
                 \cellcolor{blue-t!70} \\
             \hline
-                \multicolumn{3}{|c|}{\cellcolor{blue-u!7}Enlève les couleurs de l'affichage du programme.}\\
+                \multicolumn{3}{|c|}{\cellcolor{blue-u!7}Enlève les couleurs de 
+                l'affichage du programme.}\\
             \hline
                 \cellcolor{blue-s!25} -a & \cellcolor{blue-s!25} --avl & 
                 \cellcolor{blue-t!70} \\
@@ -152,7 +153,7 @@ bob/.style={user=bob,host=remotehost,color=cyan},
             \hline
                 \multicolumn{3}{|c|}{\cellcolor{blue-u!7}\rule{0pt}{2em}
                 \parbox{15cm}{{Trie les valeurs sur la sortie en prenant en 
-                compte l'ordre \texttt{WORD} avec \texttt{standart}} 
+                compte l'ordre \texttt{WORD} avec \texttt{standard}} 
                 correspondant à l'ordre du  `C' et \texttt{locale} celui du 
                 système de l'utilisateur.}}\\[1em]
             \hline
@@ -175,13 +176,13 @@ bob/.style={user=bob,host=remotehost,color=cyan},
          affiche ces lignes.
         \item[] Sinon si aucun fichier n'est fournie alors effectue le 
         traitement de fichier unique sur les lignes présente sur l'entrée 
-        standart.
+        standard.
     \end{enumerate}
 
     Il visent à être dans la ligné des commandes linux tel que \textbf{cat} ou 
     \textbf{ls}. Il implémente donc des fonctionnalités tel que le charactère 
     \textbf{'-'} qui doit être considéré comme indentificateur de l'entrée 
-    standart ou encore \textbf{'--'} qui prévient que l'argument qui le suit 
+    standard ou encore \textbf{'--'} qui prévient que l'argument qui le suit 
     doit être considérer comme un fichier. De plus, diverses options sont 
     disponible ajoutant des fonctionnalités. Voir ci-dessus pour leurs 
     spécifications, figure \ref{table-opt}.
@@ -543,33 +544,119 @@ bob/.style={user=bob,host=remotehost,color=cyan},
 
     \section{Mise en pratique}\label{test}
 
-    Tout au long de ce compte rendu nous avons évoquer l'implémentation de programme sans parler de la pratique. Dans cette section nous allons voir
+    Tout au long de ce compte rendu nous avons évoquer l'implémentation de 
+    programme sans parler de la pratique. Dans cette section nous allons voir
     quelque tests nous semblent intérrêsant.
     Les temps d'éxecution donné ne sont qu'a titre indicatif et ne représente en 
-    aucun cas une promesse, étant donner que ces temps dépends de nombreux facteur.
-    En revanche l'utilisation mémoire du programme pourra être évoquer dans 
-    certaine comparaison. En effet tout les tests étant éffectuer sur la même
-    marchine, nous supposons donc que l'utilisation mémoire du programme 
-    n'évolue pas pour un même traitement. De plus les compléxiter étant universelle, nous favoriseront l'étude de celle-ci.
+    aucun cas une promesse, étant donner que ces temps dépends de nombreux 
+    facteur. En revanche l'utilisation mémoire du programme pourra être évoquer 
+    dans certaine comparaison. En effet tout les tests étant éffectuer sur la 
+    même marchine, nous supposons donc que l'utilisation mémoire du programme 
+    n'évolue pas pour un même traitement. De plus les compléxiter étant 
+    universelle, nous favoriseront l'étude de celle-ci.
 
     \subsection{Test}
 
-    \subsubsection{Avl vs Hashtable}\label{avl-has}
+    \subsubsection{AVL vs Hashtable}\label{avl-has}
 
-    ll
+    Nous avons mis a disposition l'utilisation, de l'AVL ou de la Hashtable sans 
+    pour autant évoquer les divers cas fabvorable à leur utilisation. Vous 
+    retourverait ci-dessous une études de divers test traitent de ces cas.
 
-    \subsubsection{Le cout du traitement d'options}
+    \SU{user=root,host=ubuntu,color=lime}
+    \begin{ubuntu}
+        ./lnid lesmiserables.txt `\StartConsole`
+        lesmiserables.txt
+        ...
+        0,04s user 0,01s system 99\% cpu 0,051 total
+        `\SU{user=root,host=ubuntu,color=lime}`
+        ./lnid lesmiserables.txt --avl `\StartConsole`
+        lesmiserables.txt
+        ...
+        0,08s user 0,01s system 99\% cpu 0,093 total
+    \end{ubuntu}
 
-    On peut classer les traitement d'options du programme en plusieur catégorie (avl exclue aillant déjà été traiter longuement dans la partie \ref{avl-has}):
+
+    %idée en théorie : avl < hastable
+    % en pratique bonsoir non, sauf avl pour text avec ligne très long car y a 
+    % pas à parcourir toute la chaine par une fonction de hashage. Par contre 
+    % pour des plus petit fichier, la table de hashage est mieux.
+
+    \subsubsection{Le cout du traitement d'options}\label{test-cmp}
+
+    On peut classer les traitement d'options du programme en plusieur catégorie 
+    (avl exclue aillant déjà été traiter longuement dans la partie \ref{avl-has}
+    ):
     
     \begin{enumerate}
-        \item[] \textbf{modfication affichage erreur},  avec l'option \textbf{no-color}. Cette options à un traitement executable en compléxité constante.
-        \item[] \textbf{l'affichage d'information}, les options \textbf{help} et \textbf{version}. Leur traitement étant en compléxité constant mais aussi leur spécificité à stopper le logiciel, il ne constitue alors qu'une compléxité global de $O(n)$ avec $n$ le nombre d'option à traiter. Cette compléxiter résulte du possible traitement des n options possiblement placer avant l'une de ces deux options.
-        \item[] \textbf{trie}, de l'option \textbf{sort}. Ce trie s'effectuant sur le `four-tout', il ne change en rien la lecture des lignes. Ce trie est un tri par fusion, donc en compléxité $\theta(nln)$ avec $n$ le nombre de ligne (toujours en supposant que les fonction de comparaison \textbf{strcmp} et \textbf{strcoll} s'execute en temps constant), ce qui veut dire qu'il suffit d'ajouter cette compléxiter à celle du programme, compléxiter qui sera donc négligable en théorie. Or dans la pratique on remarque avec les test ... que les fonctions strcoll et strcmp ne sont pas constante mais qu'une certain différence semble apparaitre. En effet,            
-        \item[] \textbf{modification}, l'option \textbf{uppercasing}. Ce traitement présent dans la fonction de lecture de ligne \textbf{fnlines} oblige la modification de touts les charactères lu. Même dans le cas ou cette option n'est pas appeler par l'utilisateur, il force un teste (pour savoir si une telle modification est nécessaire). Donc ce traitement n'ajoute que une action en cas d'appelles à cette option (en supposant que la fonction \textbf{toupper} s'execute en temps constant).
-        \item[] \textbf{filtrage}, l'option \textbf{filter}. Ce traitement tous comme la modification, ajout une action dans le pire des cas, qui correspond à celui ou l'option est choisite par l'utilisateur (en supposant que les fonctions is... s'éxecute en temps constant). 
+        \item[] \textbf{modfication affichage erreur},  avec l'option 
+        \textbf{no-color}. Cette options à un traitement executable en 
+        compléxité constante.
+        \item[] \textbf{l'affichage d'information}, les options \textbf{help} et 
+        \textbf{version}. Leur traitement étant en compléxité constant mais 
+        aussi leur spécificité à stopper le logiciel, il ne constitue alors 
+        qu'une compléxité global de $O(n)$ avec $n$ le nombre d'option à 
+        traiter. Cette compléxiter résulte du possible traitement des n options 
+        possiblement placer avant l'une de ces deux options.
+        \item[] \textbf{trie}, de l'option \textbf{sort}. Ce trie s'effectuant 
+        sur le `four-tout', il ne change en rien la lecture des lignes. Ce trie 
+        est un tri par fusion, donc en compléxité $\theta(nln)$ avec $n$ le 
+        nombre de ligne (toujours en supposant que les fonction de comparaison 
+        \textbf{strcmp} et \textbf{strcoll} (avec repesectivement la version 
+        \textbf{standard} et \textbf{local} de l'option \textbf{sort}) 
+        s'execute en temps constant), ce qui veut dire qu'il suffit d'ajouter 
+        cette compléxiter à celle du programme, compléxiter qui sera donc 
+        négligable en théorie. Or dans la pratique on remarque avec les tests de
+         la figure \ref{test-cmp-f} que les fonctions strcoll et strcmp ne sont 
+        pas constante mais qu'une certain différence semble apparaitre. En
+        effet, la fonction \textbf{strcmp} est généralement plus rapide que 
+        \textbf{strcoll}. Cela est dû au fait que strcmp compare les chaînes de 
+        caractères en utilisant simplement les charactères par leurs 
+        représentation, tandis que strcoll prend en compte les différences 
+        culturelles dans l'ordre des caractères et utilise des règles de tri 
+        spécifiques à l'ordre local.        
+        \item[] \textbf{modification}, l'option \textbf{uppercasing}. Ce 
+        traitement présent dans la fonction de lecture de ligne \textbf{fnlines} 
+        oblige la modification de touts les charactères lu. Même dans le cas ou 
+        cette option n'est pas appeler par l'utilisateur, il force un teste 
+        (pour savoir si une telle modification est nécessaire). Donc ce 
+        traitement n'ajoute que une action en cas d'appelles à cette option (en 
+        supposant que la fonction \textbf{toupper} s'execute en temps constant).
+        \item[] \textbf{filtrage}, l'option \textbf{filter}. Ce traitement tous 
+        comme la modification, ajout une action dans le pire des cas, qui 
+        correspond à celui ou l'option est choisite par l'utilisateur (en 
+        supposant que les fonctions is... s'éxecute en temps constant). 
     \end{enumerate}
     Ce qui revient toujour à un traitement de $O(n)$ pour toute ligne lu.
+
+    \begin{figure}[H]\label{test-cmp-f}
+        \SU{user=root,host=ubuntu,color=lime}
+        \begin{ubuntu}
+            ./lnid lesmiserables.txt -s local `\StartConsole`
+            lesmiserables.txt
+            44941,45572	_16, rue de la Verrerie_.
+            9074,10699,35854,59555	--Ah!
+            ...            
+            8982,24187	--Vous?
+            26484,36185	X.
+            ./lnid lesmiserables.txt -s local  0,10s user 0,01s 
+            system 97`\%` cpu 0,115 total
+            `\SU{user=root,host=ubuntu,color=lime}`
+            ./lnid lesmiserables.txt -s standard `\StartConsole`
+            lesmiserables.txt
+            35804,35861     _S`\textquotesingle`en allait a la chasse,_
+            47234,47258     _Demandait Charlot a Charlotte._
+            ...
+            44552,47345	tout le monde.
+            20628,35424,40684,61779	vous.
+            ./lnid lesmiserables.txt -s standard  0,07s user 0,00s 
+            system 99`\%` cpu 0,061 total
+        \end{ubuntu}
+        \caption{\centering Comparaison entre strcmp et strcoll, sur le fichier 
+            text \textit{lesmiserables.txt}. Où \textbf{local}, 
+            \textbf{standard} correspond à l'utilisation de \textbf{strcoll} et 
+            \textbf{strcmp}.}
+    \end{figure}
 
     \subsubsection{L'enfer des gros fichier}
 
@@ -631,5 +718,8 @@ bob/.style={user=bob,host=remotehost,color=cyan},
         \url{https://www.gnu.org/software/gawk/manual/html_node/Options.html}.\\
         Documentation du module getopt, pour possiblement faire une comparaison 
         entre ce module et optl, 
-        \url{https://www.gnu.org/software/libc/manual/html_node/Getopt.html}.
+        \url{https://www.gnu.org/software/libc/manual/html_node/Getopt.html}.\\
+        \noindent Concernant la partie Test (sous-section \ref{test-cmp}):\\
+        Comparaison entre la fonction \textbf{strcmp} et \textbf{strcoll}, 
+        \url{https://learn.microsoft.com/en-us/cpp/c-runtime-library/strcoll-functions?view=msvc-170}.
 \end{document}
