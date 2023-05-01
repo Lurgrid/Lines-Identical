@@ -2,20 +2,24 @@
 \usepackage[french]{babel}
 \usepackage[T1]{fontenc}
 \usepackage{graphicx} % Required for inserting images
-\usepackage[letterpaper,margin=3cm]{geometry}
+\usepackage[letterpaper, margin=3cm]{geometry}
 \usepackage[export]{adjustbox}
 \usepackage{listings}
 \usepackage{tabularx}
 \usepackage{multirow}
 \usepackage[table]{xcolor}
-\usepackage{svg}
 \usepackage{tocloft}
 \usepackage{algorithmic}
 \usepackage{indentfirst}
 \usepackage{hyperref}
 \usepackage{array}
 \usepackage{float}
+\usepackage{caption}
 \usepackage{tcolorbox,url}
+\usepackage{subfig}
+\usepackage{fancyvrb}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
 \tcbuselibrary{skins,xparse,listings}
 
 \newtcblisting{ubuntu}{colback=violet!50!black,
@@ -36,8 +40,55 @@ bob/.style={user=bob,host=remotehost,color=cyan},
 
 \gdef\MyUbuntuPrompt{\textcolor{\MyUbuntuColor}{\small\ttfamily\bfseries
 \MyUbuntuUser@\MyUbuntuHost{\textcolor{white}:}\textcolor{cyan!60}
-{$\scriptstyle\sim$}{\textcolor{white}\MyUbuntuPromptChar}}}}
+{$\scriptstyle\sim$}{\textcolor{white}\MyUbuntuPromptChar \hphantom{p}}}}}
 \newcommand{\StartConsole}{\gdef\MyUbuntuPrompt{}}
+
+\definecolor{mGreen}{rgb}{0,0.6,0}
+\definecolor{mGray}{rgb}{0.5,0.5,0.5}
+\definecolor{mPurple}{rgb}{0.58,0,0.82}
+\definecolor{backgroundColour}{rgb}{0.95,0.95,0.94}
+
+\lstdefinestyle{CStyle}{
+    backgroundcolor=\color{backgroundColour},   
+    commentstyle=\color{mGreen},
+    keywordstyle=\color{mPurple},
+    numberstyle=\tiny\color{mGray},
+    stringstyle=\color{mGreen},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    language=C
+}
+
+\newcommand{\textLabel}{}
+\newcommand{\settextLabel}[1]{%
+  \renewcommand{\textLabel}{#1}
+}
+
+\DefineVerbatimEnvironment{textfile}{Verbatim} {
+    fontsize=\footnotesize,
+    %
+    frame=lines,  % top and bottom rule only
+    framesep=2em, % separation between frame and text
+    rulecolor=\color{gray},
+    %
+    label=\fbox{\color{black}\textLabel},
+    labelposition=topline,
+    numbers=left
+}
+
+\newenvironment{myverbatim}[1]
+{\verbatim\fontfamily{cmtt}\fontsize{10pt}{12pt}\selectfont
+ \textbf{#1}\newline}
+{\endverbatim}
 
 \renewcommand{\arraystretch}{1.7}
 \setlength{\arrayrulewidth}{1pt} % épaisseur de la ligne du 
@@ -101,7 +152,8 @@ bob/.style={user=bob,host=remotehost,color=cyan},
 
     \newpage
 
-    \begin{figure}[H]
+    \begin{figure}[H]  
+         
         \centering
         \begin{tabular}{|c|c|c|}
             \hline
@@ -158,6 +210,7 @@ bob/.style={user=bob,host=remotehost,color=cyan},
                 système de l'utilisateur.}}\\[1em]
             \hline
         \end{tabular}
+        \captionsetup{position=bottom}
         \caption{Tableau des options}\label{table-opt}
     \end{figure}
 
@@ -185,7 +238,7 @@ bob/.style={user=bob,host=remotehost,color=cyan},
     standard ou encore \textbf{'--'} qui prévient que l'argument qui le suit 
     doit être considérer comme un fichier. De plus, diverses options sont 
     disponible ajoutant des fonctionnalités. Voir ci-dessus pour leurs 
-    spécifications, figure \ref{table-opt}.
+    spécifications, figure~\ref{table-opt}.
 
     \subsection{Implémentation du programmes}
     Il y a déjà deux cas a disocier, le cas d'un seul fichier et le cas de 
@@ -230,7 +283,51 @@ bob/.style={user=bob,host=remotehost,color=cyan},
     décrire de la manière suivante selons les deux cas cité au debut de cette 
     sous section.
 
-    %graph
+    \begin{figure}[H]
+        \centering
+        \begin{minipage}[b]{0.4\linewidth}
+            \settextLabel{file1.txt}
+            \begin{textfile}
+Tester un programme démontre la
+présence de 
+bugs
+pas leur absence.
+bugs
+présence de 
+Tester un programme démontre la
+            \end{textfile}
+        \end{minipage}
+        \hspace{0.1\linewidth}
+        \begin{minipage}[b]{0.4\linewidth}
+            \settextLabel{file2.txt}
+            \begin{textfile}
+La véritable valeur des tests 
+n'est pas qu'ils détectent des 
+bugs
+dans le code, mais qu'ils 
+détectent des insuffisances 
+dans les méthodes, la 
+concentration et les compétences 
+de ceux qui conçoivent et 
+produisent le code.
+            \end{textfile}
+        \end{minipage}   
+        \vspace{10pt}  
+        \SU{user=root,host=ubuntu,color=lime}
+        \begin{ubuntu}
+./lnid file1.txt `\StartConsole`
+file1.txt
+1,7     Tester un programme d`é`montre la
+2,6     pr`é`sence de
+3,5     bugs
+`\SU{user=root,host=ubuntu,color=lime}`
+./lnid file1.txt file2.txt `\StartConsole`
+file1.txt file2.txt
+2       1       bugs
+        \end{ubuntu}
+        \caption{\centering Affichage du programme pour un et deux fichier. Les 
+        flèches représente des tabulations.}
+    \end{figure}
 
     L'implémentaion de l'option de trie (\textbf{-s | --sort}) par un trie du 
     \textit{fourre-tout} (a l'aide d'un trie fusion).
@@ -368,7 +465,49 @@ bob/.style={user=bob,host=remotehost,color=cyan},
     valeurs en sont sein. L'implémentation de cette table est représenter dans 
     la figure : 
     
-    \begin{figure}[ht]
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}
+            \node[draw, rectangle, minimum size=1cm, color=black!100] (p) {};
+            \node[draw, rectangle, below=of p, minimum width=2.5cm, minimum height=5cm] (struct) {};
+            \draw[->, ultra thick, line width=1.5pt] (p.mid) -- (struct.north);
+            \draw[fill=black] (p.mid) ++(0,-0.1cm) circle (0.07);
+
+            \node[draw, minimum size=1cm, below left=-0.75cm of struct.center] (child1) {3};
+            \node[draw, minimum size=1cm, above=-1.5cm of struct.north] (child2) {};
+            \node[draw, minimum size=1cm, below=-1.5cm of struct.south] (child3) {2};
+
+            \node[above, yshift=-0.1cm] at (child3.north) {lbnslots};
+            \node[above, yshift=-0.1cm] at (child2.north) {hasharray};
+            \node[above, yshift=-0.1cm] at (child1.north) {nfreeentries};
+
+            \node[draw, rectangle, draw=none, minimum width=1cm, minimum height=4cm, xshift=3cm, below=of p] (chain) {};
+
+            \draw[->, ultra thick, line width=1.5pt] (child2.mid) .. controls +(up:28mm) and +(up:14mm) .. (chain.north);
+            \draw[fill=black] (child2.mid) ++(0,-0.1cm) circle (0.07);
+
+            \node[draw, minimum size=1cm, above=-1cm of chain.north] (node1) {};
+            \node[draw, minimum size=1cm, below=0cm of node1.south] (node2) {};
+            \node[draw, minimum size=1cm, below=0cm of node2.south] (node3) {};
+            \node[draw, minimum size=1cm, below=0cm of node3.south] (node4) {};
+
+            \draw[fill=black] (node1.mid) ++(0,-0.1cm) circle (0.07);
+        
+            \node[draw, minimum size=1cm, right= of node1] (next11) {};
+            \node[draw, minimum size=1cm, right= of next11] (next12) {};
+            \node[draw, minimum size=1cm, right= of next12] (next13) {};
+
+
+            \draw (node2.south west) -- (node2.north east);
+            \draw (node2.north west) -- (node2.south east);
+
+            \node[draw, minimum size=1cm, right= of node3] (next31) {};
+
+            \draw (node4.south west) -- (node4.north east);
+            \draw (node4.north west) -- (node4.south east);
+            
+        \end{tikzpicture}
+        \captionsetup{position=bottom}
         \caption{Implémentation de la structure de table de hashage du module 
         hastable}\label{hastable-fig}
     \end{figure}
@@ -561,70 +700,118 @@ bob/.style={user=bob,host=remotehost,color=cyan},
 
     Nous avons mis a disposition l'utilisation, de l'AVL ou de la Hashtable sans 
     pour autant évoquer les divers cas fabvorable à leur utilisation. Vous 
-    retourverait ci-dessous une études de divers test traitent de ces cas. \\
+    retourverait ci-dessous une études de divers test traitent de ces cas.
+
+    \vphantom{}
 
     \SU{user=root,host=ubuntu,color=lime}
     \begin{ubuntu}
-        ./lnid lesmiserables.txt `\StartConsole`
-        lesmiserables.txt
-        ...
-        0,04s user 0,01s system 99`\%` cpu 0,051 total
-        `\SU{user=root,host=ubuntu,color=lime}`
-        ./lnid lesmiserables.txt --avl `\StartConsole`
-        lesmiserables.txt
-        ...
-        0,08s user 0,01s system 99`\%` cpu 0,093 total
-        `\SU{user=root,host=ubuntu,color=lime}`
-        ./lnid HugoLeDernierJourDunCondanne.txt `\StartConsole`
-        HugoLeDernierJourDunCondanne.txt
-        ...
-        0,00s user 0,00s system 92`\%` cpu 0,003 total
-        `\SU{user=root,host=ubuntu,color=lime}`
-        ./lnid HugoLeDernierJourDunCondanne.txt --avl `\StartConsole`
-        HugoLeDernierJourDunCondanne.txt
-        ...
-        0,00s user 0,00s system 91`\%` cpu 0,005 total
+ ./lnid lesmiserables.txt `\StartConsole`
+lesmiserables.txt
+...
+0,04s user 0,01s system 99`\%` cpu 0,051 total
+`\SU{user=root,host=ubuntu,color=lime}`
+./lnid lesmiserables.txt --avl `\StartConsole`
+lesmiserables.txt
+...
+0,08s user 0,01s system 99`\%` cpu 0,093 total
+`\SU{user=root,host=ubuntu,color=lime}`
+./lnid HugoLeDernierJourDunCondanne.txt `\StartConsole`
+HugoLeDernierJourDunCondanne.txt
+...
+0,00s user 0,00s system 92`\%` cpu 0,003 total
+`\SU{user=root,host=ubuntu,color=lime}`
+./lnid HugoLeDernierJourDunCondanne.txt --avl `\StartConsole`
+HugoLeDernierJourDunCondanne.txt
+...
+0,00s user 0,00s system 91`\%` cpu 0,005 total
     \end{ubuntu}
 
     \begin{ubuntu}
-        `\SU{user=root,host=ubuntu,color=lime}`
-        ./lnid liaisons_dangeureuses.txt `\StartConsole`
-        liaisons_dangeureuses.txt
-        ...
-        0,01s user 0,00s system 96`\%` cpu 0,014 total
-        `\SU{user=root,host=ubuntu,color=lime}`
-        ./lnid liaisons_dangeureuses.txt --avl `\StartConsole`
-        liaisons_dangeureuses.txt
-        ...
-        0,01s user 0,01s system 98`\%` cpu 0,019 total
-        `\SU{user=root,host=ubuntu,color=lime}`
-        ./lnid princesse_de_cleves.txt `\StartConsole`
-        princesse_de_cleves.txt
-        ...
-        0,00s user 0,00s system 92`\%` cpu 0,004 total
-        `\SU{user=root,host=ubuntu,color=lime}`
-        ./lnid princesse_de_cleves.txt --avl `\StartConsole`
-        princesse_de_cleves.txt
-        ...
-        0,00s user 0,00s system 87`\%` cpu 0,003 total
+`\SU{user=root,host=ubuntu,color=lime}`
+./lnid liaisons_dangeureuses.txt `\StartConsole`
+liaisons_dangeureuses.txt
+...
+0,01s user 0,00s system 96`\%` cpu 0,014 total
+`\SU{user=root,host=ubuntu,color=lime}`
+./lnid liaisons_dangeureuses.txt --avl `\StartConsole`
+liaisons_dangeureuses.txt
+...
+0,01s user 0,01s system 98`\%` cpu 0,019 total
     \end{ubuntu}
 
     \vphantom{}
 
-    Comment vous pouvez voir dans ses différents textes de 1Mo à 2Mo avec des
-    lignes de taille environs 80 caractères que les AVL sont légérement plus
-    lent ou équivalant pour certain textes, les AVL et les table de hachage 
-    utilise a peu près la espace mémoire. 
+    Comment nous pouvont le voir ci-dessus, dans les divers textes de 1 à 2Mo 
+    de longeur de lignes d'environs 80 caractères. Les AVL sont légérement plus 
+    lent pour autant l'utilisation des ressources mémoire sont elle équivalente.
 
-    On pourrait se poser la question de pourquoi avoir implémenter les AVL 
-    alors, étant donné que les tables de hachages sont en théorie mieux, mais 
-    quand théorie sur certain textes les AVL gagne en vitesse.
+    Une question ce pose alors, quelle est donc l'intérer de l'implémentation 
+    des AVL\@? Les éléments présent dans une tables de hachages étant 
+    théoriquement accésible en temps constant. Pour cela nous devons revenir sur 
+    la mise en pratique des tables de hachage. En effet, dans notre cas chaque 
+    ligne devra calculé par la fonction de hachage. Or cette fonction (conseillé 
+    par Beirnstein) effectue un traitement en temps linéaire ($\Theta(n)$) sur 
+    le nombre de charactère de la ligne. Au contraire pour les AVL, cette 
+    recherche s'effectue par une desente de l'arbre à l'aide de la fonction 
+    \textbf{strcmp}, recherche qui aura donc une compléxité dans le pire des cas 
+    de $O(nln*m)$ avec $n$ le nombre de ligne présente dans l'AVL et $m$ le 
+    nombre de charactère de la plus grande lignes. Mais dans le meilleur des cas 
+    ce traitement s'effectuera en temps constant (cette recherche est donc borné 
+    par $\Omega(1)$ et $O(nln*m)$). On peut alors très vite voir que dans le cas 
+    où il y a une grande diversité de ligne et qu'elles sont toutes très longues 
+    l'implémentation des AVL sera plus performante que celle de la table de 
+    hashage, voir figure \ref{prog-test} pour un telle exemple avec un fichier text générer 
+    à l'aide du programme de la figure \ref{prog}. 
+    
+    \begin{figure}[H]
+        \begin{lstlisting}[style=Cstyle]
+#define MAX 20000
+#define LEN 80000
 
+int main(void) {
+    char alp[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            "0123456789,;:!?./*-+@&\"'(-_)=+<> ";
+    size_t alp_len = strlen(alp);
+    srand((unsigned int) time(NULL));
+    for (long int k = 0; k < MAX; ++k) {
+        for (long int j = 0; j < LEN; ++j) {
+            putchar(alp[(size_t) ((float) rand() / (float) RAND_MAX * 
+                    (float) alp_len)]);
+        }
+        putchar('\n');
+    }
+    return EXIT_SUCCESS;
+}\end{lstlisting}
+    \captionsetup{position=bottom}
+    \caption{\centering Programme C de génération de fichier text prouvant la supérioté des 
+    AVL sur des fichiers à longues lignes.}\label{prog}
+    \end{figure}
 
-    %idée en théorie : avl < hastable
-    % en pratique bonsoir non, sauf avl pour text avec ligne très long car y a 
-    % pas à parcourir toute la chaine par une fonction de hashage. Par contre 
-    % pour des plus petit fichier, la table de hashage est mieux.
+    \begin{figure}[H]
+        \begin{ubuntu}
+`\SU{user=root,host=ubuntu,color=lime}`
+./lnid a.txt `\StartConsole`
+a.txt
+...
+14,30s user 0,73s system 99`\%` cpu 15,026 total
+`\SU{user=root,host=ubuntu,color=lime}`
+./lnid a.txt --avl `\StartConsole`
+a.txt
+...
+9,46s user 0,71s system 99`\%` cpu 10,169 total
+        \end{ubuntu}
+        \captionsetup{position=bottom}
+        \caption{\centering Test du programme lnid avec l'utilisation de la table de 
+        hashage et de l'AVL sur le fichier a.txt produit par le programme de la 
+        figure \ref{prog}}\label{prog-test}
+    \end{figure}
+
+    Pour finir, il est nettement plus intérésent d'utiliser la version `de base'
+    c'est à dire avec l'utilisation de la table de hachage tous simplement car 
+    dans la méjorité des cas elle sera plus performante. Tout de même dans le 
+    cas où l'utilisateur connait la taille moyen de ces lignes il lui pourrait 
+    être utile d'utilisé alors l'AVL\@.
 
     \subsubsection{Le cout du traitement d'options}\label{test-cmp}
 
@@ -644,7 +831,7 @@ bob/.style={user=bob,host=remotehost,color=cyan},
         possiblement placer avant l'une de ces deux options.
         \item[] \textbf{trie}, de l'option \textbf{sort}. Ce trie s'effectuant 
         sur le `four-tout', il ne change en rien la lecture des lignes. Ce trie 
-        est un tri par fusion, donc en compléxité $\theta(nln)$ avec $n$ le 
+        est un tri par fusion, donc en compléxité $\Theta(nln)$ avec $n$ le 
         nombre de ligne (toujours en supposant que les fonction de comparaison 
         \textbf{strcmp} et \textbf{strcoll} (avec repesectivement la version 
         \textbf{standard} et \textbf{local} de l'option \textbf{sort}) 
@@ -673,46 +860,40 @@ bob/.style={user=bob,host=remotehost,color=cyan},
     \end{enumerate}
     Ce qui revient toujour à un traitement de $O(n)$ pour toute ligne lu.
 
-    \begin{figure}[H]\label{test-cmp-f}
+    \begin{figure}[H]
         \SU{user=root,host=ubuntu,color=lime}
         \begin{ubuntu}
-            ./lnid lesmiserables.txt -s local `\StartConsole`
-            lesmiserables.txt
-            44941,45572	_16, rue de la Verrerie_.
-            9074,10699,35854,59555	--Ah!
-            ...            
-            8982,24187	--Vous?
-            26484,36185	X.
-            0,10s user 0,01s system 97`\%` cpu 0,115 total
-            `\SU{user=root,host=ubuntu,color=lime}`
-            ./lnid lesmiserables.txt -s standard `\StartConsole`
-            lesmiserables.txt
-            35804,35861     _S`\textquotesingle`en allait a la chasse,_
-            47234,47258     _Demandait Charlot a Charlotte._
-            ...
-            44552,47345	tout le monde.
-            20628,35424,40684,61779	vous.
-            0,07s user 0,00s system 99`\%` cpu 0,061 total
+./lnid lesmiserables.txt -s local `\StartConsole`
+lesmiserables.txt
+44941,45572	_16, rue de la Verrerie_.
+9074,10699,35854,59555	--Ah!
+...            
+8982,24187	--Vous?
+26484,36185	X.
+0,10s user 0,01s system 97`\%` cpu 0,115 total
+`\SU{user=root,host=ubuntu,color=lime}`
+./lnid lesmiserables.txt -s standard `\StartConsole`
+lesmiserables.txt
+35804,35861     _S`\textquotesingle`en allait a la chasse,_
+47234,47258     _Demandait Charlot a Charlotte._
+...
+44552,47345	tout le monde.
+20628,35424,40684,61779	vous.
+0,07s user 0,00s system 99`\%` cpu 0,061 total
         \end{ubuntu}
+        \captionsetup{position=bottom}
         \caption{\centering Comparaison entre strcmp et strcoll, sur le fichier 
             text \textit{lesmiserables.txt}. Où \textbf{local}, 
             \textbf{standard} correspond à l'utilisation de \textbf{strcoll} et 
-            \textbf{strcmp}.}
+            \textbf{strcmp}.}\label{test-cmp-f}
     \end{figure}
 
-    \subsubsection{L'enfer des gros fichier}
-
-    \SU{user=root,host=ubuntu,color=lime}
-    \begin{ubuntu}
-        ./lnid  ./bobdylan_iwysb.txt `\StartConsole`
-        ./bobdylan_iwysb.txt
-        9,21,38,50      I want you, I want you
-        10,22,39,51     I want you so bad
-        11,23,40,52     Honey, I want you
-        0,00s user 0,00s system 77\% cpu 0,001 total
-    \end{ubuntu}
-
     \subsection{Performance}
+
+    Pour cette section nous allons comparer les performances de notre programme
+    et celui de personne aillant réalisé un projet similaire.
+
+
 
     % (concurrence association)
     % (concurrence groupe)
@@ -748,6 +929,9 @@ bob/.style={user=bob,host=remotehost,color=cyan},
     Ilyas [Nom de famille], pour avoir effectuer une relécture des fautes 
     d'ortographes present dans ce conte-rendu est dans les spécifications du 
     code source de ce programme. 
+
+    Florent Leroy, Théo Salles, Louis Dumontier, Rolmich Kaya-Nguele et Tu-anh 
+    Le pour nous avoir fournir l'éxécutable de leur projet.  
 
     \newpage
 
