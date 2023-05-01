@@ -3,8 +3,8 @@
 #include <time.h>
 #include <string.h>
 
-#define MAX 20000
-#define LEN 80000
+#define MAX 50000000
+#define LEN 80
 
 int main(void) {
   char alp[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
