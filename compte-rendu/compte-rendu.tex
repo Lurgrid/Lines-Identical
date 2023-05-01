@@ -28,7 +28,7 @@ every listing line={\MyUbuntuPrompt}}
 user/.code={\gdef\MyUbuntuUser{#1}},user={},
 host/.code={\gdef\MyUbuntuHost{#1}},host={},
 color/.code={\gdef\MyUbuntuColor{#1}},color=white,
-prompt char/.code={\gdef\MyUbuntuPromptChar{\noindent #1}},prompt char=\#,
+prompt char/.code={\gdef\MyUbuntuPromptChar{#1}},prompt char=\#,
 root/.style={user=root,host=ubuntu,color=lime,prompt char=\#},
 bob/.style={user=bob,host=remotehost,color=cyan},
 }
@@ -561,20 +561,59 @@ bob/.style={user=bob,host=remotehost,color=cyan},
 
     Nous avons mis a disposition l'utilisation, de l'AVL ou de la Hashtable sans 
     pour autant évoquer les divers cas fabvorable à leur utilisation. Vous 
-    retourverait ci-dessous une études de divers test traitent de ces cas.
+    retourverait ci-dessous une études de divers test traitent de ces cas. \\
 
     \SU{user=root,host=ubuntu,color=lime}
     \begin{ubuntu}
         ./lnid lesmiserables.txt `\StartConsole`
         lesmiserables.txt
         ...
-        0,04s user 0,01s system 99\% cpu 0,051 total
+        0,04s user 0,01s system 99`\%` cpu 0,051 total
         `\SU{user=root,host=ubuntu,color=lime}`
         ./lnid lesmiserables.txt --avl `\StartConsole`
         lesmiserables.txt
         ...
-        0,08s user 0,01s system 99\% cpu 0,093 total
+        0,08s user 0,01s system 99`\%` cpu 0,093 total
+        `\SU{user=root,host=ubuntu,color=lime}`
+        ./lnid HugoLeDernierJourDunCondanne.txt `\StartConsole`
+        HugoLeDernierJourDunCondanne.txt
+        ...
+        0,00s user 0,00s system 92`\%` cpu 0,003 total
+        `\SU{user=root,host=ubuntu,color=lime}`
+        ./lnid HugoLeDernierJourDunCondanne.txt --avl `\StartConsole`
+        HugoLeDernierJourDunCondanne.txt
+        ...
+        0,00s user 0,00s system 91`\%` cpu 0,005 total
     \end{ubuntu}
+
+    \begin{ubuntu}
+        `\SU{user=root,host=ubuntu,color=lime}`
+        ./lnid liaisons_dangeureuses.txt `\StartConsole`
+        liaisons_dangeureuses.txt
+        ...
+        0,01s user 0,00s system 96`\%` cpu 0,014 total
+        `\SU{user=root,host=ubuntu,color=lime}`
+        ./lnid liaisons_dangeureuses.txt --avl `\StartConsole`
+        liaisons_dangeureuses.txt
+        ...
+        0,01s user 0,01s system 98`\%` cpu 0,019 total
+        `\SU{user=root,host=ubuntu,color=lime}`
+        ./lnid princesse_de_cleves.txt `\StartConsole`
+        princesse_de_cleves.txt
+        ...
+        0,00s user 0,00s system 92`\%` cpu 0,004 total
+        `\SU{user=root,host=ubuntu,color=lime}`
+        ./lnid princesse_de_cleves.txt --avl `\StartConsole`
+        princesse_de_cleves.txt
+        ...
+        0,00s user 0,00s system 87`\%` cpu 0,003 total
+    \end{ubuntu}
+
+    \vphantom{}
+
+    Comment vous pouvez voir dans ses différents textes de 1Mo à 2Mo avec des
+    lignes de taille environs 80 caractères que les AVL sont légérement plus
+    lent ou équivalant pour certain textes
 
 
     %idée en théorie : avl < hastable
@@ -639,8 +678,7 @@ bob/.style={user=bob,host=remotehost,color=cyan},
             ...            
             8982,24187	--Vous?
             26484,36185	X.
-            ./lnid lesmiserables.txt -s local  0,10s user 0,01s 
-            system 97`\%` cpu 0,115 total
+            0,10s user 0,01s system 97`\%` cpu 0,115 total
             `\SU{user=root,host=ubuntu,color=lime}`
             ./lnid lesmiserables.txt -s standard `\StartConsole`
             lesmiserables.txt
@@ -649,8 +687,7 @@ bob/.style={user=bob,host=remotehost,color=cyan},
             ...
             44552,47345	tout le monde.
             20628,35424,40684,61779	vous.
-            ./lnid lesmiserables.txt -s standard  0,07s user 0,00s 
-            system 99`\%` cpu 0,061 total
+            0,07s user 0,00s system 99`\%` cpu 0,061 total
         \end{ubuntu}
         \caption{\centering Comparaison entre strcmp et strcoll, sur le fichier 
             text \textit{lesmiserables.txt}. Où \textbf{local}, 

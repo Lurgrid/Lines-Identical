@@ -23,7 +23,7 @@ clean:
 	@$(RM) $(makefile_indicator)
 
 $(executable): $(objects)
-	$(CC) -pg $(objects) -o $(executable)
+	$(CC) $(objects) -o $(executable)
 
 optl.o: optl.c optl.h
 da.o: da.c da.h
