@@ -483,13 +483,13 @@ file1.txt file2.txt
 
             \node[draw, rectangle, draw=none, minimum width=1cm, minimum height=4cm, xshift=3cm, below=of p] (chain) {};
 
-            \draw[->, ultra thick, line width=1.5pt] (child2.mid) .. controls +(up:28mm) and +(up:14mm) .. (chain.north);
+            \draw[->, ultra thick, line width=1.5pt] (child2.mid) ++(0,-0.1cm) .. controls +(up:28mm) and +(up:14mm) .. (chain.north);
             \draw[fill=black] (child2.mid) ++(0,-0.1cm) circle (0.07);
 
             \node[draw, minimum size=1cm, above=-1cm of chain.north] (node1) {};
-            \node[draw, minimum size=1cm, below=0cm of node1.south] (node2) {};
-            \node[draw, minimum size=1cm, below=0cm of node2.south] (node3) {};
-            \node[draw, minimum size=1cm, below=0cm of node3.south] (node4) {};
+            \node[draw, minimum size=1cm, below=0cm of node1.south, yshift=0.5pt] (node2) {};
+            \node[draw, minimum size=1cm, below=0cm of node2.south, yshift=0.5pt] (node3) {};
+            \node[draw, minimum size=1cm, below=0cm of node3.south, yshift=0.5pt] (node4) {};
 
             \draw[fill=black] (node1.mid) ++(0,-0.1cm) circle (0.07);
         
@@ -619,6 +619,7 @@ file1.txt file2.txt
                         \vspace{\spacebox}
                         }
                 \ELSIF{argument est une option longue}
+
                     \STATE{
                         \vspace{\spacebox}
                         \fcolorbox{green}{white}{
