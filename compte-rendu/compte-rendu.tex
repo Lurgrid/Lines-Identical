@@ -493,18 +493,57 @@ file1.txt file2.txt
 
             \draw[fill=black] (node1.mid) ++(0,-0.1cm) circle (0.07);
         
-            \node[draw, minimum size=1cm, right= of node1] (next11) {};
-            \node[draw, minimum size=1cm, right= of next11] (next12) {};
-            \node[draw, minimum size=1cm, right= of next12] (next13) {};
+            \node[draw, minimum height=1.75cm, minimum width=4cm, right= of node1] (next11) {};
+            \node[draw, minimum height=1.75cm, minimum width=4cm, right= of next11] (next12) {};
 
+            \node[draw, minimum size=0.75cm, right=1.4375cm of node1] (key11) {};
+            \node[above, yshift=-0.1cm] at (key11.north) {key};
 
+            \node[draw, minimum size=0.75cm, right=0.4375cm of key11] (key12) {};
+            \node[above, yshift=-0.1cm] at (key12.north) {value};
+
+            \node[draw, minimum size=0.75cm, right=0.4375 of key12] (key13) {};
+            \node[above, yshift=-0.1cm] at (key13.north) {next};
+
+            \draw[->, ultra thick, line width=1.5pt] (key13.mid) ++(0,-0.1cm) -- (next12);
+            \draw[fill=black] (key13.mid) ++(0,-0.1cm) circle (0.07);
+
+            \node[draw, minimum size=0.75cm, right=-3.5625cm of next12] (key21) {};
+            \node[above, yshift=-0.1cm] at (key21.north) {key};
+
+            \node[draw, minimum size=0.75cm, right=0.4375cm of key21] (key22) {};
+            \node[above, yshift=-0.1cm] at (key22.north) {value};
+
+            \node[draw, minimum size=0.75cm, right=0.4375cm of key22] (key23) {};
+            \node[above, yshift=-0.1cm] at (key23.north) {next};
+
+            \draw (key23.south west) -- (key23.north east);
+            \draw (key23.north west) -- (key23.south east);
+            
             \draw (node2.south west) -- (node2.north east);
             \draw (node2.north west) -- (node2.south east);
 
-            \node[draw, minimum size=1cm, right= of node3] (next31) {};
+            \node[draw, minimum height=1.75cm, minimum width=4cm, right= of node3] (next31) {};
 
             \draw (node4.south west) -- (node4.north east);
             \draw (node4.north west) -- (node4.south east);
+
+            \draw[fill=black] (node3.mid) ++(0,-0.1cm) circle (0.07);
+
+            \draw[->, ultra thick, line width=1.5pt] (node1.mid) ++(0,-0.1cm) -- (next11);
+            \draw[->, ultra thick, line width=1.5pt] (node3.mid) ++(0,-0.1cm) -- (next31);
+
+            \node[draw, minimum size=0.75cm, right=1.4375cm of node3] (key31) {};
+            \node[above, yshift=-0.1cm] at (key31.north) {key};
+
+            \node[draw, minimum size=0.75cm, right=0.4375cm of key31] (key32) {};
+            \node[above, yshift=-0.1cm] at (key32.north) {value};
+
+            \node[draw, minimum size=0.75cm, right=0.4375cm of key32] (key33) {};
+            \node[above, yshift=-0.1cm] at (key33.north) {next};
+
+            \draw (key33.south west) -- (key33.north east);
+            \draw (key33.north west) -- (key33.south east);
             
         \end{tikzpicture}
         \captionsetup{position=bottom}

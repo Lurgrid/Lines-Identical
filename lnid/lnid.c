@@ -411,9 +411,9 @@ dispose:
 }
 
 size_t str_hashfun(const char *s) {
-  size_t h = 0;
+  size_t h = 5381;
   for (const unsigned char *p = (const unsigned char *) s; *p != '\0'; ++p) {
-    h = 37 * h + *p;
+    h = (h << 5) + h + *p;
   }
   return h;
 }
