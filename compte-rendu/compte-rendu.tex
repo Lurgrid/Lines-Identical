@@ -199,8 +199,8 @@ bob/.style={user=bob,host=remotehost,color=cyan},
                 charactères répondan au test  de présence dans l'enssemble 
                 CLASS, fonction de test étant is.CLASS.}}\\[.8em]
             \hline
-                \cellcolor{blue-s!25} -s WORD & \cellcolor{blue-s!25} --sort 
-                WORD & \cellcolor{blue-t!70}Avec \texttt{WORD} valant
+                \cellcolor{blue-s!25} -s WORD & \cellcolor{blue-s!25} 
+                --sort=WORD & \cellcolor{blue-t!70}Avec \texttt{WORD} valant
                  soit \texttt{standard} soit \texttt{locale} \\
             \hline
                 \multicolumn{3}{|c|}{\cellcolor{blue-u!7}\rule{0pt}{2em}
@@ -948,12 +948,120 @@ lesmiserables.txt
     \subsection{Performance}
 
     Pour cette section nous allons comparer les performances de notre programme
-    et celui de personne aillant réalisé un projet similaire.
+    et celui de personne aillant réalisé un projet similaire. Afin de faire une
+    bonne comparaison voir la figure~\ref{our-prog} pour comparer avec note 
+    programme, pour ce test nous avons utiliser un fichier de 3Mo avec des 
+    lignes de longeur au plus 80 charactères, nous avons donc un multiplicateur
+    mémoire de 2,97.
 
+    \begin{figure}[H]
+        \SU{user=root,host=ubuntu,color=lime}
+        \begin{ubuntu}
+./lnid lesmiserables.txt `\StartConsole`
+lesmiserables.txt
+...
+0,07s user 0,00s system 99% cpu 0,071 total
+`\SU{user=root,host=ubuntu,color=lime}`
+valgrind ./lnid lesmiserables.txt `\StartConsole`
+...
+heap usage: 299,780 allocs, 299,780 frees, 8,925,910 bytes allocated
+        \end{ubuntu}
+        \captionsetup{position=bottom}
+        \caption{.}\label{our-prog}
+    \end{figure}
 
+    Comparaison avec les projets de:
 
-    % (concurrence association)
-    % (concurrence groupe)
+    \vphantom{}
+
+    \begin{enumerate}
+        \item[] \textbf{Florent Leroy} 
+        \begin{figure}[H]
+            \SU{user=root,host=ubuntu,color=lime}
+            \begin{ubuntu}
+./lnid_flo lesmiserables.txt `\StartConsole`
+...
+0,07s user 0,00s system 99`\%` cpu 0,076 total
+`\SU{user=root,host=ubuntu,color=lime}`
+valgrind ./lnid_flo lesmiserables.txt `\StartConsole`
+...
+heap usage: 557,837 allocs, 557,837 frees, 87,528,639 bytes allocated
+            \end{ubuntu}
+            \captionsetup{position=bottom}
+            \caption{.}
+        \end{figure}
+
+        Comme on peut voir ce projet à un temps similaire au notre mais a un
+        gros défault, qui est l'utilisation de l'espace mémoire car il a un
+        multiplicateur mémoire de 29,17
+
+        \vphantom{}
+
+        \item[] \textbf{Rolmich Kaya-Nguele}
+        \begin{figure}[H]
+            \SU{user=root,host=ubuntu,color=lime}
+            \begin{ubuntu}
+./lnid_rol lesmiserables.txt `\StartConsole`
+...
+0,13s user 0,00s system 98`\%` cpu 0,132 total
+`\SU{user=root,host=ubuntu,color=lime}`
+valgrind ./lnid_rol lesmiserables.txt `\StartConsole`
+...
+heap usage: 642,605 allocs, 642,605 frees, 21,728,522 bytes allocated
+            \end{ubuntu}
+            \captionsetup{position=bottom}
+            \caption{.}
+        \end{figure}
+
+        Comme on peut voir ce projet à met deux fois plus de temps et il utilise
+        plus d'espace mémoire, il a donc un multiplicateur mémoir de 7,23
+
+        \vphantom{}
+        
+        \item[] \textbf{Tu-anh Le}
+        \begin{figure}[H]
+            \SU{user=root,host=ubuntu,color=lime}
+            \begin{ubuntu}
+./lnid_flo lesmiserables.txt `\StartConsole`
+...
+0,07s user 0,00s system 99`\%` cpu 0,076 total
+`\SU{user=root,host=ubuntu,color=lime}`
+valgrind ./lnid lesmiserables.txt `\StartConsole`
+...
+heap usage: 557,837 allocs, 557,837 frees, 87,528,639 bytes allocated
+            \end{ubuntu}
+            \captionsetup{position=bottom}
+            \caption{.}
+        \end{figure}
+
+        Comme on peut voir ce projet à un temps similaire au notre mais a un
+        gros défault, qui est l'utilisation de l'espace mémoire car il a un
+        multiplicateur mémoire de 29,17
+
+        \vphantom{}
+
+        \item[] \textbf{Théo Salles et Louis Dumontier}
+        \begin{figure}[H]
+            \SU{user=root,host=ubuntu,color=lime}
+            \begin{ubuntu}
+./lnid_flo lesmiserables.txt `\StartConsole`
+...
+0,07s user 0,00s system 99`\%` cpu 0,076 total
+`\SU{user=root,host=ubuntu,color=lime}`
+valgrind ./lnid lesmiserables.txt `\StartConsole`
+...
+heap usage: 557,837 allocs, 557,837 frees, 87,528,639 bytes allocated
+            \end{ubuntu}
+            \captionsetup{position=bottom}
+            \caption{.}
+        \end{figure}
+
+        Comme on peut voir ce projet à un temps similaire au notre mais a un
+        gros défault, qui est l'utilisation de l'espace mémoire car il a un
+        multiplicateur mémoire de 29,17
+    \end{enumerate}
+
+    \newpage
 
     \section{Conclusion}
 
@@ -983,7 +1091,7 @@ lesmiserables.txt
     Au logiciel ChatGPT pour la correction des nombreuses fautes d'ortographe 
     présent tout au long de la production de ce projet et de son compte rendu.
 
-    Ilyas [Nom de famille], pour avoir effectuer une relécture des fautes 
+    Ilyas TAKHTOUKH, pour avoir effectuer une relécture des fautes 
     d'ortographes present dans ce conte-rendu est dans les spécifications du 
     code source de ce programme. 
 
