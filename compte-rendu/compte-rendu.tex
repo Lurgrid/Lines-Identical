@@ -473,7 +473,7 @@ file1.txt file2.txt
             \draw[->, ultra thick, line width=1.5pt] (p.mid) -- (struct.north);
             \draw[fill=black] (p.mid) ++(0,-0.1cm) circle (0.07);
 
-            \node[draw, minimum size=1cm, below left=-0.75cm of struct.center] (child1) {3};
+            \node[draw, minimum size=1cm, below left=-0.75cm of struct.center] (child1) {2};
             \node[draw, minimum size=1cm, above=-1.5cm of struct.north] (child2) {};
             \node[draw, minimum size=1cm, below=-1.5cm of struct.south] (child3) {2};
 
@@ -544,7 +544,24 @@ file1.txt file2.txt
 
             \draw (key33.south west) -- (key33.north east);
             \draw (key33.north west) -- (key33.south east);
-            
+
+            \draw[fill=black] (key11.mid) ++(0,-0.1cm) circle (0.07);
+            \draw[fill=black] (key12.mid) ++(0,-0.1cm) circle (0.07);
+
+            \draw[fill=black] (key21.mid) ++(0,-0.1cm) circle (0.07);
+            \draw[fill=black] (key22.mid) ++(0,-0.1cm) circle (0.07);
+
+            \draw[fill=black] (key31.mid) ++(0,-0.1cm) circle (0.07);
+            \draw[fill=black] (key32.mid) ++(0,-0.1cm) circle (0.07);
+
+            \draw[->, ultra thick, line width=1.5pt] (key31.mid) ++(0,-0.1cm) -- ++(0, -1.5cm);
+            \draw[->, ultra thick, line width=1.5pt] (key32.mid) ++(0,-0.1cm) -- ++(0, -1.5cm);
+
+            \draw[->, ultra thick, line width=1.5pt] (key21.mid) ++(0,-0.1cm) -- ++(0, -1.5cm);
+            \draw[->, ultra thick, line width=1.5pt] (key22.mid) ++(0,-0.1cm) -- ++(0, -1.5cm);
+
+            \draw[->, ultra thick, line width=1.5pt] (key11.mid) ++(0,-0.1cm) -- ++(-1.2cm, 1.2cm);
+            \draw[->, ultra thick, line width=1.5pt] (key12.mid) ++(0,-0.1cm) -- ++(1.2cm, 1.2cm);
         \end{tikzpicture}
         \captionsetup{position=bottom}
         \caption{Implémentation de la structure de table de hashage du module 
