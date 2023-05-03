@@ -944,17 +944,19 @@ lesmiserables.txt
             \textbf{strcmp}.}\label{test-cmp-f}
     \end{figure}
 
+    \newpage
+
     \subsection{Performance}
 
-    Pour cette section nous allons comparer les performances de notre programme
-    et celui de personne aillant réalisé un projet similaire. Afin d'éfféctuer 
-    cette comparaison nous allons utiliser un fichier de 3Mo contenant des 
-    lignes de longeur de au plus 80 charactères (les misérables de Victor Hugo, 
-    ce test n'est pas effectuer avec l'options \textbf{AVL}, voir 
-    section~\ref{avl} pour la justification de ce choix). On obseve sur la 
-    figure~\ref{our-prog}, un temps d'execution de l'ordre de la centaine de 
-    seconde et une utilisation mémoire de 9 milions de bytes, ce qui revient à
-    une multiplication d'environ 2,97 fois la taille du fichier.
+    Pour cette section nous allons présenter plusieur tests que nous jugons 
+    intérrêsant quante a la compréhension des performance du programme. Le 
+    premier test est éffectuer sur un fichier de 3Mo contenant des lignes de 
+    longeur de au plus 80 charactères (les misérables de Victor Hugo, ce test 
+    n'est pas effectuer avec l'options \textbf{AVL}, voir section~\ref{avl} pour 
+    la justification de ce choix). On obseve sur la figure~\ref{our-prog}, un 
+    temps d'execution de l'ordre de la centaine de miliseconde et une 
+    utilisation mémoire de 9 milions de bytes, ce qui revient à une 
+    multiplication d'environ 2,97 fois la taille du fichier.
 
     \begin{figure}[H]
         \SU{user=root,host=ubuntu,color=lime}
@@ -962,7 +964,7 @@ lesmiserables.txt
 ./lnid lesmiserables.txt `\StartConsole`
 lesmiserables.txt
 ...
-0,07s user 0,00s system 99% cpu 0,071 total
+0,07s user 0,00s system 99`\%` cpu 0,071 total
 `\SU{user=root,host=ubuntu,color=lime}`
 valgrind ./lnid lesmiserables.txt `\StartConsole`
 ...
@@ -971,78 +973,6 @@ heap usage: 299,780 allocs, 299,780 frees, 8,925,910 bytes allocated
         \captionsetup{position=bottom}
         \caption{Démonstration d'execution de l'executalbe lnid.}\label{our-prog}
     \end{figure}
-
-    Comparaison avec les projets de:
-
-    \vphantom{}
-
-    \begin{enumerate}
-        \item[] \textbf{Florent Leroy} 
-        \begin{figure}[H]
-            \SU{user=root,host=ubuntu,color=lime}
-            \begin{ubuntu}
-./lnid_flo lesmiserables.txt `\StartConsole`
-...
-0,07s user 0,00s system 99`\%` cpu 0,076 total
-`\SU{user=root,host=ubuntu,color=lime}`
-valgrind ./lnid_flo lesmiserables.txt `\StartConsole`
-...
-heap usage: 557,837 allocs, 557,837 frees, 87,528,639 bytes allocated
-            \end{ubuntu}
-            \captionsetup{position=bottom}
-            \caption{Exemple d'execution du projet de Florent Leroy.}
-            \label{projet-flo}
-        \end{figure}
-
-        Comme on peut le voir sur la figure~\ref{projet-flo}, ce projet à un 
-        temps d'éxécution plutôt similaire mais une utilisation mémoire 
-        supérieur de dix fois à la notre (soit un mutiplicateur mémoire de 
-        29,17 fois la taille du fichier d'origine).  
-
-        \vphantom{}
-
-        \item[] \textbf{Rolmich Kaya-Nguele}
-        \begin{figure}[H]
-            \SU{user=root,host=ubuntu,color=lime}
-            \begin{ubuntu}
-./lnid_rol lesmiserables.txt `\StartConsole`
-...
-0,11s user 0,01s system 98% cpu 0,122 total
-`\SU{user=root,host=ubuntu,color=lime}`
-valgrind ./lnid_rol lesmiserables.txt `\StartConsole`
-...
-heap usage: 642,605 allocs, 642,605 frees, 21,725,450 bytes allocated
-            \end{ubuntu}
-            \captionsetup{position=bottom}
-            \caption{Exemple d'execution du projet de Rolmich Kaya-Nguele.}
-        \end{figure}
-
-        Sur cette exemple on constate une multiplication de deux fois pour le 
-        temps d'execution et d'utilisation mémoire.
-
-        \vphantom{}
-
-        \item[] \textbf{Théo Salles et Louis Dumontier}
-        \begin{figure}[H]
-            \SU{user=root,host=ubuntu,color=lime}
-            \begin{ubuntu}
-./lnid_flo lesmiserables.txt `\StartConsole`
-...
-0,07s user 0,00s system 99`\%` cpu 0,076 total
-`\SU{user=root,host=ubuntu,color=lime}`
-valgrind ./lnid lesmiserables.txt `\StartConsole`
-...
-heap usage: 557,837 allocs, 557,837 frees, 87,528,639 bytes allocated
-            \end{ubuntu}
-            \captionsetup{position=bottom}
-            \caption{Exemple d'execution du projet de Théo Salles et Louis 
-            Dumontier.}
-        \end{figure}
-
-        Comme on peut voir ce projet à un temps similaire au notre mais a un
-        gros défault, qui est l'utilisation de l'espace mémoire car il a un
-        multiplicateur mémoire de 29,17
-    \end{enumerate}
 
     \newpage
 
@@ -1064,7 +994,7 @@ heap usage: 557,837 allocs, 557,837 frees, 87,528,639 bytes allocated
     s'intéresser au ligne identique au sens de la phrase et non identique en 
     sens du contenu.
 
-    \subsection{Remerciment}
+    \subsection{Remerciment}w
 
     Merci à: 
 
