@@ -120,7 +120,7 @@ bob/.style={user=bob,host=remotehost,color=cyan},
 
 %--- begin document ------------------------------------------------------------
 
-\title{Projet d'Algorithemique}
+\title{Projet d'Algorithmique}
 \author{Edouard.H Théo.R.V}
 \date{2022--2023}
 
@@ -974,42 +974,66 @@ heap usage: 299,780 allocs, 299,780 frees, 8,925,910 bytes allocated
         \caption{Démonstration d'execution de l'executalbe lnid.}\label{our-prog}
     \end{figure}
 
+    Le deuxième test est éffectuer sur un fichier de 4Go contenant des lignes de
+    longueurs de 800 000 charactère a l'aide de l'option AVL (ce fichier ne 
+    contient aucune ligne identique).\@On obseve sur la figure~\ref{avl-4go} un 
+    temps d'éxecution de l'ordre de vintaine de seconde et une utilisation 
+    mémoire de 4 milliard de bytes ce qui revient a une multiplication 
+    d'environ 1,001 fois la taille du fichier.
+
+    \begin{figure}[H]
+        \SU{user=root,host=ubuntu,color=lime}
+        \begin{ubuntu}
+./lnid a.txt `\StartConsole`
+a.txt
+...
+21,97s user 1,50s system 100`\%` cpu 23,462 total
+`\SU{user=root,host=ubuntu,color=lime}`
+valgrind ./lnid a.txt `\StartConsole`
+...
+heap usage: 35,036 allocs, 35,036 frees, 4,002,711,191 bytes allocated
+        \end{ubuntu}
+        \captionsetup{position=bottom}
+        \caption{Démonstration d'execution de l'executalbe lnid.}\label{avl-4go}
+    \end{figure}
+
+    On remarque alors que sur les deux exemples présenté
+
     \newpage
 
     \section{Conclusion}
 
-    Pour finir, la production de ce programme aura été de notre coté linéaire. 
-    Lors de son dévellopement nous n'avons pas ressenti de réel difficulter. 
-    Cependant, notre envie de toujours faire mieux nous à posser problème. On 
-    peut notament cité les cinq versions du module opt que nous avons concue, 
-    car nous n'étions jamais satisfait. De plus une autre difficulter rencontré
-    à été la production de ce compte rendu. N'aillant jamais effectuer 
-    d'exercice de ce type nous avons donc essayer de présenter notre 
-    implémentation de notre programme. Malgrès tous ce travaille, nous avons 
+    Pour finir, la production de ce programme aura été de notre côté linéaire. 
+    Lors de son développement, nous n'avons pas ressenti de réelles difficultés. 
+    Cependant, notre envie de toujours faire mieux nous à poser un problème. On 
+    peut notamment citer les cinq versions du module opt que nous avons conçue, 
+    car nous n'étions jamais satisfaits. De plus, une autre difficulté 
+    rencontrée a été la production de ce compte rendu. N'aillant jamais 
+    effectuer d'exercice de ce type, nous avons donc essayé de présenter notre 
+    implémentation de notre programme. Malgré tout se travaille, nous avons 
     déjà en tête quelque possible amélioration, un affichage du help du module 
-    optl qui pourrais se s'adapter à la taille du terminal. Toujours dans le 
-    module optl, donner des options avec un paramettre qui n'est pas forcement 
-    obligatoire (qui ne déclenche donc pas d'erreur s'il n'est pas donner). Ou 
-    encore pour le programme \textbf{lnid}, il serait peut intéressant de 
-    s'intéresser au ligne identique au sens de la phrase et non identique en 
+    optl qui pourrait se s'adapter à la taille du terminal. Toujours dans le 
+    module optl, donner des options avec un paramètre qui n'est pas forcément 
+    obligatoire (qui ne déclenche donc pas d'erreur s'il n'est pas donnée). Ou 
+    encore pour le programme \textbf{lnid}, il serait peu intéressant de 
+    s'intéresser aux lignes identiques au sens de la phrase et non identique en 
     sens du contenu.
 
     \subsection{Remerciment}
 
-    Merci à: 
+    Merci à\@: 
 
-    Erwan Lievin, pour le nom qu'il nous a frounit pour le module de tableau 
+    Erwan Lievin, pour le nom qu'il nous a fourni pour le module de tableau 
     dynamique `da' (dynamique array).
 
-    Au logiciel ChatGPT pour la correction des nombreuses fautes d'ortographe 
+    Au logiciel ChatGPT pour la correction des nombreuses fautes d'orthographe 
     présent tout au long de la production de ce projet et de son compte rendu.
 
-    Ilyas TAKHTOUKH, pour avoir effectuer une relécture des fautes 
-    d'ortographes present dans ce conte-rendu est dans les spécifications du 
+    Ilyas TAKHTOUKH, pour avoir effectué une relecture des fautes 
+    d'orthographes présentes dans ce compte-rendu est dans les spécifications du 
     code source du programme. 
 
-    Florent Leroy, Théo Salles, Louis Dumontier, Rolmich Kaya-Nguele et Tu-anh 
-    Le pour nous avoir fournir l'éxécutable de leur projet.  
+    \newpage
 
     \section{Bibliographie}
         \noindent Concernant la partie du module d'option optl 
