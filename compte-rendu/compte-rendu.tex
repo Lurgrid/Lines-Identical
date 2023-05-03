@@ -568,7 +568,7 @@ file1.txt file2.txt
         hastable}\label{hastable-fig}
     \end{figure}
 
-    \subsection{AVL}
+    \subsection{AVL}\label{avl}
 
     L'utilisation des arbres binaires nous a demandé la création d'un type, 
     hcell pour permtettre de stocké les deux valeurs (chaine et compteur, voir 
@@ -948,11 +948,14 @@ lesmiserables.txt
     \subsection{Performance}
 
     Pour cette section nous allons comparer les performances de notre programme
-    et celui de personne aillant réalisé un projet similaire. Afin de faire une
-    bonne comparaison voir la figure~\ref{our-prog} pour comparer avec note 
-    programme, pour ce test nous avons utiliser un fichier de 3Mo avec des 
-    lignes de longeur au plus 80 charactères, nous avons donc un multiplicateur
-    mémoire de 2,97.
+    et celui de personne aillant réalisé un projet similaire. Afin d'éfféctuer 
+    cette comparaison nous allons utiliser un fichier de 3Mo contenant des 
+    lignes de longeur de au plus 80 charactères (les misérables de Victor Hugo, 
+    ce test n'est pas effectuer avec l'options \textbf{AVL}, voir 
+    section~\ref{avl} pour la justification de ce choix). On obseve sur la 
+    figure~\ref{our-prog}, un temps d'execution de l'ordre de la centaine de 
+    seconde et une utilisation mémoire de 9 milions de bytes, ce qui revient à
+    une multiplication d'environ 2,97 fois la taille du fichier.
 
     \begin{figure}[H]
         \SU{user=root,host=ubuntu,color=lime}
@@ -967,7 +970,7 @@ valgrind ./lnid lesmiserables.txt `\StartConsole`
 heap usage: 299,780 allocs, 299,780 frees, 8,925,910 bytes allocated
         \end{ubuntu}
         \captionsetup{position=bottom}
-        \caption{.}\label{our-prog}
+        \caption{Démonstration d'execution de l'executalbe lnid.}\label{our-prog}
     \end{figure}
 
     Comparaison avec les projets de:
@@ -988,12 +991,14 @@ valgrind ./lnid_flo lesmiserables.txt `\StartConsole`
 heap usage: 557,837 allocs, 557,837 frees, 87,528,639 bytes allocated
             \end{ubuntu}
             \captionsetup{position=bottom}
-            \caption{.}
+            \caption{Exemple d'execution du projet de Florent Leroy.}
+            \label{projet-flo}
         \end{figure}
 
-        Comme on peut voir ce projet à un temps similaire au notre mais a un
-        gros défault, qui est l'utilisation de l'espace mémoire car il a un
-        multiplicateur mémoire de 29,17
+        Comme on peut le voir sur la figure~\ref{projet-flo}, ce projet à un 
+        temps d'éxécution plutôt similaire mais une utilisation mémoire 
+        supérieur de dix fois à la notre (soit un mutiplicateur mémoire de 
+        29,17 fois la taille du fichier d'origine).  
 
         \vphantom{}
 
@@ -1003,40 +1008,18 @@ heap usage: 557,837 allocs, 557,837 frees, 87,528,639 bytes allocated
             \begin{ubuntu}
 ./lnid_rol lesmiserables.txt `\StartConsole`
 ...
-0,13s user 0,00s system 98`\%` cpu 0,132 total
+0,11s user 0,01s system 98% cpu 0,122 total
 `\SU{user=root,host=ubuntu,color=lime}`
 valgrind ./lnid_rol lesmiserables.txt `\StartConsole`
 ...
-heap usage: 642,605 allocs, 642,605 frees, 21,728,522 bytes allocated
+heap usage: 642,605 allocs, 642,605 frees, 21,725,450 bytes allocated
             \end{ubuntu}
             \captionsetup{position=bottom}
-            \caption{.}
+            \caption{Exemple d'execution du projet de Rolmich Kaya-Nguele.}
         \end{figure}
 
-        Comme on peut voir ce projet à met deux fois plus de temps et il utilise
-        plus d'espace mémoire, il a donc un multiplicateur mémoir de 7,23
-
-        \vphantom{}
-        
-        \item[] \textbf{Tu-anh Le}
-        \begin{figure}[H]
-            \SU{user=root,host=ubuntu,color=lime}
-            \begin{ubuntu}
-./lnid_flo lesmiserables.txt `\StartConsole`
-...
-0,07s user 0,00s system 99`\%` cpu 0,076 total
-`\SU{user=root,host=ubuntu,color=lime}`
-valgrind ./lnid lesmiserables.txt `\StartConsole`
-...
-heap usage: 557,837 allocs, 557,837 frees, 87,528,639 bytes allocated
-            \end{ubuntu}
-            \captionsetup{position=bottom}
-            \caption{.}
-        \end{figure}
-
-        Comme on peut voir ce projet à un temps similaire au notre mais a un
-        gros défault, qui est l'utilisation de l'espace mémoire car il a un
-        multiplicateur mémoire de 29,17
+        Sur cette exemple on constate une multiplication de deux fois pour le 
+        temps d'execution et d'utilisation mémoire.
 
         \vphantom{}
 
@@ -1053,7 +1036,8 @@ valgrind ./lnid lesmiserables.txt `\StartConsole`
 heap usage: 557,837 allocs, 557,837 frees, 87,528,639 bytes allocated
             \end{ubuntu}
             \captionsetup{position=bottom}
-            \caption{.}
+            \caption{Exemple d'execution du projet de Théo Salles et Louis 
+            Dumontier.}
         \end{figure}
 
         Comme on peut voir ce projet à un temps similaire au notre mais a un
@@ -1093,12 +1077,10 @@ heap usage: 557,837 allocs, 557,837 frees, 87,528,639 bytes allocated
 
     Ilyas TAKHTOUKH, pour avoir effectuer une relécture des fautes 
     d'ortographes present dans ce conte-rendu est dans les spécifications du 
-    code source de ce programme. 
+    code source du programme. 
 
     Florent Leroy, Théo Salles, Louis Dumontier, Rolmich Kaya-Nguele et Tu-anh 
     Le pour nous avoir fournir l'éxécutable de leur projet.  
-
-    \newpage
 
     \section{Bibliographie}
         \noindent Concernant la partie du module d'option optl 
