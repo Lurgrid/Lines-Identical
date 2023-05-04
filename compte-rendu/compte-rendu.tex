@@ -248,7 +248,7 @@ bob/.style={user=bob,host=remotehost,color=cyan},
     Pour la lecture de ligne, ne consomme pas trop de mémoire à l'utilisateur
     (par l'allocation d'un buffer a chaque ligne lue), nous avons donc décidé de 
     mettre en place un buffer de type \textbf{da} (voir section~\ref{test} pour
-    analyse complète de ce choix). Pour cette lecture, nous utilisons donc notre
+    analyse complète de ce choix). Pour cette lecture, nous utilisons donc la
     fonction \textbf{fnlines} qui ajoute donc au buffer chaque lettre lus (si 
     l'utilisateur a choisi une option filtrante ou transformante des caractères 
     alors le caractère sera d'abord transformer puis filtrer et enfin ajouté) 
@@ -271,18 +271,18 @@ bob/.style={user=bob,host=remotehost,color=cyan},
         compteur associé à cette ligne. Sinon cette ligne n'est pas traitée
     \end{enumerate}
 
-    Pour associé une ligne à son compteur/liste de numéro de lignes, vous 
-    proposons deux type de structure par default une table de hashage et avec 
+    Pour associer une ligne à son compteur/liste de numéro de lignes, vous 
+    proposons deux types de structure par défaut une table de hashage et avec 
     une option un AVL (voir section~\ref{test} pour un comparatif de ces deux 
-    solutions). Dans les deux les données présente dans ces structure sont 
+    solutions). Dans les deux les données présente dans ces structures sont 
     stocker dans un \textit{fourre-tout} (holdall) (voir section~\ref{holdall} 
     pour plus d'information sur l'utilisation de celui-ci).
 
-    Une fois ce traitement effectuer nous affichons donc le resultat du 
-    traitement esconté par l'intermédiaire de l'affiche des divers valeur 
-    présente dans le \textit{fourre-tout} de ligne. Cette affichage peut se 
-    décrire de la manière suivante selons les deux cas cité au debut de cette 
-    sous section.
+    Une fois ce traitement effectuait, nous affichons donc le résultat du 
+    traitement escompte par l'intermédiaire de l'affiche des diverses valeurs 
+    présente dans le \textit{fourre-tout} de ligne. Cet affichage peut se 
+    décrire de la manière suivante sellons les deux cas cités au début de cette 
+    sous-section.
 
     \begin{figure}[H]
         \centering
@@ -326,18 +326,18 @@ file1.txt
 file1.txt file2.txt
 2       1       bugs
         \end{ubuntu}
-        \caption{\centering Affichage du programme pour un et deux fichier. Les 
+        \caption{\centering Affichage du programme pour un et deux fichiers. Les 
         flèches représente des tabulations.}
     \end{figure}
 
-    L'implémentaion de l'option de trie (\textbf{-s | --sort}) par un trie du 
-    \textit{fourre-tout} (a l'aide d'un trie fusion).
+    L'implémentation de l'option de tri (\textbf{-s | --sort}) par un trie du 
+    \textit{fourre-tout} (à l'aide d'un trie fusion).
 
-    Tout au long du programme chaque opération pouvent entrainer un échec se 
-    voit correspondre une gestion d'erreur lui étant associé. On peut notament 
-    les erreurs d'allocation dynamique, les erreur de lecture/ouverture des 
-    fichiers ou encore des erreur quand a la gestion des options entré par 
-    l'utilisateur. Toute ces erreurs donne lieu a des message envoyer sur la 
+    Tout au long du programme chaque opération peuvent entrainer un échec se 
+    voit correspondre une gestion d'erreur lui étant associé. On peut notamment 
+    les erreurs d'allocation dynamique, les erreurs de lecture/ouverture des 
+    fichiers ou encore des erreurs quand a la gestion des options entré par 
+    l'utilisateur. Toutes ces erreurs donne lieu à des messages envoyé sur la 
     sortie d'erreur (en couleur selon le choix de l'utilisateur avec l'option 
     \textbf{--no-color}).
 
@@ -345,40 +345,39 @@ file1.txt file2.txt
 
     \section{Gestion des objets dynamique, holdall}\label{holdall}
 
-    \subsection{Explication de l'objectifs du module}
+    \subsection{Explication de l'objectif du module}
     
-    De nombreux problème peuvent être résolue à l'aide de structure de donnée. 
-    Pour facilité leur implémentaion en C, une façon commune est de passer par 
-    des structure allouers dynamiquement. Or certainnes de ces structures 
-    demandent un nombre important de ces allocations dynamique. On peut notament
-    cité les table de hashage, dont il est courant pour chaque valeur d'être 
-    stoquer dans un maillont lui même gérer par une liste allouer dynamiquement 
-    (voir shéma d'implémentaion du module hastable figure \ref{hastable-fig}). 
-    De plus, certaine de ces implémentation de structure peuvent engager des 
-    contraintes, tel que la suppresion d'une de ces allocations pour un certain
-    traitement. On peut notament citée des implémentation d'ensemble à l'aide de 
-    liste. De tel structure n'aillant pas de requête de parkour, il faut allors 
-    vidé toutes les valeurs de cette ensemble pour les affichers par exemple. 
-    Ces dans ce cas, que toutes les allocations devraient être désalloué et 
-    alors, il  faudrait tous réajouter pour faire de nouvelles opération sur 
-    cette ensemble. Alors que si ces donnés était stocké dans une autre 
-    structure, on pourrait plus ou moins les parcourir simplément selon cette 
+    De nombreux problèmes peuvent être résolus à l'aide de structure de donnée. 
+    Pour faciliter leur implémentation en C, une façon commune est de passer par 
+    des structures allouées dynamiquement. Or certaines de ces structures 
+    demandent un nombre important de ces allocations dynamiques. On peut notamment
+    cité les table de hachage, dont il est courant pour chaque valeur d'être 
+    stoker dans un maillon lui-même gérer par une liste allouée dynamiquement 
+    (voir schéma d'implémentation du module hastable figure \ref{hastable-fig}). 
+    De plus, certaine de ces implémentations de structure peuvent engager des 
+    contraintes, telles que la suppression d'une de ces allocations pour un certain
+    traitement. On peut notamment citer des implémentations d'ensemble à l'aide de 
+    liste. De telle structure n'aillant pas de requête de parkour, il faut alors 
+    vidé toutes les valeurs de cet ensemble pour les affichés par exemple. 
+    C'est dans ce cas que toutes les allocations devraient être désallouées et 
+    alors, il  faudrait tous re-ajouter pour faire de nouvelles opérations sur 
+    cet ensemble. Alors que si ces données étaient stockées dans une autre 
+    structure, on pourrait plus ou moins les parcourir simplement selon cette 
     structure. On voit bien que dans notre implémentation l'utilisation d'une 
-    liste simplement chainé est tous à fait justifier.
+    liste simplement chainé est tous a fait justifier.
 
     \subsection{Mise en place dans ce projet}
 
-    Dans notre projet, de nombreuses donnés sont alloué dynamiquement. Les 
-    lignes lu, les numéros de ces lignes. C'est pour cela que l'utilisation du 
-    `fourre-tout' est tous à fait justifier. De ce fait, les structures 
+    Dans notre projet, de nombreuses donné sont alloués dynamiquement. Les 
+    lignes lues, les numéros de ces lignes. C'est pour cela que l'utilisation du 
+    `fourre-tout' est tous a fait justifier. De ce fait, les structures 
     provenant du module da et avl n'ont absolument pas besoin d'avoir des
-    opérations tel que la libération de mémoire pour les valeurs qu'elles 
+    opérations telles que la libération de mémoire pour les valeurs qu'elles 
     contiennent. De ce fait, l'utilisation du `four-tout' permet la 
-    simplification du dévellopement de certain module (par les gestions des 
-    donnés contenu dans les structures qui reviennent à l'utilisateur), mais 
-    aussi une certainnes lisibilité dans le code (On voit très bien dans lnid.c,
-    que les lignes et leurs compteurs sont stocké tous deux dans des fourre 
-    touts).*
+    simplification du développement de certain module (par les gestions des 
+    donné contenu dans les structures qui reviennent à l'utilisateur), mais 
+    aussi une certaine lisibilité dans le code (On voit très bien dans lnid.c,
+    que les lignes et leurs compteurs sont stockés tous deux dans des fourre-tout).
 
     \newpage
 
@@ -387,41 +386,41 @@ file1.txt file2.txt
     \subsection{Présentation du module.}
 
     De nombreux problèmes dans ce projet réside dans l'ajout d'un nombre 
-    quelqu'onque d'élement à une structure de donné. Notament dans la 
-    lecture des lignes, le comptage des occurences de celle-ci ou leur 
-    numérotations mais aussi dans la gestion de la liste de fichier à 
-    traiter. C'est pour cela, que nous avons opté pour la création d'un 
-    module de gestion d'un objet proche des listes disponible dans d'autre 
-    language tel que le python. 
+    quelconque d'élément à une structure de donnée. Notamment dans la 
+    lecture des lignes, le comptage des occurrences de celle-ci ou leur 
+    numérotations, mais aussi dans la gestion de la liste de fichier à 
+    traiter. C'est pour cela que nous avons opté pour la création d'un 
+    module de gestion d'un objet proche des listes disponibles dans d'autre 
+    langage tel que le python. 
 
     Afin d'être en accord avec l'implémentation des tableaux en C, la 
     spécification du module DA promet que les éléments stockés sont 
-    contingue dans la mémoire et sans offset.
+    contigüe dans la mémoire et sans offset.
     
-    \subsection{Pour et contre}
+    \subsection{Avantage, inconvénient}
 
     Le point négatif d'une telle condition est une perte de séparation 
     entre l'implémentation et la spécification du module. Or, elle permet 
-    une simplification de l'uitilisation du module mais aussi, des gains de 
-    performance. On peut notament cité le traitement des lignes lus. 
+    une simplification de l'utilisation du module, mais aussi, des gains de 
+    performance. On peut notamment citer le traitement des lignes lues. 
 
-    Une ligne lu est stoké dans un buffeur de type da. Sans la contrainte il
-    nous est impossible de la comparer au chaine de charactère déjà lu 
-    (les chaines déjà lu n'étant pas des da, car stocké des da ne 
-    permetterait pas l'utilisation de fonction de comparaison comme strmcp 
+    Une ligne lue est stockée dans un buffer de type da. Sans cette contrainte il
+    nous est impossible de la comparer aux chaines de caractère déjà lues 
+    (les chaines déjà lues n'étant pas des da, car stocké des da ne 
+    permettrait pas l'utilisation de fonction de comparaison comme strmcp 
     et strcoll). Il nous serait obligatoire d'allouer une nouvelle chaine 
     de la taille de la ligne présente dans le buffer puis d'y recopier la 
-    ligne pour enfin pourvoir la comparer. Or de ce traitement on comprend 
-    qu'il faudra allouer une chaine dans touts les cas, même si cette ligne
+    ligne pour enfin pourvoir la comparer. Or de ce traitement, on comprend 
+    qu'il faudra allouer une chaine dans tous les cas, même si cette ligne
     est déjà lu ou même dans le cas ou le fichier qui est lu n'est pas le 
-    premier (Les lignes lu sur des fichiers qui ne sont pas le premier ne 
-    seront jamais sauvegrader). 
+    premier (Les lignes lues sur des fichiers qui ne sont pas le premier ne 
+    seront jamais sauvegarder). 
     
-    Nous voiyons bien que dans ces deux cas cette restriction permet 
-    d'économiser une allocation d'un doublon pour le permier et pour le 
+    Nous voyons bien que dans ces deux cas cette restriction permet 
+    d'économiser une allocation d'un doublon pour le premier et pour le 
     deuxième une d'allocation. Par exemple, pour deux fichiers dont le 
-    premier est composer que d'une ligne et le deuxième de n ligne, on 
-    obtient les allocations suivantes:\\
+    premier est composé que d'une ligne et le deuxième de n ligne, on 
+    obtient les allocations suivantes :\\
     \begin{figure}[ht]
         \centering
         \begin{tabular}{|r|c|c|c|}
@@ -434,11 +433,9 @@ file1.txt file2.txt
             Sans restriction & 1 & $n$ & n + 1\\
             \hline
         \end{tabular}
-        \caption{Comparaison nombre d'allocation sans prendre en compte 
+        \caption{Comparaison nombre d'allocations sans prendre en compte 
         celle du buffer}\label{tab-compar-da}
     \end{figure}
-
-    % ocrriger avant
 
     Pour conclure, ce module n'a pas été d'une grande difficulté à 
     implémenter n'y même à imaginer. La seule difficulté a été  
