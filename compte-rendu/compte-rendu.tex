@@ -218,7 +218,7 @@ bob/.style={user=bob,host=remotehost,color=cyan},
 
     \section{Lines Identical, lnid}
 
-    \subsection{Descrpition du programmes}
+    \subsection{Description du programme}
 
     Lnid, programme (écrit en C) élaborant le traitement suivant :
     \begin{enumerate}
@@ -237,7 +237,7 @@ bob/.style={user=bob,host=remotehost,color=cyan},
     \textbf{'-'} qui doit être considéré comme identificateur de l'entrée 
     standard ou encore \textbf{'- -'} qui prévient que l'argument qui le suit 
     doit être considéré comme un fichier. De plus, diverses options sont 
-    disponible ajoutant des fonctionnalités. Voir ci-dessus pour leurs 
+    disponibles ajoutant des fonctionnalités. Voir ci-dessus pour leurs 
     spécifications, figure~\ref{table-opt}.
 
     \subsection{Implémentation du programme}
@@ -251,10 +251,10 @@ bob/.style={user=bob,host=remotehost,color=cyan},
     analyse complète de ce choix). Pour cette lecture, nous utilisons donc la
     fonction \textbf{fnlines} qui ajoute donc au buffer chaque lettre lus (si 
     l'utilisateur a choisi une option filtrante ou transformante des caractères 
-    alors le caractère sera d'abord transformer puis filtrer et enfin ajouté) 
+    alors le caractère sera d'abord transformé puis filtrer et enfin ajouté) 
     sur le fichier.
 
-    Chaque ligne lue ne sera pas traiter de la même façon selon les deux cas 
+    Chaque ligne lue ne sera pas traitée de la même façon selon les deux cas 
     évoquer précédemment :
 
     \begin{enumerate}
@@ -262,20 +262,20 @@ bob/.style={user=bob,host=remotehost,color=cyan},
         voir si elles ont d'ores et déjà était lu. Si c'est le cas alors pour le 
         cas d'entrée d'un fichier unique ou de plusieurs, nous avons 
         respectivement l'ajoute du numéro de ligne dans la liste des lignes ou 
-        de l'incrémentation de son nombre d'occurrences. Sinon associe cette ligne 
-        a cette ligne un compteur initialement mis à 1 ou une liste de ligne 
-        avec comme première valeur le numéro de cette ligne respectivement selon 
-        qu'il y a plusieurs fichiers ou un fichier
+        de l'incrémentation de son nombre d'occurrences. Sinon associe cette 
+        ligne à cette ligne un compteur initialement mis à 1 ou une liste de 
+        ligne avec comme première valeur le numéro de cette ligne respectivement 
+        selon qu'il y a plusieurs fichiers ou un fichier
         \item[] Pour les autres fichiers les lignes seront tester pour voir si 
         elle, on dort et déjà était lu. Si c'est le cas alors incrémente le 
         compteur associé à cette ligne. Sinon cette ligne n'est pas traitée
     \end{enumerate}
 
     Pour associer une ligne à son compteur/liste de numéro de lignes, vous 
-    proposons deux types de structure par défaut une table de hashage et avec 
+    proposons deux types de structure par défaut une table de hachage et avec 
     une option un AVL (voir section~\ref{test} pour un comparatif de ces deux 
     solutions). Dans les deux les données présente dans ces structures sont 
-    stocker dans un \textit{fourre-tout} (holdall) (voir section~\ref{holdall} 
+    stockées dans un \textit{fourre-tout} (holdall) (voir section~\ref{holdall} 
     pour plus d'information sur l'utilisation de celui-ci).
 
     Une fois ce traitement effectuait, nous affichons donc le résultat du 
@@ -327,7 +327,7 @@ file1.txt file2.txt
 2       1       bugs
         \end{ubuntu}
         \caption{\centering Affichage du programme pour un et deux fichiers. Les 
-        flèches représente des tabulations.}
+        flèches représentent des tabulations.}
     \end{figure}
 
     L'implémentation de l'option de tri (\textbf{-s | --sort}) par un trie du 
@@ -350,34 +350,36 @@ file1.txt file2.txt
     De nombreux problèmes peuvent être résolus à l'aide de structure de donnée. 
     Pour faciliter leur implémentation en C, une façon commune est de passer par 
     des structures allouées dynamiquement. Or certaines de ces structures 
-    demandent un nombre important de ces allocations dynamiques. On peut notamment
-    cité les table de hachage, dont il est courant pour chaque valeur d'être 
-    stoker dans un maillon lui-même gérer par une liste allouée dynamiquement 
-    (voir schéma d'implémentation du module hastable figure \ref{hastable-fig}). 
-    De plus, certaine de ces implémentations de structure peuvent engager des 
-    contraintes, telles que la suppression d'une de ces allocations pour un certain
-    traitement. On peut notamment citer des implémentations d'ensemble à l'aide de 
-    liste. De telle structure n'aillant pas de requête de parkour, il faut alors 
-    vidé toutes les valeurs de cet ensemble pour les affichés par exemple. 
-    C'est dans ce cas que toutes les allocations devraient être désallouées et 
-    alors, il  faudrait tous re-ajouter pour faire de nouvelles opérations sur 
-    cet ensemble. Alors que si ces données étaient stockées dans une autre 
-    structure, on pourrait plus ou moins les parcourir simplement selon cette 
-    structure. On voit bien que dans notre implémentation l'utilisation d'une 
-    liste simplement chainé est tous a fait justifier.
+    demandent un nombre important de ces allocations dynamiques. On peut 
+    notamment cité les table de hachage, dont il est courant pour chaque valeur 
+    d'être stoker dans un maillon lui-même gérer par une liste allouée 
+    dynamiquement (voir schéma d'implémentation du module hastable figure 
+    \ref{hastable-fig}). De plus, certaine de ces implémentations de structure 
+    peuvent engager des contraintes, telles que la suppression d'une de ces 
+    allocations pour un certain traitement. On peut notamment citer des 
+    implémentations d'ensemble à l'aide de liste. De telle structure n'aillant 
+    pas de requête de parkour, il faut alors vidé toutes les valeurs de cet 
+    ensemble pour les affichés par exemple. C'est dans ce cas que toutes les 
+    allocations devraient être désallouées et alors, il  faudrait tous 
+    re-ajouter pour faire de nouvelles opérations sur cet ensemble. Alors que si 
+    ces données étaient stockées dans une autre structure, on pourrait plus ou 
+    moins les parcourir simplement selon cette structure. On voit bien que dans 
+    notre implémentation l'utilisation d'une liste simplement chainée est tous a 
+    fait justifier.
 
     \subsection{Mise en place dans ce projet}
 
     Dans notre projet, de nombreuses donné sont alloués dynamiquement. Les 
     lignes lues, les numéros de ces lignes. C'est pour cela que l'utilisation du 
     `fourre-tout' est tous a fait justifier. De ce fait, les structures 
-    provenant du module da et avl n'ont absolument pas besoin d'avoir des
+    provenant du module da et AVL n'ont absolument pas besoin d'avoir des
     opérations telles que la libération de mémoire pour les valeurs qu'elles 
     contiennent. De ce fait, l'utilisation du `four-tout' permet la 
     simplification du développement de certain module (par les gestions des 
-    donné contenu dans les structures qui reviennent à l'utilisateur), mais 
+    données contenues dans les structures qui reviennent à l'utilisateur), mais 
     aussi une certaine lisibilité dans le code (On voit très bien dans lnid.c,
-    que les lignes et leurs compteurs sont stockés tous deux dans des fourre-tout).
+    que les lignes et leurs compteurs sont stockés tous deux dans des 
+    fourre-tout).
 
     \newpage
 
@@ -387,7 +389,7 @@ file1.txt file2.txt
 
     De nombreux problèmes dans ce projet réside dans l'ajout d'un nombre 
     quelconque d'élément à une structure de donnée. Notamment dans la 
-    lecture des lignes, le comptage des occurrences de celle-ci ou leur 
+    lecture des lignes, le comptage des occurrences de celle-ci ou leurs 
     numérotations, mais aussi dans la gestion de la liste de fichier à 
     traiter. C'est pour cela que nous avons opté pour la création d'un 
     module de gestion d'un objet proche des listes disponibles dans d'autre 
@@ -395,7 +397,7 @@ file1.txt file2.txt
 
     Afin d'être en accord avec l'implémentation des tableaux en C, la 
     spécification du module DA promet que les éléments stockés sont 
-    contigüe dans la mémoire et sans offset.
+    contiguës dans la mémoire et sans offset.
     
     \subsection{Avantage, inconvénient}
 
@@ -404,17 +406,17 @@ file1.txt file2.txt
     une simplification de l'utilisation du module, mais aussi, des gains de 
     performance. On peut notamment citer le traitement des lignes lues. 
 
-    Une ligne lue est stockée dans un buffer de type da. Sans cette contrainte il
-    nous est impossible de la comparer aux chaines de caractère déjà lues 
+    Une ligne lue est stockée dans un buffer de type da. Sans cette contrainte 
+    il nous est impossible de la comparer aux chaines de caractère déjà lues 
     (les chaines déjà lues n'étant pas des da, car stocké des da ne 
     permettrait pas l'utilisation de fonction de comparaison comme strmcp 
     et strcoll). Il nous serait obligatoire d'allouer une nouvelle chaine 
     de la taille de la ligne présente dans le buffer puis d'y recopier la 
     ligne pour enfin pourvoir la comparer. Or de ce traitement, on comprend 
     qu'il faudra allouer une chaine dans tous les cas, même si cette ligne
-    est déjà lu ou même dans le cas ou le fichier qui est lu n'est pas le 
+    est déjà lue ou même dans le cas ou le fichier qui est lu n'est pas le 
     premier (Les lignes lues sur des fichiers qui ne sont pas le premier ne 
-    seront jamais sauvegarder). 
+    seront jamais sauvegardées). 
     
     Nous voyons bien que dans ces deux cas cette restriction permet 
     d'économiser une allocation d'un doublon pour le premier et pour le 
@@ -445,7 +447,7 @@ file1.txt file2.txt
 
     La liaison entre une ligne et son nombre d'occurrences ou son numéro 
     d'apparition, peut être résolue par l'utilisation de structure de donnée qui 
-    visent à joindre ces informations, pour pouvoir les récupérées. Nous avons 
+    visent à joindre ces informations, pour pouvoir les récupérer. Nous avons 
     décidé de mettre deux types de ces structures à disposition, une d'arbres 
     binaire et l'autre de table de hachage. 
 
@@ -454,16 +456,16 @@ file1.txt file2.txt
     Constituant l'implémentation d'une table de hachage, cette structure permet 
     à partir d'une clé, une valeur. Dans notre cas, la clé est ligne déjà lu et 
     la valeur ces numéros de lignes (dans le cas d'un seul fichier) ou son 
-    nombre d'occurrences (dans le cas de plusieurs fichiers). Cette structure est 
-    choisie pour répondre à ce problème. En effet, théoriquement une 
+    nombre d'occurrences (dans le cas de plusieurs fichiers). Cette structure 
+    est choisie pour répondre à ce problème. En effet, théoriquement une 
     table de hachage permet un accès presque constant à une valeur par sa clé. 
     Malgré tout, en pratique cet accès dépends exclusivement de la fonction 
-    de hachage utilisé, c'est pour cela que dans la section de test, nous mettons 
-    à disposition divers exemples d'exécutions avec des fonctions de hachages 
-    différentes. De plus, en pratique, l'ajout dans une table de hachage peut
-    entraîner un agrandissement de celle-ci et donc, recalculé de toutes les 
-    valeurs en sont sein. L'implémentation de cette table est représenté dans 
-    la figure : 
+    de hachage utilisé, c'est pour cela que dans la section de test, nous 
+    mettons à disposition divers exemples d'exécutions avec des fonctions de 
+    hachages différentes. De plus, en pratique, l'ajout dans une table de 
+    hachage peut entraîner un agrandissement de celle-ci et donc, recalculé de 
+    toutes les valeurs en sont sein. L'implémentation de cette table est 
+    représenté dans la figure : 
     
     \begin{figure}[H]
         \centering
@@ -564,7 +566,7 @@ file1.txt file2.txt
             \draw[->, ultra thick, line width=1.5pt] (key12.mid) ++(0,-0.1cm) -- ++(1.2cm, 1.2cm);
         \end{tikzpicture}
         \captionsetup{position=bottom}
-        \caption{Implémentation de la structure de table de hashage du module 
+        \caption{Implémentation de la structure de table de hachage du module 
         hastable}\label{hastable-fig}
     \end{figure}
 
@@ -579,29 +581,30 @@ file1.txt file2.txt
     avoir effectué son ajout en bout de chemin ce qui donne une complexité 
     logarithmique.\\
     
-    Divers tests aillant pour but d'identifier la meilleure option sont effectuées 
-    dans la section test.
+    Divers tests aillant pour but d'identifier la meilleure option sont 
+    effectuées dans la section test.
 
     \section{Module de gestion d'option, optl}\label{opt}
 
     Le développement du module d'option est la partie du projet qui nous a été 
     le plus chronophage. En effet, nous avons dès le début eu pour objectifs de 
     produire un module générique, réutilisable pour de nombreux programmes. A 
-    l'instar du module getopt qui nous semblait manquer certaines fonctionnalités
-    très importante telle que la représentation des options par une chaine de 
-    caractère (représentation longue), mais aussi d'autre chose présente dans 
-    les options Linux. 
+    l'instar du module getopt qui nous semblait manquer certaines 
+    fonctionnalités très importantes telles que la représentation des options 
+    par une chaine de caractère (représentation longue), mais aussi d'autre 
+    chose présente dans les options Linux. 
 
     Dans un premier temps, il nous a fallu effectue des recherches sur la 
     gestion d'option des programmes Linux. C'est après ces recherches que nous 
     avons remarqué avec stupeur que les programme Linux n'ont pas de norme pour 
     définir pour leur option. Nous avons donc décidé de nous en créer une en 
-    nous inspirant des commandes telles que cat, ls ou encore rm du système Linux.
+    nous inspirant des commandes telles que cat, ls ou encore rm du système 
+    Linux.
 
     Les options peuvent être représentées par deux identificateurs, une version 
     courte et une longue. Les deux ne sont pas obligatoires, mais une des deux 
-    doit au moins exister. Toute option à possibilité d'interrompre le traitement 
-    d'option. Toute option peut exiger un argument pour effectuer son 
+    doit au moins exister. Toute option à possibilité d'interrompre le 
+    traitement d'option. Toute option peut exiger un argument pour effectuer son 
     traitement. Toutes les options doivent avoir une description. 
 
     \subsection{Définition d'option}
@@ -610,8 +613,8 @@ file1.txt file2.txt
 
     Une option courte est composée d'un `-' suivit d'un caractère 
     alphanumérique. Pour donner un paramètre à une option courte, il suffit de 
-    le séparer d'un espace On peut faire appelle à plusieurs options courtes en un 
-    seul  appelle, en suivant le '-` des caractères représentant les options 
+    le séparer d'un espace On peut faire appelle à plusieurs options courtes en 
+    un seul  appelle, en suivant le '-` des caractères représentant les options 
     voulus. Cependant, il ne peut y avoir dans cette forme d'appel qu'un seul 
     paramètre demandant un argument et il doit alors être le dernier de la 
     liste. 
@@ -620,10 +623,10 @@ file1.txt file2.txt
 
     Une option longue est préfixée par la chaine `- -'. Pour donner un paramètre 
     à une longe, il faut séparer celle-ci de son argument par le caractère `='. 
-    Si un utilisateur passe en paramètre une option longue qui est préfixée d'une
-    et une seule option alors l'option préfixée sera appeler. Si elle est préfixe 
-    de plusieurs options, alors elle sera considérer comme ambiguë, et conduira à 
-    la lever d'une erreur.
+    Si un utilisateur passe en paramètre une option longue qui est préfixée 
+    d'une et une seule option alors l'option préfixée sera appeler. Si elle est 
+    préfixe de plusieurs options, alors elle sera considérer comme ambiguë et 
+    conduira à la lever d'une erreur.
 
     \subsubsection{Option help}
 
@@ -638,20 +641,21 @@ file1.txt file2.txt
     \subsubsection{Spécification}
 
     Pour l'implémentation, nous avons décidé de permettre à l'utilisateur de 
-    pouvoir modifier certaine chose. Notamment les préfixe des options courtes et 
-    longue (On peut notamment envisager des utilisateurs originaires de Windows qui 
-    préférerait utiliser le `\\' au `-'), l'identificateur des deux 
-    représentation de l'option `help'. Nous avons aussi été contraints d'ajouter 
-    un spécificateur permettant de garantir que la valeur suivant celui-ci n'est pas
-    une option (lui aussi est modifiable par l'utilisateur du module). Sans ce 
-    spécificateur, l'utilisateur ne pourrait pas rentrer la valeur `--help' en 
-    prenant cette valeur non pas comme une option, mais une valeur à traiter. Ce 
-    spécificateur vaux par défaut la chaine `- -'. De plus, nous avons mis en place 
-    un possible traitement sur les éléments qui ne sont pas des options.
+    pouvoir modifier certaine chose. Notamment les préfixe des options courtes 
+    et longue (On peut notamment envisager des utilisateurs originaires de 
+    Windows qui préférerait utiliser le `\\' au `-'), l'identificateur des deux 
+    représentations de l'option `help'. Nous avons aussi été contraints 
+    d'ajouter un spécificateur permettant de garantir que la valeur suivant 
+    celui-ci n'est pas une option (lui aussi est modifiable par l'utilisateur du
+    module). Sans ce spécificateur, l'utilisateur ne pourrait pas rentrer la 
+    valeur `--help' en prenant cette valeur non pas comme une option, mais une 
+    valeur à traiter. Ce spécificateur vaux par défaut la chaine `- -'. De plus, 
+    nous avons mis en place un possible traitement sur les éléments qui ne sont 
+    pas des options.
     
     \subsubsection{Le code}
 
-    Pour regrouper toutes les informations nécessaires à la gestion d'une option 
+    Pour regrouper toutes les informations nécessaires à la gestion d'une option, 
     nous avons donc mis en place un type optparam regroupant toutes ces 
     informations. La fonction opt\_init initialise une instance de ce type. La 
     véritable difficulté a été dans la conception de la fonction de traitement,
@@ -692,12 +696,12 @@ file1.txt file2.txt
                     \STATE{
                         \vspace{\spacebox}
                         \fcolorbox{black}{white}{
-                        \begin{minipage}[c][8ex]{13cm}
+                        \begin{minipage}[c][11ex]{13cm}
                             Traitement des possibles options courtes. Pour ce 
                             faire, un traitement sur chaque caractère est 
                             effectué permettant de trouver toutes les 
-                            options représentées dans un argument. Puis effectue le 
-                            traitement lié à ces appelle.
+                            options représentées dans un argument. Puis effectue 
+                            le traitement lié à ces appels.
                         \end{minipage}
                         }
                         \vspace{\spacebox}
@@ -717,7 +721,7 @@ file1.txt file2.txt
                 \ENDIF{}
             \ENDWHILE{}
         \end{algorithmic}
-        \caption{Traitement du tableau des argument par la fonction 
+        \caption{Traitement du tableau des arguments par la fonction 
         opt\_process.}
     \end{figure}
 
@@ -729,27 +733,27 @@ file1.txt file2.txt
     peut notamment citer la Spécification de la fonction otp\_process qui est 
     trop longue.
     Un point fort du reste qu'il est complet, il met en pratique toute les 
-    fonctionnalités des commandes Linux les plus connus (rm, ls, cat), notamment d
-    des fonctionnalités telles que `l'autocomplétion' des longues options, la prise
-    en charge des multiples options courte ou encore le spécifier NEXT\_NOPT 
-    (next is not an option). Un autre point fort, la complexité du traitement 
-    des options, toutes les options ne sont parcourues qu'au plus deux fois pour 
-    exécuter! leur traitement (avec la possible comparaison avec l'option 
-    `help'). De même, ce module ne nécessite que le stockage des objets de type 
-    optparam pour traiter les options.
+    fonctionnalités des commandes Linux les plus connus (rm, ls, cat), notamment 
+    des fonctionnalités telles que `l'autocomplétion' des longues options, la 
+    prise en charge des multiples options courte ou encore le spécifier 
+    NEXT\_NOPT (next is not an option). Un autre point fort, la complexité du 
+    traitement des options, toutes les options ne sont parcourues qu'au plus 
+    deux fois pour exécuter. Leur traitement (avec la possible comparaison avec 
+    l'option `help'). De même, ce module ne nécessite que le stockage des objets 
+    de type optparam pour traiter les options.
 
     \section{Mise en pratique}\label{test}
 
     Tout au long de ce compte rendu, nous avons évoqué l'implémentation de 
     programme sans parler de la pratique. Dans cette section, nous allons voir
     quelque tests nous semblent intéressants.
-    Les temps d'exécutions donnés ne sont qu'à titre indicatif et ne représentent en 
-    aucun cas une promesse, étant donné que ces temps dépends de nombreux 
-    facteur. En revanche l'utilisation mémoire du programme pourra être évoqué 
-    dans certaine comparaison. En effet, tous les tests étant effectué sur la 
-    même machine, nous supposons donc que l'utilisation mémoire du programme 
-    n'évolue pas pour un même traitement. De plus, les complexités étant 
-    universelle, nous favoriserons l'étude de celle-ci.
+    Les temps d'exécutions donnés ne sont qu'à titre indicatif et ne 
+    représentent en aucun cas une promesse, étant donné que ces temps dépends de 
+    nombreux facteurs. En revanche l'utilisation mémoire du programme pourra 
+    être évoqué dans certaine comparaison. En effet, tous les tests étant 
+    effectué sur la même machine, nous supposons donc que l'utilisation mémoire 
+    du programme n'évolue pas pour un même traitement. De plus, les complexités 
+    étant universelle, nous favoriserons l'étude de celle-ci.
 
     \subsection{Test}
 
@@ -757,7 +761,7 @@ file1.txt file2.txt
 
     Nous avons mis à disposition l'utilisation, de l'AVL ou de la Hashtable sans 
     pour autant évoquer les divers cas favorable à leur utilisation. Vous 
-    retrouverait ci-dessous une étude de divers tests traitent de ces cas.
+    retrouverez ci-dessous une étude de divers tests traitent de ces cas.
 
     \vphantom{}
 
@@ -805,21 +809,22 @@ liaisons_dangeureuses.txt
 
     Une question se pose alors, quelle est donc l'intérêt de l'implémentation 
     des AVL\@? Les éléments présents dans une table de hachages étant 
-    théoriquement accessible en temps constant. Pour cela, nous devons revenir sur 
-    la mise en pratique des tables de hachage. En effet, dans notre cas, chaque 
-    ligne devra calculer par la fonction de hachage. Or cette fonction (conseillé 
-    par Bernstein) effectue un traitement en temps linéaire ($\Theta(n)$) sur 
-    le nombre de caractères de la ligne. Au contraire pour les AVL, cette 
-    recherche s'effectue par une descente de l'arbre à l'aide de la fonction 
-    \textbf{strcmp}, recherche qui aura donc une complexité dans le pire des cas 
-    de $O(nln*m)$ avec $n$ le nombre de lignes présente dans l'AVL et $m$ le 
-    nombre de caractères de la plus grande ligne. Mais dans le meilleur des cas 
-    ce traitement s'effectuera en temps constant (cette recherche est donc borné 
-    par $\Omega(1)$ et $O(nln*m)$). On peut alors très vite voir que dans le cas 
-    où il y a une grande diversité de ligne et qu'elles sont toutes très longues 
-    l'implémentation des AVL sera plus performante que celle de la table de 
-    hashage, voir figure \ref{prog-test} pour un tel exemple avec un fichier texte générer 
-    à l'aide du programme de la figure \ref{prog}. 
+    théoriquement accessible en temps constant. Pour cela, nous devons revenir 
+    sur la mise en pratique des tables de hachage. En effet, dans notre cas, 
+    chaque ligne devra calculer par la fonction de hachage. Or cette fonction 
+    (conseillé par Bernstein) effectue un traitement en temps linéaire 
+    ($\Theta(n)$) sur le nombre de caractères de la ligne. Au contraire pour les 
+    AVL, cette recherche s'effectue par une descente de l'arbre à l'aide de la 
+    fonction \textbf{strcmp}, recherche qui aura donc une complexité dans le 
+    pire des cas de $O(nln*m)$ avec $n$ le nombre de lignes présente dans l'AVL 
+    et $m$ le nombre de caractères de la plus grande ligne. Mais dans le 
+    meilleur des cas ce traitement s'effectuera en temps constant (cette 
+    recherche est donc borné par $\Omega(1)$ et $O(nln*m)$). On peut alors très 
+    vite voir que dans le cas où il y a une grande diversité de ligne et 
+    qu'elles sont toutes très longues l'implémentation des AVL sera plus 
+    performante que celle de la table de hachage, voir figure \ref{prog-test} 
+    pour un tel exemple avec un fichier texte générer à l'aide du programme de 
+    la figure \ref{prog}. 
     
     \begin{figure}[H]
         \begin{lstlisting}[style=Cstyle]
@@ -841,8 +846,8 @@ int main(void) {
     return EXIT_SUCCESS;
 }\end{lstlisting}
     \captionsetup{position=bottom}
-    \caption{\centering Programme C de génération de fichier text prouvant la supérioté des 
-    AVL sur des fichiers à longues lignes.}\label{prog}
+    \caption{\centering Programme C de génération de fichier text prouvant la 
+    supérioté des AVL sur des fichiers à longues lignes.}\label{prog}
     \end{figure}
     \begin{figure}[H]
         \begin{ubuntu}
@@ -858,22 +863,22 @@ a.txt
 9,46s user 0,71s system 99`\%` cpu 10,169 total
         \end{ubuntu}
         \captionsetup{position=bottom}
-        \caption{\centering Test du programme lnid avec l'utilisation de la table de 
-        hashage et de l'AVL sur le fichier a.txt produit par le programme de la 
-        figure \ref{prog}}\label{prog-test}
+        \caption{\centering Test du programme lnid avec l'utilisation de la 
+        table de hachage et de l'AVL sur le fichier a.txt produit par le 
+        programme de la figure \ref{prog}}\label{prog-test}
     \end{figure}
 
     Pour finir, il est nettement plus intéressant d'utiliser la version `de base'
     c'est-à-dire avec l'utilisation de la table de hachage tous simplement, car 
     dans la majorité des cas, elle sera plus performante. Tout de même dans le 
-    cas où l'utilisateur connait la taille moyenne de ces lignes, il lui pourrait 
-    être utile d'utiliser alors l'AVL\@.
+    cas où l'utilisateur connait la taille moyenne de ces lignes, il lui 
+    pourrait être utile d'utiliser alors l'AVL\@.
 
     \subsubsection{Le cout du traitement d'options}\label{test-cmp}
 
-    On peut classer les traitements d'options du programme en plusieurs catégories 
-    (avl exclu aillant déjà était traité longuement dans la partie \ref{avl-has}
-    ):
+    On peut classer les traitements d'options du programme en plusieurs 
+    catégories (avl exclu aillant déjà était traité longuement dans la partie 
+    \ref{avl-has}):
     
     \begin{enumerate}
         \item[] \textbf{modification affichage erreur},  avec l'option 
@@ -893,19 +898,19 @@ a.txt
         \textbf{standard} et \textbf{local} de l'option \textbf{sort}) 
         s'exécute en temps constant), ce qui veut dire qu'il suffit d'ajouter 
         cette complexité à celle du programme, complexité qui sera donc 
-        négligeable en théorie. Or dans la pratique, on remarque avec les tests de
-         la figure \ref{test-cmp-f} que les fonctions strcoll et strcmp ne sont 
-        pas constante, mais qu'une certaine différence semble apparaitre. En
-        effet, la fonction \textbf{strcmp} est généralement plus rapide que 
+        négligeable en théorie. Or dans la pratique, on remarque avec les tests 
+        de la figure \ref{test-cmp-f} que les fonctions strcoll et strcmp ne 
+        sont pas constante, mais qu'une certaine différence semble apparaitre.
+        En effet, la fonction \textbf{strcmp} est généralement plus rapide que 
         \textbf{strcoll}. Cela est dû au fait que strcmp compare les chaînes de 
-        caractères en utilisant simplement les caractères par leurs 
-        représentation, tandis que strcoll prend en compte les différences 
+        caractères en utilisant simplement les caractères par leurs
+        représentations, tandis que strcoll prend en compte les différences 
         culturelles dans l'ordre des caractères et utilise des règles de tri 
         spécifiques à l'ordre local.        
         \item[] \textbf{modification}, l'option \textbf{uppercasing}. Ce 
         traitement présent dans la fonction de lecture de ligne \textbf{fnlines} 
         oblige la modification de tous les caractères lus. Même dans le cas ou 
-        cette option n'est pas appelée par l'utilisateur, il force un teste 
+        cette option n'est pas appelée par l'utilisateur, il force un test 
         (pour savoir si une telle modification est nécessaire). Donc ce 
         traitement n'ajoute qu'une action en cas d'appel à cette option (en 
         supposant que la fonction \textbf{toupper} s'exécute en temps constant).
