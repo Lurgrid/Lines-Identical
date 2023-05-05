@@ -19,6 +19,10 @@
 \usepackage{subfig}
 \usepackage{fancyvrb}
 \usepackage{tikz}
+\usepackage{numprint}
+\usepackage{nccmath}
+\usepackage{amsmath}
+\usepackage{amssymb}
 \usetikzlibrary{positioning}
 \tcbuselibrary{skins,xparse,listings}
 
@@ -1003,7 +1007,54 @@ heap usage: 35,036 allocs, 35,036 frees, 4,002,711,191 bytes allocated
         \caption{Démonstration d'exécution de l'exécutable de lnid.}\label{avl-4go}
     \end{figure}
 
-    On remarque alors que sur les deux exemples présentés
+    Ce dernier test, vise à étudier les performances sur plusieurs fichiers, 
+    ici deux. Le premier à une taille de 1,3 Ko (d'une dizaine de ligne) et le 
+    second de 64 Go (de 5000 lignes). Il n'existe aucune ligne similaire entre 
+    ces deux fichiers. Voir figure~\ref{fig:4vs60} pour ce test.
+    
+    \begin{figure}[H]
+        \SU{user=root,host=ubuntu,color=lime}
+        \begin{ubuntu}
+./lnid bobdylan_iwysb.txt b.txt `\StartConsole`
+bobdylan_iwysb.txt  b.txt
+...
+406,01s user 24,90s system 99`\%` cpu 7:11,22 total
+`\SU{user=root,host=ubuntu,color=lime}`
+valgrind ./lnid bobdylan_iwysb.txt b.txt `\StartConsole`
+...
+heap usage: 254 allocs, 254 frees, 33,573,081 bytes allocated
+        \end{ubuntu}
+        \captionsetup{position=bottom}
+        \caption{\centering Démonstration d'exécution de l'exécutable de lnid. 
+        b.txt correspond au fichier de 64 Go à l'aide du programme de la 
+        figure~\ref{prog} en modifiant les deux macros-constantes.}\label{avl-4go}
+    \end{figure}
+
+    On peut calculé à partir de notre implémentation l'espace utiliser pour le
+    buffeur en total, la taille des lignes étant fixée a 12 799 999 charactèes,
+    on peut en conclure que la taille de celui ci sera égal 
+    $2^{\left\lceil \log_2 12 799 999\right\rceil} = 2^{24} = \numprint{16777216}$ 
+    charactères. La machine executant le test représente les caractères sur un 
+    byte, on en conclue que le buffeur à sa taille final répresente plus de la 
+    moitier de la mémoire utiliser. Tout au long de l'éxecution a donc utiliser
+
+    \begin{figure}[H]
+        \centering
+        \begin{equation}
+            \begin{split}
+                & \sum_{i = 2}^{24} 2^i =  \sum_{i = 0}^{24} 2^i - 
+                \sum_{i = 0}^{1} 2^i \\
+                & \sum_{i = 2}^{24} 2^i = \dfrac{1 - 2^{24+1}}{1 - 2} - 
+                \dfrac{1 - 2^{1+1}}{1 - 2} \\
+                & \sum_{i = 2}^{24} 2^i = \numprint{33554431} - 3 \\
+                & \sum_{i = 2}^{24} 2^i = \numprint{33554428} \\
+            \end{split}
+        \end{equation}
+        \caption{Calcule du total de l'utilisation mémoire du buffeur}
+    \end{figure}
+
+    Pour conclure, on a donc que 99,94\% de l'utilisation mémoire qui risulte du
+    buffer, il nous donc difficilmenet d'améliorer ces résultats.
 
     \newpage
 
@@ -1035,9 +1086,9 @@ heap usage: 35,036 allocs, 35,036 frees, 4,002,711,191 bytes allocated
     Au logiciel ChatGPT pour la correction des nombreuses fautes d'orthographe 
     présent tout au long de la production de ce projet et de son compte rendu.
 
-    Ilyas TAKHTOUKH, pour avoir effectué une relecture des fautes 
+    Ilyas TAKHTOUKH et Mathieu Duval, pour avoir effectué une relecture des fautes 
     d'orthographes présentes dans ce compte-rendu est dans les spécifications du 
-    code source du programme. 
+    code source du programme.
 
     \newpage
 
