@@ -156,67 +156,69 @@ bob/.style={user=bob,host=remotehost,color=cyan},
 
     \newpage
 
-    \begin{figure}[H]  
-         
-        \centering
-        \begin{tabular}{|c|c|c|}
-            \hline
-                \cellcolor{blue-s!25} -h & \cellcolor{blue-s!25} --help  &
-                \cellcolor{blue-t!70}\\
-            \hline
-                \multicolumn{3}{|c|}{\cellcolor{blue-u!7}Affiche sur la sortie 
-                standard la documentation de l'exécutable}\\
-            \hline
-                \cellcolor{blue-s!25} -u  & \cellcolor{blue-s!25} --uppercasing 
-                & \cellcolor{blue-t!70} \\
-            \hline
-                \multicolumn{3}{|c|}{\cellcolor{blue-u!7}Tous les caractères 
-                traiter seront en sortie en majuscule.}\\
-            \hline 
-                \cellcolor{blue-s!25} -N & \cellcolor{blue-s!25} --no-color  & 
-                \cellcolor{blue-t!70} \\
-            \hline
-                \multicolumn{3}{|c|}{\cellcolor{blue-u!7}Enlève les couleurs de 
-                l'affichage du programme.}\\
-            \hline
-                \cellcolor{blue-s!25} -a & \cellcolor{blue-s!25} --avl & 
-                \cellcolor{blue-t!70} \\
-            \hline
-                \multicolumn{3}{|c|}{\cellcolor{blue-u!7}Utilise les avls pour 
-                la gestion des lignes.}\\
-            \hline
-                \cellcolor{blue-s!25} -V & \cellcolor{blue-s!25} --version & 
-                \cellcolor{blue-t!70} \\
-            \hline
-                \multicolumn{3}{|c|}{\cellcolor{blue-u!7}Affiche la version du  
-                logiciel.}\\
-            \hline
-                \cellcolor{blue-s!25} -f CLASS & \cellcolor{blue-s!25} 
-                --filter=CLASS & \rule{0pt}{2.6em}\cellcolor{blue-s!25}
-                {\parbox{9cm}{ \cellcolor{blue-t!70}Avec \texttt{CLASS} l’un des 
-                suffixes\ldots des douze tests\\ d’appartenance à une catégorie 
-                de caractères is\ldots de l’en-tête standard $<$ctype.ht$>$}} \\
-                [1.3em]
-            \hline
-                \multicolumn{3}{|c|}{\cellcolor{blue-u!7}\rule{0pt}{2em}
-                \parbox{15cm}{Ne prend en compte au traitement que les 
-                Caractères répondant au test  de présence dans l'ensemble 
-                CLASS, fonction de test étant is.CLASS.}}\\[.8em]
-            \hline
-                \cellcolor{blue-s!25} -s WORD & \cellcolor{blue-s!25} 
-                --sort=WORD & \cellcolor{blue-t!70}Avec \texttt{WORD} valant
-                 soit \texttt{standard} soit \texttt{locale} \\
-            \hline
-                \multicolumn{3}{|c|}{\cellcolor{blue-u!7}\rule{0pt}{2em}
-                \parbox{15cm}{{Trie les valeurs sur la sortie en prenant en 
-                compte l'ordre \texttt{WORD} avec \texttt{standard}} 
-                correspondant à l'ordre du  `C' et \texttt{locale} celui du 
-                système de l'utilisateur.}}\\[1em]
-            \hline
-        \end{tabular}
-        \captionsetup{position=bottom}
-        \caption{Tableau des options}\label{table-opt}
-    \end{figure}
+    \begin{table}
+        \begin{figure}[H]   
+            \centering
+            \begin{tabular}{|c|c|c|}
+                \hline
+                    \cellcolor{blue-s!25} -h & \cellcolor{blue-s!25} --help  &
+                    \cellcolor{blue-t!70}\\
+                \hline
+                    \multicolumn{3}{|c|}{\cellcolor{blue-u!7}Affiche sur 
+                    la sortie standard la documentation de l'exécutable}\\
+                \hline
+                    \cellcolor{blue-s!25} -u  & \cellcolor{blue-s!25} 
+                    --uppercasing 
+                    & \cellcolor{blue-t!70} \\
+                \hline
+                    \multicolumn{3}{|c|}{\cellcolor{blue-u!7}Tous les caractères 
+                    traiter seront en sortie en majuscule.}\\
+                \hline 
+                    \cellcolor{blue-s!25} -N & \cellcolor{blue-s!25} --no-color 
+                    & \cellcolor{blue-t!70} \\
+                \hline
+                    \multicolumn{3}{|c|}{\cellcolor{blue-u!7}Enlève les couleurs 
+                    de l'affichage du programme.}\\
+                \hline
+                    \cellcolor{blue-s!25} -a & \cellcolor{blue-s!25} --avl & 
+                    \cellcolor{blue-t!70} \\
+                \hline
+                    \multicolumn{3}{|c|}{\cellcolor{blue-u!7}Utilise les avls 
+                    pour la gestion des lignes.}\\
+                \hline
+                    \cellcolor{blue-s!25} -V & \cellcolor{blue-s!25} --version & 
+                    \cellcolor{blue-t!70} \\
+                \hline
+                    \multicolumn{3}{|c|}{\cellcolor{blue-u!7}Affiche la version 
+                    du logiciel.}\\
+                \hline
+                    \cellcolor{blue-s!25} -f CLASS & \cellcolor{blue-s!25} 
+                    --filter=CLASS & \rule{0pt}{2.6em}\cellcolor{blue-s!25}
+                    {\parbox{9cm}{ \cellcolor{blue-t!70}Avec \texttt{CLASS} l’un 
+                    des suffixes~\ldots~des douze tests\\ d’appartenance à une 
+                    catégorie de caractères is\ldots~de l’en-tête standard 
+                    $<$ctype.ht$>$}} \\ [1.3em]
+                \hline
+                    \multicolumn{3}{|c|}{\cellcolor{blue-u!7}\rule{0pt}{2em}
+                    \parbox{15cm}{Ne prend en compte au traitement que les 
+                    Caractères répondant au test  de présence dans l'ensemble 
+                    CLASS, fonction de test étant is.CLASS.}}\\[.8em]
+                \hline
+                    \cellcolor{blue-s!25} -s WORD & \cellcolor{blue-s!25} 
+                    --sort=WORD & \cellcolor{blue-t!70}Avec \texttt{WORD} valant
+                    soit \texttt{standard} soit \texttt{locale} \\
+                \hline
+                    \multicolumn{3}{|c|}{\cellcolor{blue-u!7}\rule{0pt}{2em}
+                    \parbox{15cm}{{Trie les valeurs sur la sortie en prenant en 
+                    compte l'ordre \texttt{WORD} avec \texttt{standard}} 
+                    correspondant à l'ordre du  `C' et \texttt{locale} celui du 
+                    système de l'utilisateur.}}\\[1em]
+                \hline
+            \end{tabular}
+            \captionsetup{position=bottom}
+            \caption{Tableau des options}\label{table-opt}
+        \end{figure}
+    \end{table}
 
     \newpage
 
@@ -583,7 +585,9 @@ file1.txt file2.txt
     garantie une recherche au maximum en temps logarithmique. Mais un ajout 
     dans un AVL peut entrainer au plus deux rotations de temps constant, après 
     avoir effectué son ajout en bout de chemin ce qui donne une complexité 
-    logarithmique.\\
+    logarithmique.
+
+    \vphantom{}
     
     Divers tests aillant pour but d'identifier la meilleure option sont 
     effectuées dans la section test.
@@ -1036,7 +1040,7 @@ heap usage: 254 allocs, 254 frees, 33,573,081 bytes allocated
     $2^{\left\lceil \log_2 12 799 999\right\rceil} = 2^{24} = \numprint{16777216}$ 
     charactères. La machine executant le test représente les caractères sur un 
     byte, on en conclue que le buffeur à sa taille final répresente plus de la 
-    moitier de la mémoire utiliser. Tout au long de l'éxecution a donc utiliser
+    moitier de la mémoire utiliser. Tout au long de l'éxecution a donc utiliser:
 
     \begin{figure}[H]
         \centering
@@ -1054,7 +1058,7 @@ heap usage: 254 allocs, 254 frees, 33,573,081 bytes allocated
     \end{figure}
 
     Pour conclure, on a donc que 99,94\% de l'utilisation mémoire qui risulte du
-    buffer, il nous donc difficilmenet d'améliorer ces résultats.
+    buffer, il nous donc difficilement possible d'améliorer ces résultats.
 
     \newpage
 
