@@ -15,7 +15,7 @@
 //      « ad ** » ont un comportement indéterminé lorsque ce paramètre ou
 //      sa déréférence n'est pas l'adresse d'un contrôleur préalablement
 //      renvoyée avec succès par la fonction da_empty et non révoquée
-//      depuis par la fonction da_dispose ;
+//      depuis par la fonction da_dispose.
 //  - chaque appelle a la fonction da_empty (avec un retours d'un contrôleur
 //      avec succès) doit donner lieu à un appelle en fin d'utilisation du
 //      tableau à la fonction da_dispose, pour une libération propre et

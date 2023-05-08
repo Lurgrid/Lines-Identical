@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <string.h>
 
-//--- Macro DA -----------------------------------------------------------------
+//--- Macro da -----------------------------------------------------------------
 
 #define DA_MIN_LENGTH 1
 #define DA_MUL_LENGTH 2
