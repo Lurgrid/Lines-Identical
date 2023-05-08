@@ -341,11 +341,11 @@ file1.txt file2.txt
 
     Tout au long du programme chaque opération pouvant entrainer un échec se 
     voit correspondre une gestion d'erreur lui étant associée. On peut notamment 
-    citer les erreurs d'allocation dynamique, les erreurs de lecture/ouverture des 
-    fichiers ou encore des erreurs quant à la gestion des options entrées par 
-    l'utilisateur. Toutes ces erreurs donnent lieu à des messages envoyés sur la 
-    sortie d'erreur (en couleur selon le choix de l'utilisateur avec l'option 
-    \textbf{--no-color}).
+    citer les erreurs d'allocation dynamique, les erreurs de lecture/ouverture 
+    des fichiers ou encore des erreurs quant à la gestion des options entrées
+    par l'utilisateur. Toutes ces erreurs donnent lieu à des messages envoyés 
+    sur la sortie d'erreur (en couleur selon le choix de l'utilisateur avec 
+    l'option \textbf{--no-color}).
 
     \newpage
 
@@ -353,12 +353,12 @@ file1.txt file2.txt
 
     \subsection{Explication de l'objectif du module}
     
-    De nombreux problèmes peuvent être résolus à l'aide de structures de données. 
-    Pour faciliter leur implémentation en C, une façon commune est de passer par 
-    des structures allouées dynamiquement. Or certaines de ces structures 
-    demandent un nombre important de ces allocations dynamiques. On peut 
-    notamment citer les tables de hachage, dont il est courant pour chaque valeur 
-    d'être stockée dans un maillon lui-même géré par une liste allouée 
+    De nombreux problèmes peuvent être résolus à l'aide de structures de 
+    données. Pour faciliter leur implémentation en C, une façon commune est de 
+    passer par des structures allouées dynamiquement. Or certaines de ces 
+    structures demandent un nombre important de ces allocations dynamiques. On 
+    peut notamment citer les tables de hachage, dont il est courant pour chaque 
+    valeur d'être stockée dans un maillon lui-même géré par une liste allouée 
     dynamiquement (voir schéma d'implémentation du module hastable figure 
     \ref{hastable-fig}). De plus, certaines de ces implémentations de structure 
     peuvent engager des contraintes, telle que la suppression d'une de ces 
@@ -375,7 +375,7 @@ file1.txt file2.txt
 
     \subsection{Mise en place dans ce projet}
 
-    Dans notre projet, de nombreuses données sont allouées dynamiquemen\@: Les 
+    Dans notre projet, de nombreuses données sont allouées dynamiquement\@: Les 
     lignes lues, les numéros de ces lignes. C'est pour cela que l'utilisation du 
     `fourre-tout' est tout à fait justifié. De ce fait, les structures 
     provenant du module da et AVL n'ont absolument pas besoin d'avoir des
@@ -455,20 +455,20 @@ file1.txt file2.txt
     \section{Hastable / AVL}
 
     La liaison entre une ligne et son nombre d'occurrences ou son numéro 
-    d'apparition, peut être résolue par l'utilisation de structure de données qui 
-    visent à joindre ces informations, pour pouvoir les récupérer. Nous avons 
-    décidé de mettre deux types de ces structures à disposition, un d'arbre 
-    binaire et l'autre de table de hachage. 
+    d'apparition, peut être résolue par l'utilisation de structure de données 
+    qui visent à joindre ces informations, pour pouvoir les récupérer. Nous 
+    avons décidé de mettre deux types de ces structures à disposition, un 
+    d'arbre binaire et l'autre de table de hachage. 
 
     \subsection{Hastable}
 
     Constituant l'implémentation d'une table de hachage, cette structure permet 
-    de partir d'une clé, une valeur. Dans notre cas, la clé est une ligne déjà lue et 
-    la valeur ses numéros de lignes (dans le cas d'un seul fichier) ou son 
-    nombre d'occurrences (dans le cas de plusieurs fichiers). Cette structure 
-    est choisie pour répondre à ce problème. En effet, théoriquement une 
-    table de hachage permet un accès presque constant à une valeur par sa clé. 
-    Malgré tout, en pratique cet accès dépend exclusivement de la fonction 
+    de partir d'une clé, une valeur. Dans notre cas, la clé est une ligne déjà 
+    lue et la valeur ses numéros de lignes (dans le cas d'un seul fichier) ou 
+    son nombre d'occurrences (dans le cas de plusieurs fichiers). Cette 
+    structure est choisie pour répondre à ce problème. En effet, théoriquement 
+    une table de hachage permet un accès presque constant à une valeur par sa 
+    clé. Malgré tout, en pratique cet accès dépend exclusivement de la fonction 
     de hachage utilisée, c'est pour cela que dans la section de test, nous 
     mettons à disposition divers exemples d'exécutions avec des fonctions de 
     hachages différentes. De plus, en pratique, l'ajout dans une table de 
@@ -633,11 +633,11 @@ file1.txt file2.txt
     \subsubsection{Les options longues}
 
     Une option longue est préfixée par la chaine `- -'. Pour donner un paramètre 
-    à une option longe, il faut séparer celle-ci de son argument par le caractère `='. 
-    Si un utilisateur passe en paramètre une option longue qui est préfixée 
-    d'une et une seule option alors l'option préfixée sera appelée. Si elle est 
-    préfixe de plusieurs options, alors elle sera considérée comme ambiguë et 
-    conduira à la levée d'une erreur.
+    à une option longe, il faut séparer celle-ci de son argument par le 
+    caractère `='. Si un utilisateur passe en paramètre une option longue qui 
+    est préfixée d'une et une seule option alors l'option préfixée sera appelée. 
+    Si elle est préfixe de plusieurs options, alors elle sera considérée comme 
+    ambiguë et conduira à la levée d'une erreur.
 
     \subsubsection{Option help}
 
@@ -652,22 +652,22 @@ file1.txt file2.txt
     \subsubsection{Spécification}
 
     Pour l'implémentation, nous avons décidé de permettre à l'utilisateur de 
-    pouvoir modifier certaines choses. Notamment les préfixes des options courtes 
-    et longues (On peut notamment envisager des utilisateurs originaires de 
-    Windows qui préférerait utiliser le `\symbol{92}' au `-'), l'identificateur des deux 
-    représentations de l'option `help'. Nous avons aussi été contraints 
-    d'ajouter un spécificateur permettant de garantir que la valeur suivant 
-    celui-ci n'est pas une option (lui aussi est modifiable par l'utilisateur du
-    module). Sans ce spécificateur, l'utilisateur ne pourrait pas rentrer la 
-    valeur `--help' en prenant cette valeur non pas comme une option, mais une 
-    valeur à traiter. Ce spécificateur vaut par défaut la chaine `- -'. De plus, 
-    nous avons mis en place un possible traitement sur les éléments qui ne sont 
-    pas des options.
+    pouvoir modifier certaines choses. Notamment les préfixes des options 
+    courtes et longues (On peut notamment envisager des utilisateurs originaires 
+    de Windows qui préférerait utiliser le `\symbol{92}' au `-'), 
+    l'identificateur des deux représentations de l'option `help'. Nous avons 
+    aussi été contraints d'ajouter un spécificateur permettant de garantir que 
+    la valeur suivant celui-ci n'est pas une option (lui aussi est modifiable 
+    par l'utilisateur du module). Sans ce spécificateur, l'utilisateur ne 
+    pourrait pas rentrer la valeur `--help' en prenant cette valeur non pas 
+    comme une option, mais une valeur à traiter. Ce spécificateur vaut par 
+    défaut la chaine `- -'. De plus, nous avons mis en place un possible 
+    traitement sur les éléments qui ne sont pas des options.
     
     \subsubsection{Le code}
 
-    Pour regrouper toutes les informations nécessaires à la gestion d'une option, 
-    nous avons donc mis en place un type optparam regroupant toutes ces 
+    Pour regrouper toutes les informations nécessaires à la gestion d'une 
+    option, nous avons donc mis en place un type optparam regroupant toutes ces 
     informations. La fonction opt\_init initialise une instance de ce type. La 
     véritable difficulté a été dans la conception de la fonction de traitement,
     opt\_process. Cette fonction peut être divisée de la façon suivante :
@@ -744,14 +744,14 @@ file1.txt file2.txt
     peut notamment citer la Spécification de la fonction otp\_process qui est 
     trop longue.
     Un point fort du module est qu'il est complet, il met en pratique toutes les 
-    fonctionnalités des commandes Linux les plus connues (rm, ls, cat), notamment 
-    des fonctionnalités telles que `l'autocomplétion' des longues options, la 
-    prise en charge des multiples options courtes ou encore le spécifier 
-    NEXT\_NOPT (next is not an option). Un autre point fort, la complexité du 
-    traitement des options, toutes les options ne sont parcourues qu'au plus 
-    deux fois pour exécuter leur traitement (avec la possible comparaison avec 
-    l'option `help'). De même, ce module ne nécessite que le stockage des objets 
-    de type optparam pour traiter les options.
+    fonctionnalités des commandes Linux les plus connues (rm, ls, cat), 
+    notamment des fonctionnalités telles que `l'autocomplétion' des longues 
+    options, la prise en charge des multiples options courtes ou encore le 
+    spécifier NEXT\_NOPT (next is not an option). Un autre point fort, la 
+    complexité du traitement des options, toutes les options ne sont parcourues 
+    qu'au plus deux fois pour exécuter leur traitement (avec la possible 
+    comparaison avec l'option `help'). De même, ce module ne nécessite que le 
+    stockage des objets de type optparam pour traiter les options.
 
     \section{Mise en pratique}\label{test}
 
@@ -759,8 +759,8 @@ file1.txt file2.txt
     programme sans parler de la pratique. Dans cette section, nous allons voir
     quelque tests qui nous semblent intéressants.
     Les temps d'exécutions donnés ne sont qu'à titre indicatif et ne 
-    représentent en aucun cas une promesse, étant donné que ces temps dépendent de 
-    nombreux facteurs. En revanche l'utilisation mémoire du programme pourra 
+    représentent en aucun cas une promesse, étant donné que ces temps dépendent 
+    de nombreux facteurs. En revanche l'utilisation mémoire du programme pourra 
     être évoquée dans certaines comparaisons. En effet, tous les tests étant 
     effectués sur la même machine, nous supposons donc que l'utilisation mémoire 
     du programme n'évolue pas pour un même traitement. De plus, les complexités 
@@ -823,8 +823,8 @@ liaisons_dangeureuses.txt
     des AVL\@? Les éléments présents dans une table de hachage étant 
     théoriquement accessibles en temps constant. Pour cela, nous devons revenir 
     sur la mise en pratique des tables de hachage. En effet, dans notre cas, 
-    chaque ligne devra être calculée par la fonction de hachage. Or cette fonction 
-    (conseillé par Bernstein) effectue un traitement en temps linéaire 
+    chaque ligne devra être calculée par la fonction de hachage. Or cette 
+    fonction (conseillé par Bernstein) effectue un traitement en temps linéaire 
     ($\Theta(n)$) sur le nombre de caractères de la ligne. Au contraire pour les 
     AVL, cette recherche s'effectue par une descente de l'arbre à l'aide de la 
     fonction \textbf{strcmp}, recherche qui aura donc une complexité dans le 
@@ -880,11 +880,11 @@ a.txt
         programme de la figure \ref{prog}}\label{prog-test}
     \end{figure}
 
-    Pour finir, il est nettement plus intéressant d'utiliser la version `de base'
-    c'est-à-dire avec l'utilisation de la table de hachage tout simplement, car 
-    dans la majorité des cas, elle sera plus performante. Tout de même dans le 
-    cas où l'utilisateur connait la taille moyenne de ces lignes, il lui 
-    pourrait être utile d'utiliser alors l'AVL\@.
+    Pour finir, il est nettement plus intéressant d'utiliser la version 
+    `de base' c'est-à-dire avec l'utilisation de la table de hachage tout 
+    simplement, car dans la majorité des cas, elle sera plus performante. Tout 
+    de même dans le cas où l'utilisateur connait la taille moyenne de ces 
+    lignes, il lui pourrait être utile d'utiliser alors l'AVL\@.
 
     \subsubsection{Le coût du traitement d'options}\label{test-cmp}
 
@@ -903,7 +903,7 @@ a.txt
         traiter. Cette complexité résulte du possible traitement des n options 
         possiblement placée avant l'une de ces deux options.
         \item[] \textbf{trie}, de l'option \textbf{sort}. Ce tri s'effectuant 
-        sur le `fourre-tout', il ne change en rien la lecture des lignes. Ce trie 
+        sur le `fourre-tout', il ne change en rien la lecture des lignes. Ce tri
         est un tri par fusion, donc en complexité $\Theta(nln)$ avec $n$ le 
         nombre de lignes (toujours en supposant que les fonctions de comparaison 
         \textbf{strcmp} et \textbf{strcoll} (avec respectivement la version 
@@ -1044,7 +1044,8 @@ heap usage: 254 allocs, 254 frees, 33,573,081 bytes allocated
     $2^{\left\lceil \log_2 12 799 999\right\rceil} = 2^{24} = \numprint{16777216}$ 
     caractères. La machine exécutant le test représente les caractères sur un 
     byte, on en conclure que le buffeur à sa taille final répresente plus de la 
-    moitié de la mémoire utilisée. Tout au long de l'exécution il a donc utilisé:
+    moitié de la mémoire utilisée. Tout au long de l'exécution il a donc 
+    utilisé:
 
     \begin{figure}[H]
         \centering
@@ -1076,8 +1077,8 @@ heap usage: 254 allocs, 254 frees, 33,573,081 bytes allocated
     rencontrée a été la production de ce compte rendu. N'ayant jamais 
     effectuer d'exercice de ce type, nous avons donc essayé de présenter notre 
     implémentation de notre programme. Malgré tout ce travail, nous avons 
-    déjà en tête quelques possibles améliorations, un affichage du help du module 
-    optl qui pourrait s'adapter à la taille du terminal. Toujours dans le 
+    déjà en tête quelques possibles améliorations, un affichage du help du 
+    module optl qui pourrait s'adapter à la taille du terminal. Toujours dans le 
     module optl, donner des options avec un paramètre qui n'est pas forcément 
     obligatoire (qui ne déclenche donc pas d'erreur s'il n'est pas donné). Ou 
     encore pour le programme \textbf{lnid}, il serait peut être intéressant de 
@@ -1094,9 +1095,9 @@ heap usage: 254 allocs, 254 frees, 33,573,081 bytes allocated
     Au logiciel ChatGPT pour la correction des nombreuses fautes d'orthographe 
     présentes tout au long de la production de ce projet et de son compte rendu.
 
-    Ilyas TAKHTOUKH et Mathieu Duval, pour avoir effectué une relecture des fautes 
-    d'orthographes présentes dans ce compte-rendu et dans les spécifications du 
-    code source du programme.
+    Ilyas TAKHTOUKH et Mathieu Duval, pour avoir effectué une relecture des 
+    fautes d'orthographes présentes dans ce compte-rendu et dans les 
+    spécifications du code source du programme.
 
     \newpage
 
