@@ -6,14 +6,11 @@
 !*.h
 !makefile
 !*.tex
-!*.svg
 !*.png
 !.gitignore
 !*.md
-!*.sh
 
 !optl/
-!opt/
 !lnid/
 !holdall/
 !hashtable/
@@ -21,4 +18,3 @@
 !bst/
 
 !compte-rendu/
-!compte-rendu/partie

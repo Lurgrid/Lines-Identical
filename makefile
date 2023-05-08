@@ -7,3 +7,4 @@ dist: clean
 
 clean:
 	$(MAKE) -C lnid clean
+	$(MAKE) -C optl clean
