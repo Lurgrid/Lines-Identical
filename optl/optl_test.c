@@ -11,6 +11,8 @@ static int test_aopt(const optparam **aopt, size_t nmemb);
 //    compilateur utiliser et renvoie 0.
 static int version(void *cntxt, const char *value, const char **err);
 
+//  test : Affiche sur la sortie standart "Value: ", suivit par la chaine de
+//    caractère value et d'un retours à la ligne et renvoie 0.
 static int test(void *cntxt, const char *value, const char **err);
 
 int main(int argc, char **argv) {

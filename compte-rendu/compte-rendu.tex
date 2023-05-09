@@ -197,7 +197,7 @@ bob/.style={user=bob,host=remotehost,color=cyan},
                     {\parbox{9cm}{ \cellcolor{blue-t!70}Avec \texttt{CLASS} l’un 
                     des suffixes~\ldots~des douze tests\\ d’appartenance à une 
                     catégorie de caractères is\ldots~de l’en-tête standard 
-                    $<$ctype.ht$>$}} \\ [1.3em]
+                    $<$ctype.h$>$}} \\ [1.3em]
                 \hline
                     \multicolumn{3}{|c|}{\cellcolor{blue-u!7}\rule{0pt}{2em}
                     \parbox{15cm}{Ne prend en compte au traitement que les 
@@ -1000,12 +1000,12 @@ heap usage: 299,780 allocs, 299,780 frees, 8,925,910 bytes allocated
     \begin{figure}[H]
         \SU{user=root,host=ubuntu,color=lime}
         \begin{ubuntu}
-./lnid a.txt `\StartConsole`
+./lnid --avl a.txt `\StartConsole`
 a.txt
 ...
 21,97s user 1,50s system 100`\%` cpu 23,462 total
 `\SU{user=root,host=ubuntu,color=lime}`
-valgrind ./lnid a.txt `\StartConsole`
+valgrind ./lnid --avl a.txt `\StartConsole`
 ...
 heap usage: 35,036 allocs, 35,036 frees, 4,002,711,191 bytes allocated
         \end{ubuntu}
@@ -1087,13 +1087,13 @@ heap usage: 254 allocs, 254 frees, 33,573,081 bytes allocated
 
     Merci à\@: 
 
-    Erwan Lievin, pour le nom qu'il nous a fourni pour le module de tableau 
+    Erwan LIEVIN, pour le nom qu'il nous a fourni pour le module de tableau 
     dynamique `da' (dynamique array).
 
     Au logiciel ChatGPT pour la correction des nombreuses fautes d'orthographe 
     présentes tout au long de la production de ce projet et de son compte rendu.
 
-    Ilyas TAKHTOUKH et Mathieu Duval, pour avoir effectué une relecture des 
+    Ilyas TAKHTOUKH et Mathieu DUVAL, pour avoir effectué une relecture des 
     fautes d'orthographes présentes dans ce compte-rendu et dans les 
     spécifications du code source du programme.
 
