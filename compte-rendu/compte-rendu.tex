@@ -143,7 +143,7 @@ bob/.style={user=bob,host=remotehost,color=cyan},
         Dans un premier temps, nous présenterons une 
         brève description du projet. Ensuite, nous expliquerons comment nous 
         l'avons construit. Nous passerons ensuite en revue les différents 
-        modules utilisés en détail. Enfin, nous présenterons une mise en 
+        modules utilisés. Enfin, nous présenterons une mise en 
         pratique avec des tests intéressants ainsi que des tests de performance.
         Pour conclure, nous aborderons les diverses limitations potentielles de 
         cette implémentation, ainsi que les améliorations possibles. Nous ferons
@@ -251,7 +251,7 @@ bob/.style={user=bob,host=remotehost,color=cyan},
     plusieurs fichiers. En réalité, nous pouvons les regrouper en deux 
     cas, le cas du premier fichier et le cas des autres fichiers.
 
-    Pour la lecture de ligne, ne consomme pas trop de mémoire à l'utilisateur
+    Pour que la lecture de ligne, ne consomme pas trop de mémoire à l'utilisateur
     (par l'allocation d'un buffer à chaque ligne lue), nous avons donc décidé de 
     mettre en place un buffer de type \textbf{da} (voir section~\ref{test} pour
     analyse complète de ce choix). Pour cette lecture, nous utilisons donc la
@@ -377,10 +377,10 @@ file1.txt file2.txt
 
     Dans notre projet, de nombreuses données sont allouées dynamiquement\@: Les 
     lignes lues, les numéros de ces lignes. C'est pour cela que l'utilisation du 
-    `fourre-tout' est tout à fait justifié. De ce fait, les structures 
+    \textit{fourre-tout} est tout à fait justifié. De ce fait, les structures 
     provenant du module da et AVL n'ont absolument pas besoin d'avoir des
     opérations telles que la libération de mémoire pour les valeurs qu'elles 
-    contiennent. De ce fait, l'utilisation du `fourre-tout' permet la 
+    contiennent. De ce fait, l'utilisation du \textit{fourre-tout} permet la 
     simplification du développement de certains modules (par les gestions des 
     données contenues dans les structures qui reviennent à l'utilisateur), mais 
     aussi une certaine lisibilité dans le code (On voit très bien dans lnid.c,
@@ -458,23 +458,21 @@ file1.txt file2.txt
     d'apparition, peut être résolue par l'utilisation de structure de données 
     qui visent à joindre ces informations, pour pouvoir les récupérer. Nous 
     avons décidé de mettre deux types de ces structures à disposition, un 
-    d'arbre binaire et l'autre de table de hachage. 
+    d'arbre binaire et une table de hachage. 
 
     \subsection{Hastable}
 
-    Constituant l'implémentation d'une table de hachage, cette structure permet 
-    de partir d'une clé, une valeur. Dans notre cas, la clé est une ligne déjà 
+    Concernant l'implémentation d'une table de hachage, cette structure permet 
+    à partir d'une clé, de retrouver une valeur. Dans notre cas, la clé est une ligne déjà 
     lue et la valeur ses numéros de lignes (dans le cas d'un seul fichier) ou 
     son nombre d'occurrences (dans le cas de plusieurs fichiers). Cette 
     structure est choisie pour répondre à ce problème. En effet, théoriquement 
     une table de hachage permet un accès presque constant à une valeur par sa 
     clé. Malgré tout, en pratique cet accès dépend exclusivement de la fonction 
-    de hachage utilisée, c'est pour cela que dans la section de test, nous 
-    mettons à disposition divers exemples d'exécutions avec des fonctions de 
-    hachages différentes. De plus, en pratique, l'ajout dans une table de 
+    de hachage utilisée. De plus, en pratique, l'ajout dans une table de 
     hachage peut entraîner un agrandissement de celle-ci et donc, recalculer de 
     toutes les valeurs en son sein. L'implémentation de cette table est 
-    représentée dans la figure\@: 
+    représentée dans la figure ci-dessous. 
     
     \begin{figure}[H]
         \centering
