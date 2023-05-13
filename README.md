@@ -1,5 +1,5 @@
 # Lines-Identical
 
-Project realized for the framework of our studies of data processing at the university
+Project realized during our computer science studies at the university
 
-This program has for goal to display the lines of identical of a file or several files
+The purpose of this program is to display the identical lines of a file or several files
