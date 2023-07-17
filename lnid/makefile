@@ -3,7 +3,7 @@ holdall_dir = ../holdall/
 bst_dir = ../bst/
 optl_dir = ../optl/
 hashtable_dir = ../hashtable/
-CC = gcc
+CC = gcc #Compiler name
 CFLAGS = -std=c18 \
   -Wall -Wconversion -Werror -Wextra -Wpedantic -Wwrite-strings \
   -O2 -DHOLDALL_PUT_TAIL\
