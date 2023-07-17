@@ -1,4 +1,4 @@
-# Lines-Identical
+# Lines-Identical (lnid)
 
 Project realized during our computer science studies at the university
 
