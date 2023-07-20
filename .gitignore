@@ -5,8 +5,6 @@
 !*.c
 !*.h
 !makefile
-!*.tex
-!*.png
 !.gitignore
 !*.md
 
@@ -16,5 +14,3 @@
 !hashtable/
 !da/
 !bst/
-
-!compte-rendu/
