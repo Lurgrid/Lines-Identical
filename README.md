@@ -87,7 +87,7 @@ In comming...
 
 ## License
 
-MIT
+GPLv3
 
 ---
 
